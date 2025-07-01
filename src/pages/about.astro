@@ -1,10 +1,10 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import LayoutComponent from '../components/Layout';
+import PublicLayout from '../components/PublicLayout';
 ---
 
 <Layout title="About - KaneDocs">
-  <LayoutComponent client:load>
+  <PublicLayout client:load>
     <div class="max-w-4xl mx-auto px-6 py-8 lg:px-8">
       {/* Hero Section */}
       <div class="text-center mb-12">
@@ -18,6 +18,28 @@ import LayoutComponent from '../components/Layout';
           KaneDocs revolutionizes documentation by bringing the power and familiarity of Git version control 
           to documentation workflows, making it as robust and trackable as your codebase.
         </p>
+      </div>
+
+      {/* Authentication Required Notice */}
+      <div class="mb-12">
+        <div class="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-xl p-6 border border-blue-200 dark:border-blue-800">
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
+              <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+              </svg>
+            </div>
+            <div>
+              <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                Secure Platform Access Required
+              </h3>
+              <p class="text-gray-600 dark:text-gray-400">
+                To access KaneDocs' powerful features like version control, AI generation, and collaborative editing, 
+                you'll need to create a free account. This ensures the security of your documentation and provides personalized features.
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Mission Statement */}
@@ -262,16 +284,16 @@ import LayoutComponent from '../components/Layout';
             href="/version-control"
             class="px-6 py-3 bg-white text-primary-600 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
           >
-            Try Version Control
+            Get Started Free
           </a>
           <a
             href="/ai-generator"
             class="px-6 py-3 border-2 border-white text-white rounded-lg font-semibold hover:bg-white hover:text-primary-600 transition-colors"
           >
-            Generate with AI
+            Try AI Generation
           </a>
         </div>
       </div>
     </div>
-  </LayoutComponent>
+  </PublicLayout>
 </Layout>

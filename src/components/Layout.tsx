@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import Header from './Header';
 import Sidebar from './Sidebar';
+import AuthGuard from './AuthGuard';
 import { NotificationContainer } from './SimpleNotification';
 
 interface LayoutProps {
   children: React.ReactNode;
+  requireAuth?: boolean;
+  showSidebar?: boolean;
 }
 
-export default function Layout({ children }: LayoutProps) {
+export default function Layout({ children, requireAuth = true, showSidebar = true }: LayoutProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -71,30 +74,34 @@ export default function Layout({ children }: LayoutProps) {
   }
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900">
-      <Header 
-        onSidebarToggle={toggleSidebar}
-        isSidebarOpen={isSidebarOpen}
-        onMenuToggle={toggleMobileMenu}
-        isMenuOpen={isMobileMenuOpen}
-      />
-
-      <div className="flex">
-        <Sidebar 
-          isOpen={isMobileMenuOpen}
-          onClose={closeMobileMenu}
-          isCollapsed={!isSidebarOpen}
+    <AuthGuard requireAuth={requireAuth}>
+      <div className="min-h-screen bg-white dark:bg-gray-900">
+        <Header 
+          onSidebarToggle={showSidebar ? toggleSidebar : undefined}
+          isSidebarOpen={showSidebar ? isSidebarOpen : false}
+          onMenuToggle={showSidebar ? toggleMobileMenu : undefined}
+          isMenuOpen={showSidebar ? isMobileMenuOpen : false}
         />
 
-        <main className={`flex-1 min-w-0 transition-all duration-300 ${
-          isSidebarOpen ? 'lg:ml-0' : 'lg:ml-0'
-        }`}>
-          {children}
-        </main>
-      </div>
+        <div className="flex">
+          {showSidebar && (
+            <Sidebar 
+              isOpen={isMobileMenuOpen}
+              onClose={closeMobileMenu}
+              isCollapsed={!isSidebarOpen}
+            />
+          )}
 
-      {/* Simple Notification System */}
-      <NotificationContainer />
-    </div>
+          <main className={`flex-1 min-w-0 transition-all duration-300 ${
+            showSidebar && isSidebarOpen ? 'lg:ml-0' : 'lg:ml-0'
+          }`}>
+            {children}
+          </main>
+        </div>
+
+        {/* Simple Notification System */}
+        <NotificationContainer />
+      </div>
+    </AuthGuard>
   );
 }
