@@ -79,6 +79,15 @@ export default function Header({ onMenuToggle, isMenuOpen, onSidebarToggle, isSi
                 src="/kanedocs-logo.svg" 
                 alt="KaneDocs Logo" 
                 className="w-8 h-8 transition-transform duration-200 hover:scale-110"
+                onError={(e) => {
+                  // Fallback if logo fails to load
+                  const target = e.target as HTMLImageElement;
+                  target.style.display = 'none';
+                  const fallback = document.createElement('div');
+                  fallback.className = 'w-8 h-8 rounded-lg bg-gradient-to-br from-primary-500 to-accent-500 flex items-center justify-center';
+                  fallback.innerHTML = '<span class="text-white font-bold text-sm">K</span>';
+                  target.parentNode?.insertBefore(fallback, target);
+                }}
               />
               <h1 className="text-xl font-bold bg-gradient-to-r from-primary-600 to-accent-600 bg-clip-text text-transparent">
                 KaneDocs
