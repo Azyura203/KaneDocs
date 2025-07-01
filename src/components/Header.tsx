@@ -35,9 +35,10 @@ export default function Header({ onMenuToggle, isMenuOpen, onSidebarToggle, isSi
     const checkAuth = async () => {
       try {
         const currentUser = await authService.getCurrentUser();
+        console.log('Header - Current user:', currentUser); // Debug log
         setUser(currentUser);
       } catch (error) {
-        console.error('Auth check failed:', error);
+        console.error('Header - Auth check failed:', error);
       } finally {
         setLoading(false);
       }
@@ -47,6 +48,7 @@ export default function Header({ onMenuToggle, isMenuOpen, onSidebarToggle, isSi
 
     // Listen for auth state changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log('Header - Auth state change:', event, session?.user); // Debug log
       setUser(session?.user || null);
       
       if (event === 'SIGNED_IN') {
@@ -61,6 +63,8 @@ export default function Header({ onMenuToggle, isMenuOpen, onSidebarToggle, isSi
           'You have been signed out successfully.',
           3000
         );
+        // Redirect to home page after sign out
+        window.location.href = '/';
       }
     });
 
@@ -103,6 +107,7 @@ export default function Header({ onMenuToggle, isMenuOpen, onSidebarToggle, isSi
         'You have been signed out successfully.',
         3000
       );
+      // Redirect will be handled by the auth state change listener
     } catch (error) {
       notificationManager.error(
         'Sign Out Failed',

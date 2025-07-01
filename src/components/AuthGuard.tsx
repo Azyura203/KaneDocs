@@ -19,7 +19,14 @@ export default function AuthGuard({ children, requireAuth = true, fallback }: Au
     const checkAuth = async () => {
       try {
         const currentUser = await authService.getCurrentUser();
+        console.log('Current user:', currentUser); // Debug log
         setUser(currentUser);
+        
+        // If user is authenticated and we're on a public page, redirect to main app
+        if (currentUser && window.location.pathname === '/') {
+          window.location.href = '/version-control';
+          return;
+        }
       } catch (error) {
         console.error('Auth check failed:', error);
       } finally {
@@ -31,14 +38,20 @@ export default function AuthGuard({ children, requireAuth = true, fallback }: Au
 
     // Listen for auth state changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log('Auth state change:', event, session?.user); // Debug log
       setUser(session?.user || null);
       
-      if (event === 'SIGNED_IN') {
+      if (event === 'SIGNED_IN' && session?.user) {
         notificationManager.success(
           'Welcome to KaneDocs! 🎉',
           'You now have access to all documentation features.',
           4000
         );
+        
+        // Redirect to main app after successful sign in
+        setTimeout(() => {
+          window.location.href = '/version-control';
+        }, 1000);
       }
     });
 
@@ -47,6 +60,7 @@ export default function AuthGuard({ children, requireAuth = true, fallback }: Au
 
   const handleAuthSuccess = () => {
     setShowAuthModal(false);
+    // The auth state change listener will handle the redirect
   };
 
   if (loading) {
