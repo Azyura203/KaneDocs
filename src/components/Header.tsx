@@ -73,10 +73,13 @@ export default function Header({ onMenuToggle, isMenuOpen, onSidebarToggle, isSi
               </button>
             )}
             
+            {/* Logo and Title */}
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-500 to-accent-500 flex items-center justify-center">
-                <span className="text-white font-bold text-sm">K</span>
-              </div>
+              <img 
+                src="/kanedocs-logo.svg" 
+                alt="KaneDocs Logo" 
+                className="w-8 h-8 transition-transform duration-200 hover:scale-110"
+              />
               <h1 className="text-xl font-bold bg-gradient-to-r from-primary-600 to-accent-600 bg-clip-text text-transparent">
                 KaneDocs
               </h1>
@@ -123,7 +126,7 @@ export default function Header({ onMenuToggle, isMenuOpen, onSidebarToggle, isSi
             </button>
             
             <a
-              href="https://github.com"
+              href="https://github.com/yourusername/kanedocs"
               target="_blank"
               rel="noopener noreferrer"
               className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 hover:scale-105"
