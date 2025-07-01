@@ -1,5 +1,19 @@
 import React, { useState } from 'react';
-import { ChevronDown, ChevronRight, FileText, Book, User, Edit3, FolderOpen, Sparkles, GitBranch, Database, GitCommit } from 'lucide-react';
+import { 
+  ChevronDown, 
+  ChevronRight, 
+  FileText, 
+  Book, 
+  User, 
+  Edit3, 
+  FolderOpen, 
+  Sparkles, 
+  GitBranch, 
+  Database, 
+  GitCommit,
+  Tag,
+  AlertCircle
+} from 'lucide-react';
 import { clsx } from 'clsx';
 
 interface SidebarProps {
@@ -14,6 +28,7 @@ interface NavItem {
   href: string;
   children?: NavItem[];
   badge?: string;
+  requiresAuth?: boolean;
 }
 
 const navigationItems: NavItem[] = [
@@ -26,33 +41,51 @@ const navigationItems: NavItem[] = [
     title: 'Projects',
     icon: <FolderOpen size={16} />,
     href: '/projects',
+    requiresAuth: true,
   },
   {
     title: 'Editor',
     icon: <Edit3 size={16} />,
     href: '/editor',
+    requiresAuth: true,
   },
   {
     title: 'AI Generator',
     icon: <Sparkles size={16} />,
     href: '/ai-generator',
     badge: 'AI',
+    requiresAuth: true,
   },
   {
     title: 'Version Control',
     icon: <GitCommit size={16} />,
     href: '/version-control',
     badge: 'VCS',
+    requiresAuth: true,
   },
   {
     title: 'Git Manager',
     icon: <GitBranch size={16} />,
     href: '/git',
+    requiresAuth: true,
   },
   {
     title: 'Database Git',
     icon: <Database size={16} />,
     href: '/database-git',
+    requiresAuth: true,
+  },
+  {
+    title: 'Releases',
+    icon: <Tag size={16} />,
+    href: '/releases',
+    requiresAuth: true,
+  },
+  {
+    title: 'Issues',
+    icon: <AlertCircle size={16} />,
+    href: '/issues',
+    requiresAuth: true,
   },
   {
     title: 'About',
@@ -74,7 +107,8 @@ function NavItemComponent({ item, level = 0, isCollapsed }: { item: NavItem; lev
           'hover:bg-slate-100 dark:hover:bg-slate-800',
           'text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400',
           level > 0 && 'ml-4 text-xs',
-          isCollapsed && 'justify-center px-2'
+          isCollapsed && 'justify-center px-2',
+          item.requiresAuth && 'border-l-2 border-transparent hover:border-blue-500'
         )}
         onClick={(e) => {
           if (hasChildren) {
@@ -99,6 +133,9 @@ function NavItemComponent({ item, level = 0, isCollapsed }: { item: NavItem; lev
                 )}>
                   {item.badge}
                 </span>
+              )}
+              {item.requiresAuth && (
+                <span className="w-1.5 h-1.5 bg-blue-500 rounded-full opacity-60" title="Requires authentication" />
               )}
             </>
           )}
@@ -162,6 +199,12 @@ export default function Sidebar({ isOpen = false, onClose, isCollapsed = false }
                 </div>
                 <div className="text-center">
                   <span className="text-slate-400 dark:text-slate-500">KaneDocs</span>
+                </div>
+                <div className="mt-2 text-center">
+                  <div className="flex items-center justify-center gap-1 text-xs">
+                    <span className="w-1.5 h-1.5 bg-blue-500 rounded-full" />
+                    <span>Auth Required</span>
+                  </div>
                 </div>
               </div>
             </div>
