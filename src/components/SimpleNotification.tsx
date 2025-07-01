@@ -136,7 +136,7 @@ class NotificationManager {
 
 export const notificationManager = new NotificationManager();
 
-// Notification container component
+// Notification container component with higher z-index
 export function NotificationContainer() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
@@ -148,7 +148,7 @@ export function NotificationContainer() {
   if (notifications.length === 0) return null;
 
   return (
-    <div className="fixed top-4 right-4 z-50 max-w-sm w-full">
+    <div className="fixed top-4 right-4 z-[10001] max-w-sm w-full">
       {notifications.map((notification) => (
         <SimpleNotification
           key={notification.id}

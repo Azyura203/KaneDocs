@@ -96,7 +96,7 @@ export default function AuthButton() {
           </button>
 
           {showUserMenu && (
-            <div className="absolute top-full right-0 mt-2 w-56 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-lg py-2 z-50">
+            <div className="absolute top-full right-0 mt-2 w-56 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-lg py-2 z-[10000]">
               <div className="px-4 py-3 border-b border-slate-200 dark:border-slate-700">
                 <p className="text-sm font-medium text-slate-900 dark:text-white">
                   {user.user_metadata?.full_name || 'User'}
@@ -147,7 +147,7 @@ export default function AuthButton() {
       {/* Click outside to close user menu */}
       {showUserMenu && (
         <div 
-          className="fixed inset-0 z-40" 
+          className="fixed inset-0 z-[9999]" 
           onClick={() => setShowUserMenu(false)}
         />
       )}
