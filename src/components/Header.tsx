@@ -1,10 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Moon, Sun, Github, Menu, X, Command, PanelLeftClose, PanelLeft, Bell, Settings, User, LogOut } from 'lucide-react';
+import { Search, Moon, Sun, Github, Menu, X, Command, PanelLeftClose, PanelLeft } from 'lucide-react';
 import SearchModal from './SearchModal';
-import ProfileModal from './ProfileModal';
-import ImprovedAuthModal from './ImprovedAuthModal';
-import { authService, supabase } from '../lib/supabase';
-import { notificationManager } from './SimpleNotification';
 
 interface HeaderProps {
   onMenuToggle?: () => void;
@@ -16,11 +12,6 @@ interface HeaderProps {
 export default function Header({ onMenuToggle, isMenuOpen, onSidebarToggle, isSidebarOpen }: HeaderProps) {
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [showUserMenu, setShowUserMenu] = useState(false);
-  const [showProfileModal, setShowProfileModal] = useState(false);
-  const [showAuthModal, setShowAuthModal] = useState(false);
-  const [user, setUser] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
@@ -28,47 +19,6 @@ export default function Header({ onMenuToggle, isMenuOpen, onSidebarToggle, isSi
     const initialTheme = savedTheme || systemTheme;
     setTheme(initialTheme);
     document.documentElement.classList.toggle('dark', initialTheme === 'dark');
-  }, []);
-
-  // Check authentication status
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const currentUser = await authService.getCurrentUser();
-        console.log('Header - Current user:', currentUser); // Debug log
-        setUser(currentUser);
-      } catch (error) {
-        console.error('Header - Auth check failed:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    checkAuth();
-
-    // Listen for auth state changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log('Header - Auth state change:', event, session?.user); // Debug log
-      setUser(session?.user || null);
-      
-      if (event === 'SIGNED_IN') {
-        notificationManager.success(
-          'Welcome!',
-          'Successfully signed in to KaneDocs.',
-          3000
-        );
-      } else if (event === 'SIGNED_OUT') {
-        notificationManager.info(
-          'Signed Out',
-          'You have been signed out successfully.',
-          3000
-        );
-        // Redirect to home page after sign out
-        window.location.href = '/';
-      }
-    });
-
-    return () => subscription.unsubscribe();
   }, []);
 
   useEffect(() => {
@@ -81,9 +31,6 @@ export default function Header({ onMenuToggle, isMenuOpen, onSidebarToggle, isSi
         e.preventDefault();
         onSidebarToggle?.();
       }
-      if (e.key === 'Escape') {
-        setShowUserMenu(false);
-      }
     };
 
     document.addEventListener('keydown', handleKeyDown);
@@ -95,44 +42,6 @@ export default function Header({ onMenuToggle, isMenuOpen, onSidebarToggle, isSi
     setTheme(newTheme);
     localStorage.setItem('theme', newTheme);
     document.documentElement.classList.toggle('dark', newTheme === 'dark');
-  };
-
-  const handleSignOut = async () => {
-    try {
-      await authService.signOut();
-      setUser(null);
-      setShowUserMenu(false);
-      notificationManager.success(
-        'Signed Out',
-        'You have been signed out successfully.',
-        3000
-      );
-      // Redirect will be handled by the auth state change listener
-    } catch (error) {
-      notificationManager.error(
-        'Sign Out Failed',
-        'Failed to sign out. Please try again.',
-        4000
-      );
-    }
-  };
-
-  const handleAuthSuccess = () => {
-    setShowAuthModal(false);
-  };
-
-  const handleUserUpdate = (updatedUser: any) => {
-    setUser(updatedUser);
-  };
-
-  const getUserDisplayName = () => {
-    if (!user) return 'Guest';
-    return user.user_metadata?.full_name || user.email?.split('@')[0] || 'User';
-  };
-
-  const getUserAvatar = () => {
-    if (!user) return null;
-    return user.user_metadata?.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(getUserDisplayName())}&size=32`;
   };
 
   return (
@@ -193,7 +102,7 @@ export default function Header({ onMenuToggle, isMenuOpen, onSidebarToggle, isSi
             </button>
           </div>
 
-          {/* Right side - Enhanced Actions */}
+          {/* Right side */}
           <div className="flex items-center gap-2">
             {/* Mobile search */}
             <button
@@ -202,16 +111,6 @@ export default function Header({ onMenuToggle, isMenuOpen, onSidebarToggle, isSi
               aria-label="Search"
             >
               <Search size={18} />
-            </button>
-
-            {/* Notifications */}
-            <button
-              className="relative p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-200 hover:scale-105"
-              aria-label="Notifications"
-              title="Notifications"
-            >
-              <Bell size={18} />
-              <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
             </button>
             
             {/* Theme toggle */}
@@ -235,98 +134,6 @@ export default function Header({ onMenuToggle, isMenuOpen, onSidebarToggle, isSi
             >
               <Github size={18} />
             </a>
-
-            {/* Divider */}
-            <div className="w-px h-6 bg-slate-300 dark:bg-slate-600 mx-1" />
-
-            {/* User menu or Sign in */}
-            {loading ? (
-              <div className="w-8 h-8 bg-slate-200 dark:bg-slate-700 rounded-full animate-pulse" />
-            ) : user ? (
-              <div className="relative">
-                <button
-                  onClick={() => setShowUserMenu(!showUserMenu)}
-                  className="flex items-center gap-2 p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-200"
-                  aria-label="User menu"
-                >
-                  <div className="w-8 h-8 rounded-full overflow-hidden bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
-                    {getUserAvatar() ? (
-                      <img
-                        src={getUserAvatar()}
-                        alt={getUserDisplayName()}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <User size={16} className="text-white" />
-                    )}
-                  </div>
-                </button>
-
-                {/* User dropdown */}
-                {showUserMenu && (
-                  <div className="absolute top-full right-0 mt-2 w-64 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-lg py-1 z-50">
-                    <div className="px-4 py-3 border-b border-slate-200 dark:border-slate-700">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full overflow-hidden bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
-                          {getUserAvatar() ? (
-                            <img
-                              src={getUserAvatar()}
-                              alt={getUserDisplayName()}
-                              className="w-full h-full object-cover"
-                            />
-                          ) : (
-                            <User size={20} className="text-white" />
-                          )}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-slate-900 dark:text-white truncate">
-                            {getUserDisplayName()}
-                          </p>
-                          <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
-                            {user.email}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div className="py-1">
-                      <button 
-                        onClick={() => {
-                          setShowProfileModal(true);
-                          setShowUserMenu(false);
-                        }}
-                        className="w-full flex items-center gap-3 px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
-                      >
-                        <User size={16} />
-                        Profile Settings
-                      </button>
-                      <button className="w-full flex items-center gap-3 px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
-                        <Settings size={16} />
-                        Preferences
-                      </button>
-                    </div>
-                    
-                    <div className="border-t border-slate-200 dark:border-slate-700 py-1">
-                      <button 
-                        onClick={handleSignOut}
-                        className="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
-                      >
-                        <LogOut size={16} />
-                        Sign out
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
-            ) : (
-              <button
-                onClick={() => setShowAuthModal(true)}
-                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-lg transition-colors font-medium"
-              >
-                <User size={16} />
-                Sign In
-              </button>
-            )}
 
             {/* Sidebar toggle hint for desktop */}
             {onSidebarToggle && (
@@ -352,31 +159,8 @@ export default function Header({ onMenuToggle, isMenuOpen, onSidebarToggle, isSi
         </div>
       </header>
 
-      {/* Modals */}
+      {/* Search Modal */}
       <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
-      
-      {user && (
-        <ProfileModal
-          isOpen={showProfileModal}
-          onClose={() => setShowProfileModal(false)}
-          user={user}
-          onUserUpdate={handleUserUpdate}
-        />
-      )}
-
-      <ImprovedAuthModal
-        isOpen={showAuthModal}
-        onClose={() => setShowAuthModal(false)}
-        onSuccess={handleAuthSuccess}
-      />
-
-      {/* Click outside to close user menu */}
-      {showUserMenu && (
-        <div 
-          className="fixed inset-0 z-30" 
-          onClick={() => setShowUserMenu(false)}
-        />
-      )}
     </>
   );
 }

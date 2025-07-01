@@ -7,7 +7,7 @@ interface PublicLayoutProps {
 
 export default function PublicLayout({ children }: PublicLayoutProps) {
   return (
-    <Layout requireAuth={false} showSidebar={false}>
+    <Layout showSidebar={false}>
       {children}
     </Layout>
   );

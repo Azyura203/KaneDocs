@@ -1,13 +1,13 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import LayoutComponent from '../components/Layout';
-import DatabaseGitManager from '../components/DatabaseGitManager';
+import LocalDatabaseGitManager from '../components/LocalDatabaseGitManager';
 ---
 
 <Layout title="Database Git Manager - KaneDocs">
   <LayoutComponent client:load>
     <div class="h-[calc(100vh-4rem)]">
-      <DatabaseGitManager client:only="react" />
+      <LocalDatabaseGitManager client:only="react" />
     </div>
   </LayoutComponent>
 </Layout>
