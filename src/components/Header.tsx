@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Moon, Sun, Github, Menu, X, Command, PanelLeftClose, PanelLeft, Bell, Settings, User } from 'lucide-react';
+import { Search, Moon, Sun, Github, Menu, X, Command, PanelLeftClose, PanelLeft, Bell, Settings, User, LogOut } from 'lucide-react';
 import SearchModal from './SearchModal';
+import ProfileModal from './ProfileModal';
+import ImprovedAuthModal from './ImprovedAuthModal';
+import { authService, supabase } from '../lib/supabase';
+import { notificationManager } from './SimpleNotification';
 
 interface HeaderProps {
   onMenuToggle?: () => void;
@@ -13,6 +17,10 @@ export default function Header({ onMenuToggle, isMenuOpen, onSidebarToggle, isSi
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [showProfileModal, setShowProfileModal] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
@@ -20,6 +28,43 @@ export default function Header({ onMenuToggle, isMenuOpen, onSidebarToggle, isSi
     const initialTheme = savedTheme || systemTheme;
     setTheme(initialTheme);
     document.documentElement.classList.toggle('dark', initialTheme === 'dark');
+  }, []);
+
+  // Check authentication status
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const currentUser = await authService.getCurrentUser();
+        setUser(currentUser);
+      } catch (error) {
+        console.error('Auth check failed:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    checkAuth();
+
+    // Listen for auth state changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      setUser(session?.user || null);
+      
+      if (event === 'SIGNED_IN') {
+        notificationManager.success(
+          'Welcome!',
+          'Successfully signed in to KaneDocs.',
+          3000
+        );
+      } else if (event === 'SIGNED_OUT') {
+        notificationManager.info(
+          'Signed Out',
+          'You have been signed out successfully.',
+          3000
+        );
+      }
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
   useEffect(() => {
@@ -46,6 +91,43 @@ export default function Header({ onMenuToggle, isMenuOpen, onSidebarToggle, isSi
     setTheme(newTheme);
     localStorage.setItem('theme', newTheme);
     document.documentElement.classList.toggle('dark', newTheme === 'dark');
+  };
+
+  const handleSignOut = async () => {
+    try {
+      await authService.signOut();
+      setUser(null);
+      setShowUserMenu(false);
+      notificationManager.success(
+        'Signed Out',
+        'You have been signed out successfully.',
+        3000
+      );
+    } catch (error) {
+      notificationManager.error(
+        'Sign Out Failed',
+        'Failed to sign out. Please try again.',
+        4000
+      );
+    }
+  };
+
+  const handleAuthSuccess = () => {
+    setShowAuthModal(false);
+  };
+
+  const handleUserUpdate = (updatedUser: any) => {
+    setUser(updatedUser);
+  };
+
+  const getUserDisplayName = () => {
+    if (!user) return 'Guest';
+    return user.user_metadata?.full_name || user.email?.split('@')[0] || 'User';
+  };
+
+  const getUserAvatar = () => {
+    if (!user) return null;
+    return user.user_metadata?.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(getUserDisplayName())}&size=32`;
   };
 
   return (
@@ -152,48 +234,94 @@ export default function Header({ onMenuToggle, isMenuOpen, onSidebarToggle, isSi
             {/* Divider */}
             <div className="w-px h-6 bg-gray-300 dark:bg-gray-600 mx-1" />
 
-            {/* User menu */}
-            <div className="relative">
-              <button
-                onClick={() => setShowUserMenu(!showUserMenu)}
-                className="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200"
-                aria-label="User menu"
-              >
-                <div className="w-8 h-8 bg-gradient-to-br from-primary-500 to-accent-500 rounded-full flex items-center justify-center">
-                  <User size={16} className="text-white" />
-                </div>
-              </button>
+            {/* User menu or Sign in */}
+            {loading ? (
+              <div className="w-8 h-8 bg-gray-200 dark:bg-gray-700 rounded-full animate-pulse" />
+            ) : user ? (
+              <div className="relative">
+                <button
+                  onClick={() => setShowUserMenu(!showUserMenu)}
+                  className="flex items-center gap-2 p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200"
+                  aria-label="User menu"
+                >
+                  <div className="w-8 h-8 rounded-full overflow-hidden bg-gradient-to-br from-primary-500 to-accent-500 flex items-center justify-center">
+                    {getUserAvatar() ? (
+                      <img
+                        src={getUserAvatar()}
+                        alt={getUserDisplayName()}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <User size={16} className="text-white" />
+                    )}
+                  </div>
+                </button>
 
-              {/* User dropdown */}
-              {showUserMenu && (
-                <div className="absolute top-full right-0 mt-2 w-56 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg py-1 z-50">
-                  <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
-                    <p className="text-sm font-medium text-gray-900 dark:text-white">Demo User</p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">demo@kanedocs.com</p>
+                {/* User dropdown */}
+                {showUserMenu && (
+                  <div className="absolute top-full right-0 mt-2 w-64 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg py-1 z-50">
+                    <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full overflow-hidden bg-gradient-to-br from-primary-500 to-accent-500 flex items-center justify-center">
+                          {getUserAvatar() ? (
+                            <img
+                              src={getUserAvatar()}
+                              alt={getUserDisplayName()}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <User size={20} className="text-white" />
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
+                            {getUserDisplayName()}
+                          </p>
+                          <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                            {user.email}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="py-1">
+                      <button 
+                        onClick={() => {
+                          setShowProfileModal(true);
+                          setShowUserMenu(false);
+                        }}
+                        className="w-full flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                      >
+                        <User size={16} />
+                        Profile Settings
+                      </button>
+                      <button className="w-full flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                        <Settings size={16} />
+                        Preferences
+                      </button>
+                    </div>
+                    
+                    <div className="border-t border-gray-200 dark:border-gray-700 py-1">
+                      <button 
+                        onClick={handleSignOut}
+                        className="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                      >
+                        <LogOut size={16} />
+                        Sign out
+                      </button>
+                    </div>
                   </div>
-                  
-                  <div className="py-1">
-                    <button className="w-full flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                      <User size={16} />
-                      Profile
-                    </button>
-                    <button className="w-full flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                      <Settings size={16} />
-                      Settings
-                    </button>
-                  </div>
-                  
-                  <div className="border-t border-gray-200 dark:border-gray-700 py-1">
-                    <button className="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                      </svg>
-                      Sign out
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
+                )}
+              </div>
+            ) : (
+              <button
+                onClick={() => setShowAuthModal(true)}
+                className="flex items-center gap-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors font-medium"
+              >
+                <User size={16} />
+                Sign In
+              </button>
+            )}
 
             {/* Sidebar toggle hint for desktop */}
             {onSidebarToggle && (
@@ -219,7 +347,23 @@ export default function Header({ onMenuToggle, isMenuOpen, onSidebarToggle, isSi
         </div>
       </header>
 
+      {/* Modals */}
       <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
+      
+      {user && (
+        <ProfileModal
+          isOpen={showProfileModal}
+          onClose={() => setShowProfileModal(false)}
+          user={user}
+          onUserUpdate={handleUserUpdate}
+        />
+      )}
+
+      <ImprovedAuthModal
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+        onSuccess={handleAuthSuccess}
+      />
 
       {/* Click outside to close user menu */}
       {showUserMenu && (

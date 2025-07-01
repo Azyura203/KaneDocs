@@ -6,7 +6,7 @@ const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYm
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-// Authentication service - simplified to only handle auth
+// Enhanced authentication service with profile management
 export const authService = {
   async signUp(email: string, password: string, fullName?: string) {
     const { data, error } = await supabase.auth.signUp({
@@ -14,7 +14,23 @@ export const authService = {
       password,
       options: {
         data: {
-          full_name: fullName || email.split('@')[0]
+          full_name: fullName || email.split('@')[0],
+          avatar_url: `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName || email.split('@')[0])}&size=200&background=random`,
+          bio: '',
+          location: '',
+          website: '',
+          company: '',
+          twitter_username: '',
+          github_username: '',
+          email_notifications: true,
+          marketing_emails: false,
+          security_alerts: true,
+          two_factor_enabled: false,
+          theme: 'system',
+          language: 'en',
+          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+          date_format: 'MM/DD/YYYY',
+          created_at: new Date().toISOString()
         }
       }
     });
@@ -43,10 +59,111 @@ export const authService = {
     return user;
   },
 
-  async updateProfile(updates: { full_name?: string; avatar_url?: string }) {
+  async updateProfile(updates: { 
+    full_name?: string; 
+    avatar_url?: string;
+    bio?: string;
+    location?: string;
+    website?: string;
+    company?: string;
+    twitter_username?: string;
+    github_username?: string;
+    email_notifications?: boolean;
+    marketing_emails?: boolean;
+    security_alerts?: boolean;
+    two_factor_enabled?: boolean;
+    theme?: string;
+    language?: string;
+    timezone?: string;
+    date_format?: string;
+    password?: string;
+    data?: any;
+  }) {
+    // If updating password
+    if (updates.password) {
+      const { data, error } = await supabase.auth.updateUser({
+        password: updates.password
+      });
+      if (error) throw error;
+      return data;
+    }
+
+    // If updating user metadata
+    const updateData = updates.data || updates;
     const { data, error } = await supabase.auth.updateUser({
-      data: updates
+      data: {
+        ...updateData,
+        updated_at: new Date().toISOString()
+      }
     });
+    
+    if (error) throw error;
+    return data;
+  },
+
+  async resetPassword(email: string) {
+    const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`
+    });
+    
+    if (error) throw error;
+    return data;
+  },
+
+  async updatePassword(newPassword: string) {
+    const { data, error } = await supabase.auth.updateUser({
+      password: newPassword
+    });
+    
+    if (error) throw error;
+    return data;
+  },
+
+  // Profile-specific methods
+  async getProfile(userId: string) {
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', userId)
+      .single();
+    
+    if (error && error.code !== 'PGRST116') throw error;
+    return data;
+  },
+
+  async upsertProfile(profile: any) {
+    const { data, error } = await supabase
+      .from('profiles')
+      .upsert(profile)
+      .select()
+      .single();
+    
+    if (error) throw error;
+    return data;
+  },
+
+  // Settings management
+  async getUserSettings(userId: string) {
+    const { data, error } = await supabase
+      .from('user_settings')
+      .select('*')
+      .eq('user_id', userId)
+      .single();
+    
+    if (error && error.code !== 'PGRST116') throw error;
+    return data;
+  },
+
+  async updateUserSettings(userId: string, settings: any) {
+    const { data, error } = await supabase
+      .from('user_settings')
+      .upsert({
+        user_id: userId,
+        ...settings,
+        updated_at: new Date().toISOString()
+      })
+      .select()
+      .single();
     
     if (error) throw error;
     return data;
