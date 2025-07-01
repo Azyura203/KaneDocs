@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Moon, Sun, Github, Menu, X, Command, PanelLeftClose, PanelLeft } from 'lucide-react';
 import SearchModal from './SearchModal';
+import AuthButton from './AuthButton';
 
 interface HeaderProps {
   onMenuToggle?: () => void;
@@ -103,7 +104,7 @@ export default function Header({ onMenuToggle, isMenuOpen, onSidebarToggle, isSi
           </div>
 
           {/* Right side */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
             {/* Mobile search */}
             <button
               onClick={() => setIsSearchOpen(true)}
@@ -134,6 +135,9 @@ export default function Header({ onMenuToggle, isMenuOpen, onSidebarToggle, isSi
             >
               <Github size={18} />
             </a>
+
+            {/* Auth Button */}
+            <AuthButton />
 
             {/* Sidebar toggle hint for desktop */}
             {onSidebarToggle && (
