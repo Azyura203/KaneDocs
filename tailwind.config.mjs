@@ -57,6 +57,7 @@ export default {
         'fade-in': 'fadeIn 0.3s ease-in-out',
         'slide-in': 'slideIn 0.3s ease-out',
         'bounce-subtle': 'bounceSubtle 0.6s ease-in-out',
+        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
       },
       keyframes: {
         fadeIn: {
@@ -75,6 +76,9 @@ export default {
       backgroundImage: {
         'grid-slate-100': 'linear-gradient(to right, rgb(241 245 249) 1px, transparent 1px), linear-gradient(to bottom, rgb(241 245 249) 1px, transparent 1px)',
         'grid-slate-700': 'linear-gradient(to right, rgb(51 65 85) 1px, transparent 1px), linear-gradient(to bottom, rgb(51 65 85) 1px, transparent 1px)',
+      },
+      backdropBlur: {
+        xs: '2px',
       },
     },
   },
