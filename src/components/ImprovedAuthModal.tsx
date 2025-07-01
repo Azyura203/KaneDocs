@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, User, Mail, Lock, Eye, EyeOff, Github, Loader, Sparkles, CheckCircle, Shield, Zap } from 'lucide-react';
+import { X, User, Mail, Lock, Eye, EyeOff, Github, Loader, Sparkles, CheckCircle, Shield, Zap, Star } from 'lucide-react';
 import { authService } from '../lib/supabase';
 import { notificationManager } from './SimpleNotification';
 
@@ -123,22 +123,23 @@ export default function ImprovedAuthModal({ isOpen, onClose, onSuccess }: Improv
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="fixed inset-0 bg-gray-900/50 backdrop-blur-sm" onClick={onClose} />
+      <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm" onClick={onClose} />
       
-      <div className="relative w-full max-w-md bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+      <div className="relative w-full max-w-md bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden">
         {/* Header */}
-        <div className="bg-gradient-to-r from-primary-500 to-accent-500 p-6 text-white">
-          <div className="flex items-center justify-between">
+        <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-6 text-white relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-600/90 to-purple-600/90"></div>
+          <div className="relative flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-white/20 backdrop-blur-sm flex items-center justify-center">
-                <Sparkles className="text-white" size={20} />
+              <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                <Sparkles className="text-white" size={24} />
               </div>
               <div>
-                <h2 className="text-xl font-bold">
+                <h2 className="text-2xl font-bold">
                   {emailSent ? 'Check Your Email' : (isSignUp ? 'Join KaneDocs' : 'Welcome Back')}
                 </h2>
                 <p className="text-white/80 text-sm">
-                  {emailSent ? 'Verification email sent' : (isSignUp ? 'Create your free account' : 'Sign in to your account')}
+                  {emailSent ? 'Verification email sent' : (isSignUp ? 'Create your free account' : 'Sign in to continue')}
                 </p>
               </div>
             </div>
@@ -153,34 +154,40 @@ export default function ImprovedAuthModal({ isOpen, onClose, onSuccess }: Improv
 
         {/* Email Sent Success State */}
         {emailSent ? (
-          <div className="p-6 text-center">
-            <div className="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-              <CheckCircle className="text-green-600" size={32} />
+          <div className="p-8 text-center">
+            <div className="w-20 h-20 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
+              <CheckCircle className="text-green-600" size={40} />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+            <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-3">
               Account Created Successfully!
             </h3>
-            <p className="text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">
-              We've sent a verification email to <strong>{email}</strong>. 
-              Please check your inbox and click the confirmation link to complete your registration and access all KaneDocs features.
+            <p className="text-slate-600 dark:text-slate-400 mb-8 leading-relaxed">
+              We've sent a verification email to <strong className="text-slate-900 dark:text-white">{email}</strong>. 
+              Please check your inbox and click the confirmation link to complete your registration.
             </p>
             
             {/* Benefits reminder */}
-            <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4 mb-6">
-              <h4 className="font-semibold text-blue-900 dark:text-blue-100 mb-2">
-                What's Next?
+            <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4 mb-6">
+              <h4 className="font-semibold text-blue-900 dark:text-blue-100 mb-3">
+                What's waiting for you:
               </h4>
-              <div className="grid grid-cols-1 gap-2 text-sm text-blue-800 dark:text-blue-200">
-                <div className="flex items-center gap-2">
-                  <Shield size={14} />
+              <div className="grid grid-cols-1 gap-3 text-sm text-blue-800 dark:text-blue-200">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 bg-blue-100 dark:bg-blue-800/50 rounded-lg flex items-center justify-center">
+                    <Shield size={14} />
+                  </div>
                   <span>Secure access to all features</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Sparkles size={14} />
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 bg-purple-100 dark:bg-purple-800/50 rounded-lg flex items-center justify-center">
+                    <Sparkles size={14} />
+                  </div>
                   <span>AI-powered documentation</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Github size={14} />
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 bg-green-100 dark:bg-green-800/50 rounded-lg flex items-center justify-center">
+                    <Github size={14} />
+                  </div>
                   <span>Git-like version control</span>
                 </div>
               </div>
@@ -193,18 +200,18 @@ export default function ImprovedAuthModal({ isOpen, onClose, onSuccess }: Improv
                   setIsSignUp(false);
                   resetForm();
                 }}
-                className="w-full px-4 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors font-medium"
+                className="w-full px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl transition-colors font-medium"
               >
                 Sign In Instead
               </button>
               <button
                 onClick={onClose}
-                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors font-medium"
+                className="w-full px-6 py-3 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 rounded-xl transition-colors font-medium"
               >
                 Close
               </button>
             </div>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-4">
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-4">
               Didn't receive the email? Check your spam folder or try signing up again.
             </p>
           </div>
@@ -213,88 +220,94 @@ export default function ImprovedAuthModal({ isOpen, onClose, onSuccess }: Improv
           <>
             {/* Benefits Banner for Sign Up */}
             {isSignUp && (
-              <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 p-4 border-b border-gray-200 dark:border-gray-700">
-                <div className="flex items-center justify-center gap-6 text-xs text-gray-600 dark:text-gray-400">
-                  <div className="flex items-center gap-1">
-                    <Zap size={12} className="text-green-500" />
-                    <span>Free Forever</span>
+              <div className="bg-gradient-to-r from-slate-50 to-blue-50 dark:from-slate-800 dark:to-blue-900/20 p-4 border-b border-slate-200 dark:border-slate-700">
+                <div className="flex items-center justify-center gap-6 text-xs text-slate-600 dark:text-slate-400">
+                  <div className="flex items-center gap-2">
+                    <div className="w-6 h-6 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
+                      <Zap size={10} className="text-green-600" />
+                    </div>
+                    <span className="font-medium">Free Forever</span>
                   </div>
-                  <div className="flex items-center gap-1">
-                    <Shield size={12} className="text-blue-500" />
-                    <span>Secure</span>
+                  <div className="flex items-center gap-2">
+                    <div className="w-6 h-6 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
+                      <Shield size={10} className="text-blue-600" />
+                    </div>
+                    <span className="font-medium">Enterprise Secure</span>
                   </div>
-                  <div className="flex items-center gap-1">
-                    <Sparkles size={12} className="text-purple-500" />
-                    <span>AI-Powered</span>
+                  <div className="flex items-center gap-2">
+                    <div className="w-6 h-6 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center">
+                      <Star size={10} className="text-purple-600" />
+                    </div>
+                    <span className="font-medium">AI-Powered</span>
                   </div>
                 </div>
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="p-6 space-y-5">
+            <form onSubmit={handleSubmit} className="p-8 space-y-6">
               {isSignUp && (
                 <div className="space-y-2">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
                     Full Name *
                   </label>
                   <div className="relative">
-                    <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+                    <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={18} />
                     <input
                       type="text"
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
                       placeholder="Your full name"
-                      className="w-full pl-11 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+                      className="w-full pl-11 pr-4 py-3 border border-slate-300 dark:border-slate-600 rounded-xl bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                       required={isSignUp}
                     />
                   </div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
                     This will be your display name in commits and repositories
                   </p>
                 </div>
               )}
 
               <div className="space-y-2">
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
                   Email Address *
                 </label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={18} />
                   <input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="your@email.com"
-                    className="w-full pl-11 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+                    className="w-full pl-11 pr-4 py-3 border border-slate-300 dark:border-slate-600 rounded-xl bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                     required
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
                   Password *
                 </label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={18} />
                   <input
                     type={showPassword ? 'text' : 'password'}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
-                    className="w-full pl-11 pr-12 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+                    className="w-full pl-11 pr-12 py-3 border border-slate-300 dark:border-slate-600 rounded-xl bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                     required
                     minLength={6}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
                   >
                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
                 </div>
-                <p className="text-xs text-gray-500 dark:text-gray-400">
+                <p className="text-xs text-slate-500 dark:text-slate-400">
                   Must be at least 6 characters long
                 </p>
               </div>
@@ -302,16 +315,16 @@ export default function ImprovedAuthModal({ isOpen, onClose, onSuccess }: Improv
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-gradient-to-r from-primary-600 to-accent-600 hover:from-primary-700 hover:to-accent-700 disabled:from-gray-400 disabled:to-gray-500 text-white rounded-lg font-medium transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-[1.02] disabled:transform-none"
+                className="w-full flex items-center justify-center gap-3 px-6 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 disabled:from-slate-400 disabled:to-slate-500 text-white rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-[1.02] disabled:transform-none"
               >
                 {loading ? (
                   <>
-                    <Loader className="animate-spin" size={18} />
+                    <Loader className="animate-spin" size={20} />
                     {isSignUp ? 'Creating Account...' : 'Signing In...'}
                   </>
                 ) : (
                   <>
-                    <Github size={18} />
+                    <Github size={20} />
                     {isSignUp ? 'Create Free Account' : 'Sign In'}
                   </>
                 )}
@@ -322,25 +335,25 @@ export default function ImprovedAuthModal({ isOpen, onClose, onSuccess }: Improv
 
         {/* Footer */}
         {!emailSent && (
-          <div className="px-6 pb-6 text-center">
-            <p className="text-sm text-gray-600 dark:text-gray-400">
+          <div className="px-8 pb-8 text-center">
+            <p className="text-sm text-slate-600 dark:text-slate-400">
               {isSignUp ? 'Already have an account?' : "Don't have an account?"}{' '}
               <button
                 onClick={toggleMode}
-                className="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium transition-colors hover:underline"
+                className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium transition-colors hover:underline"
               >
                 {isSignUp ? 'Sign In' : 'Sign Up Free'}
               </button>
             </p>
             
             {isSignUp && (
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-3 leading-relaxed">
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-4 leading-relaxed">
                 By creating an account, you agree to our{' '}
-                <a href="/terms" className="text-primary-600 hover:text-primary-700 underline">
+                <a href="/terms" className="text-blue-600 hover:text-blue-700 underline">
                   Terms of Service
                 </a>{' '}
                 and{' '}
-                <a href="/privacy" className="text-primary-600 hover:text-primary-700 underline">
+                <a href="/privacy" className="text-blue-600 hover:text-blue-700 underline">
                   Privacy Policy
                 </a>
               </p>

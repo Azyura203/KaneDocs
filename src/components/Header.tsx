@@ -132,7 +132,7 @@ export default function Header({ onMenuToggle, isMenuOpen, onSidebarToggle, isSi
 
   return (
     <>
-      <header className="sticky top-0 z-40 w-full border-b border-gray-200 dark:border-gray-800 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md">
+      <header className="sticky top-0 z-40 w-full border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md">
         <div className="flex h-16 items-center justify-between px-4 lg:px-6">
           {/* Left side */}
           <div className="flex items-center gap-4">
@@ -140,7 +140,7 @@ export default function Header({ onMenuToggle, isMenuOpen, onSidebarToggle, isSi
             {onMenuToggle && (
               <button
                 onClick={onMenuToggle}
-                className="lg:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                className="lg:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
                 aria-label="Toggle menu"
               >
                 {isMenuOpen ? <X size={20} /> : <Menu size={20} />}
@@ -151,7 +151,7 @@ export default function Header({ onMenuToggle, isMenuOpen, onSidebarToggle, isSi
             {onSidebarToggle && (
               <button
                 onClick={onSidebarToggle}
-                className="hidden lg:flex p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 hover:scale-105"
+                className="hidden lg:flex p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-200 hover:scale-105"
                 aria-label="Toggle sidebar"
                 title={`${isSidebarOpen ? 'Hide' : 'Show'} sidebar (⌘B)`}
               >
@@ -161,10 +161,10 @@ export default function Header({ onMenuToggle, isMenuOpen, onSidebarToggle, isSi
             
             {/* Logo and Title */}
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-500 to-accent-500 flex items-center justify-center transition-transform duration-200 hover:scale-110">
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center transition-transform duration-200 hover:scale-110">
                 <span className="text-white font-bold text-sm">K</span>
               </div>
-              <h1 className="text-xl font-bold bg-gradient-to-r from-primary-600 to-accent-600 bg-clip-text text-transparent">
+              <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                 KaneDocs
               </h1>
             </div>
@@ -174,14 +174,14 @@ export default function Header({ onMenuToggle, isMenuOpen, onSidebarToggle, isSi
           <div className="hidden md:flex flex-1 max-w-md mx-8">
             <button
               onClick={() => setIsSearchOpen(true)}
-              className="w-full flex items-center justify-between px-4 py-2.5 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all text-left group"
+              className="w-full flex items-center justify-between px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 transition-all text-left group"
             >
-              <div className="flex items-center gap-3 text-gray-500 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300">
+              <div className="flex items-center gap-3 text-slate-500 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-300">
                 <Search size={16} />
                 <span className="text-sm">Search documentation...</span>
               </div>
               <div className="flex items-center gap-1">
-                <kbd className="px-2 py-1 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded text-xs text-gray-500 dark:text-gray-400 font-mono">
+                <kbd className="px-2 py-1 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded text-xs text-slate-500 dark:text-slate-400 font-mono">
                   ⌘K
                 </kbd>
               </div>
@@ -193,7 +193,7 @@ export default function Header({ onMenuToggle, isMenuOpen, onSidebarToggle, isSi
             {/* Mobile search */}
             <button
               onClick={() => setIsSearchOpen(true)}
-              className="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 hover:scale-105"
+              className="md:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-200 hover:scale-105"
               aria-label="Search"
             >
               <Search size={18} />
@@ -201,7 +201,7 @@ export default function Header({ onMenuToggle, isMenuOpen, onSidebarToggle, isSi
 
             {/* Notifications */}
             <button
-              className="relative p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 hover:scale-105"
+              className="relative p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-200 hover:scale-105"
               aria-label="Notifications"
               title="Notifications"
             >
@@ -212,7 +212,7 @@ export default function Header({ onMenuToggle, isMenuOpen, onSidebarToggle, isSi
             {/* Theme toggle */}
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 hover:scale-105"
+              className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-200 hover:scale-105"
               aria-label="Toggle theme"
               title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
             >
@@ -224,7 +224,7 @@ export default function Header({ onMenuToggle, isMenuOpen, onSidebarToggle, isSi
               href="https://github.com/yourusername/kanedocs"
               target="_blank"
               rel="noopener noreferrer"
-              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 hover:scale-105"
+              className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-200 hover:scale-105"
               aria-label="GitHub"
               title="View on GitHub"
             >
@@ -232,19 +232,19 @@ export default function Header({ onMenuToggle, isMenuOpen, onSidebarToggle, isSi
             </a>
 
             {/* Divider */}
-            <div className="w-px h-6 bg-gray-300 dark:bg-gray-600 mx-1" />
+            <div className="w-px h-6 bg-slate-300 dark:bg-slate-600 mx-1" />
 
             {/* User menu or Sign in */}
             {loading ? (
-              <div className="w-8 h-8 bg-gray-200 dark:bg-gray-700 rounded-full animate-pulse" />
+              <div className="w-8 h-8 bg-slate-200 dark:bg-slate-700 rounded-full animate-pulse" />
             ) : user ? (
               <div className="relative">
                 <button
                   onClick={() => setShowUserMenu(!showUserMenu)}
-                  className="flex items-center gap-2 p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200"
+                  className="flex items-center gap-2 p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-200"
                   aria-label="User menu"
                 >
-                  <div className="w-8 h-8 rounded-full overflow-hidden bg-gradient-to-br from-primary-500 to-accent-500 flex items-center justify-center">
+                  <div className="w-8 h-8 rounded-full overflow-hidden bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
                     {getUserAvatar() ? (
                       <img
                         src={getUserAvatar()}
@@ -259,10 +259,10 @@ export default function Header({ onMenuToggle, isMenuOpen, onSidebarToggle, isSi
 
                 {/* User dropdown */}
                 {showUserMenu && (
-                  <div className="absolute top-full right-0 mt-2 w-64 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg py-1 z-50">
-                    <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+                  <div className="absolute top-full right-0 mt-2 w-64 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-lg py-1 z-50">
+                    <div className="px-4 py-3 border-b border-slate-200 dark:border-slate-700">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full overflow-hidden bg-gradient-to-br from-primary-500 to-accent-500 flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-full overflow-hidden bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
                           {getUserAvatar() ? (
                             <img
                               src={getUserAvatar()}
@@ -274,10 +274,10 @@ export default function Header({ onMenuToggle, isMenuOpen, onSidebarToggle, isSi
                           )}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
+                          <p className="text-sm font-medium text-slate-900 dark:text-white truncate">
                             {getUserDisplayName()}
                           </p>
-                          <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                          <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
                             {user.email}
                           </p>
                         </div>
@@ -290,18 +290,18 @@ export default function Header({ onMenuToggle, isMenuOpen, onSidebarToggle, isSi
                           setShowProfileModal(true);
                           setShowUserMenu(false);
                         }}
-                        className="w-full flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                        className="w-full flex items-center gap-3 px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
                       >
                         <User size={16} />
                         Profile Settings
                       </button>
-                      <button className="w-full flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                      <button className="w-full flex items-center gap-3 px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
                         <Settings size={16} />
                         Preferences
                       </button>
                     </div>
                     
-                    <div className="border-t border-gray-200 dark:border-gray-700 py-1">
+                    <div className="border-t border-slate-200 dark:border-slate-700 py-1">
                       <button 
                         onClick={handleSignOut}
                         className="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
@@ -316,7 +316,7 @@ export default function Header({ onMenuToggle, isMenuOpen, onSidebarToggle, isSi
             ) : (
               <button
                 onClick={() => setShowAuthModal(true)}
-                className="flex items-center gap-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors font-medium"
+                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-lg transition-colors font-medium"
               >
                 <User size={16} />
                 Sign In
@@ -325,8 +325,8 @@ export default function Header({ onMenuToggle, isMenuOpen, onSidebarToggle, isSi
 
             {/* Sidebar toggle hint for desktop */}
             {onSidebarToggle && (
-              <div className="hidden xl:flex items-center gap-1 ml-2 px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded text-xs text-gray-500 dark:text-gray-400">
-                <kbd className="px-1 py-0.5 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded text-xs">
+              <div className="hidden xl:flex items-center gap-1 ml-2 px-2 py-1 bg-slate-100 dark:bg-slate-800 rounded text-xs text-slate-500 dark:text-slate-400">
+                <kbd className="px-1 py-0.5 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded text-xs">
                   ⌘B
                 </kbd>
                 <span>Toggle</span>
@@ -339,7 +339,7 @@ export default function Header({ onMenuToggle, isMenuOpen, onSidebarToggle, isSi
         <div className="md:hidden px-4 pb-3">
           <button
             onClick={() => setIsSearchOpen(true)}
-            className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400"
+            className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-500 dark:text-slate-400"
           >
             <Search size={16} />
             <span className="text-sm">Search documentation...</span>
