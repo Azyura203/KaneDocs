@@ -1,0 +1,13 @@
+---
+import Layout from '../layouts/Layout.astro';
+import LayoutComponent from '../components/Layout';
+import DocumentationEditor from '../components/DocumentationEditor';
+---
+
+<Layout title="Documentation Editor - KaneDocs">
+  <LayoutComponent client:load>
+    <div class="h-[calc(100vh-4rem)]">
+      <DocumentationEditor client:load />
+    </div>
+  </LayoutComponent>
+</Layout>

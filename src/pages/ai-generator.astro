@@ -1,0 +1,13 @@
+---
+import Layout from '../layouts/Layout.astro';
+import LayoutComponent from '../components/Layout';
+import AIMarkdownGenerator from '../components/AIMarkdownGenerator';
+---
+
+<Layout title="AI Markdown Generator - KaneDocs">
+  <LayoutComponent client:load>
+    <div class="h-[calc(100vh-4rem)]">
+      <AIMarkdownGenerator client:load />
+    </div>
+  </LayoutComponent>
+</Layout>

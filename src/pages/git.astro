@@ -1,0 +1,13 @@
+---
+import Layout from '../layouts/Layout.astro';
+import LayoutComponent from '../components/Layout';
+import GitManager from '../components/GitManager';
+---
+
+<Layout title="Git Manager - KaneDocs">
+  <LayoutComponent client:load>
+    <div class="h-[calc(100vh-4rem)]">
+      <GitManager client:load />
+    </div>
+  </LayoutComponent>
+</Layout>
