@@ -109,204 +109,193 @@ export default function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm" onClick={onClose} />
-      
-      <div className="relative w-full max-w-md bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden">
-        {/* Header */}
-        <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-6 text-white">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
-                <Sparkles className="text-white" size={20} />
+    <div className="fixed inset-0 z-50 overflow-y-auto">
+      <div className="flex min-h-full items-center justify-center p-4 sm:p-6 lg:p-8">
+        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm transition-opacity" onClick={onClose} />
+        
+        <div className="relative w-full max-w-sm bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden transform transition-all">
+          {/* Compact Header */}
+          <div className="bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-4 text-white">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-lg bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                  <Sparkles className="text-white" size={16} />
+                </div>
+                <div>
+                  <h2 className="text-lg font-bold">
+                    {emailSent ? 'Check Email' : (isSignUp ? 'Join KaneDocs' : 'Welcome Back')}
+                  </h2>
+                  <p className="text-white/80 text-xs">
+                    {emailSent ? 'Verification sent' : (isSignUp ? 'Create account' : 'Sign in to continue')}
+                  </p>
+                </div>
               </div>
-              <div>
-                <h2 className="text-xl font-bold">
-                  {emailSent ? 'Check Your Email' : (isSignUp ? 'Join KaneDocs' : 'Welcome Back')}
-                </h2>
-                <p className="text-white/80 text-sm">
-                  {emailSent ? 'Verification email sent' : (isSignUp ? 'Create your developer account' : 'Sign in to your account')}
-                </p>
-              </div>
-            </div>
-            <button
-              onClick={onClose}
-              className="p-2 rounded-lg hover:bg-white/10 transition-colors"
-            >
-              <X size={20} className="text-white" />
-            </button>
-          </div>
-        </div>
-
-        {/* Email Sent Success State */}
-        {emailSent ? (
-          <div className="p-6 text-center">
-            <div className="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-              <CheckCircle className="text-green-600" size={32} />
-            </div>
-            <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">
-              Account Created Successfully!
-            </h3>
-            <p className="text-slate-600 dark:text-slate-400 mb-6 leading-relaxed">
-              We've sent a verification email to <strong>{email}</strong>. 
-              Please check your inbox and click the confirmation link to complete your registration.
-            </p>
-            <div className="space-y-3">
-              <button
-                onClick={() => {
-                  setEmailSent(false);
-                  setIsSignUp(false);
-                  resetForm();
-                }}
-                className="w-full px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl transition-colors font-medium"
-              >
-                Sign In Instead
-              </button>
               <button
                 onClick={onClose}
-                className="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 rounded-xl transition-colors font-medium"
+                className="p-1.5 rounded-lg hover:bg-white/10 transition-colors"
               >
-                Close
+                <X size={18} className="text-white" />
               </button>
             </div>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-4">
-              Didn't receive the email? Check your spam folder or try signing up again.
-            </p>
           </div>
-        ) : (
-          /* Form */
-          <form onSubmit={handleSubmit} className="p-6 space-y-5">
-            {isSignUp && (
+
+          {/* Email Sent Success State */}
+          {emailSent ? (
+            <div className="p-6 text-center">
+              <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-3">
+                <CheckCircle className="text-green-600" size={24} />
+              </div>
+              <h3 className="text-base font-semibold text-slate-900 dark:text-white mb-2">
+                Account Created!
+              </h3>
+              <p className="text-slate-600 dark:text-slate-400 mb-4 text-sm leading-relaxed">
+                Check your email at <strong>{email}</strong> and click the confirmation link.
+              </p>
               <div className="space-y-2">
+                <button
+                  onClick={() => {
+                    setEmailSent(false);
+                    setIsSignUp(false);
+                    resetForm();
+                  }}
+                  className="w-full px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-medium text-sm"
+                >
+                  Sign In Instead
+                </button>
+                <button
+                  onClick={onClose}
+                  className="w-full px-4 py-2.5 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 rounded-lg transition-colors font-medium text-sm"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          ) : (
+            /* Compact Form */
+            <form onSubmit={handleSubmit} className="p-6 space-y-4">
+              {isSignUp && (
+                <div className="space-y-1">
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
+                    Full Name
+                  </label>
+                  <div className="relative">
+                    <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={16} />
+                    <input
+                      type="text"
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
+                      placeholder="Your full name"
+                      className={`w-full pl-10 pr-4 py-2.5 border rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm ${
+                        errors.fullName ? 'border-red-300 dark:border-red-600' : 'border-slate-300 dark:border-slate-600'
+                      }`}
+                      required={isSignUp}
+                    />
+                  </div>
+                  {errors.fullName && (
+                    <p className="text-xs text-red-600 dark:text-red-400 flex items-center gap-1">
+                      <AlertCircle size={12} />
+                      {errors.fullName}
+                    </p>
+                  )}
+                </div>
+              )}
+
+              <div className="space-y-1">
                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
-                  Full Name *
+                  Email Address
                 </label>
                 <div className="relative">
-                  <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={18} />
+                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={16} />
                   <input
-                    type="text"
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                    placeholder="Your full name"
-                    className={`w-full pl-11 pr-4 py-3 border rounded-xl bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${
-                      errors.fullName ? 'border-red-300 dark:border-red-600' : 'border-slate-300 dark:border-slate-600'
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="your@email.com"
+                    className={`w-full pl-10 pr-4 py-2.5 border rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm ${
+                      errors.email ? 'border-red-300 dark:border-red-600' : 'border-slate-300 dark:border-slate-600'
                     }`}
-                    required={isSignUp}
+                    required
                   />
                 </div>
-                {errors.fullName && (
-                  <p className="text-sm text-red-600 dark:text-red-400 flex items-center gap-1">
-                    <AlertCircle size={14} />
-                    {errors.fullName}
+                {errors.email && (
+                  <p className="text-xs text-red-600 dark:text-red-400 flex items-center gap-1">
+                    <AlertCircle size={12} />
+                    {errors.email}
+                  </p>
+                )}
+              </div>
+
+              <div className="space-y-1">
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
+                  Password
+                </label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={16} />
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••"
+                    className={`w-full pl-10 pr-10 py-2.5 border rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm ${
+                      errors.password ? 'border-red-300 dark:border-red-600' : 'border-slate-300 dark:border-slate-600'
+                    }`}
+                    required
+                    minLength={6}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
+                  >
+                    {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
+                </div>
+                {errors.password && (
+                  <p className="text-xs text-red-600 dark:text-red-400 flex items-center gap-1">
+                    <AlertCircle size={12} />
+                    {errors.password}
                   </p>
                 )}
                 <p className="text-xs text-slate-500 dark:text-slate-400">
-                  This will be your display name in commits and repositories
+                  Must be at least 6 characters
                 </p>
               </div>
-            )}
 
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
-                Email Address *
-              </label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={18} />
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="your@email.com"
-                  className={`w-full pl-11 pr-4 py-3 border rounded-xl bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${
-                    errors.email ? 'border-red-300 dark:border-red-600' : 'border-slate-300 dark:border-slate-600'
-                  }`}
-                  required
-                />
-              </div>
-              {errors.email && (
-                <p className="text-sm text-red-600 dark:text-red-400 flex items-center gap-1">
-                  <AlertCircle size={14} />
-                  {errors.email}
-                </p>
-              )}
-            </div>
-
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
-                Password *
-              </label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={18} />
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  className={`w-full pl-11 pr-12 py-3 border rounded-xl bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${
-                    errors.password ? 'border-red-300 dark:border-red-600' : 'border-slate-300 dark:border-slate-600'
-                  }`}
-                  required
-                  minLength={6}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
-                >
-                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                </button>
-              </div>
-              {errors.password && (
-                <p className="text-sm text-red-600 dark:text-red-400 flex items-center gap-1">
-                  <AlertCircle size={14} />
-                  {errors.password}
-                </p>
-              )}
-              <p className="text-xs text-slate-500 dark:text-slate-400">
-                Must be at least 6 characters long
-              </p>
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 disabled:from-slate-400 disabled:to-slate-500 text-white rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-[1.02] disabled:transform-none"
-            >
-              {loading ? (
-                <>
-                  <Loader className="animate-spin" size={18} />
-                  {isSignUp ? 'Creating Account...' : 'Signing In...'}
-                </>
-              ) : (
-                <>
-                  <Github size={18} />
-                  {isSignUp ? 'Create Account' : 'Sign In'}
-                </>
-              )}
-            </button>
-          </form>
-        )}
-
-        {/* Footer */}
-        {!emailSent && (
-          <div className="px-6 pb-6 text-center">
-            <p className="text-sm text-slate-600 dark:text-slate-400">
-              {isSignUp ? 'Already have an account?' : "Don't have an account?"}{' '}
               <button
-                onClick={toggleMode}
-                className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium transition-colors hover:underline"
+                type="submit"
+                disabled={loading}
+                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 disabled:from-slate-400 disabled:to-slate-500 text-white rounded-lg font-medium transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-[1.02] disabled:transform-none text-sm"
               >
-                {isSignUp ? 'Sign In' : 'Sign Up'}
+                {loading ? (
+                  <>
+                    <Loader className="animate-spin" size={16} />
+                    {isSignUp ? 'Creating...' : 'Signing In...'}
+                  </>
+                ) : (
+                  <>
+                    <Github size={16} />
+                    {isSignUp ? 'Create Account' : 'Sign In'}
+                  </>
+                )}
               </button>
-            </p>
-            
-            {isSignUp && (
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-3 leading-relaxed">
-                By creating an account, you agree to our Terms of Service and Privacy Policy.
+            </form>
+          )}
+
+          {/* Compact Footer */}
+          {!emailSent && (
+            <div className="px-6 pb-6 text-center">
+              <p className="text-sm text-slate-600 dark:text-slate-400">
+                {isSignUp ? 'Have an account?' : "Don't have an account?"}{' '}
+                <button
+                  onClick={toggleMode}
+                  className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium transition-colors hover:underline"
+                >
+                  {isSignUp ? 'Sign In' : 'Sign Up'}
+                </button>
               </p>
-            )}
-          </div>
-        )}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
