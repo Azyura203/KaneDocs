@@ -5,7 +5,7 @@ import ProtectedRoute from '../components/ProtectedRoute';
 import AIMarkdownGenerator from '../components/AIMarkdownGenerator';
 ---
 
-<Layout title="AI Markdown Generator - KaneDocs">
+<Layout title="AI Generator - KODEX">
   <LayoutComponent client:load>
     <ProtectedRoute client:load>
       <div class="h-[calc(100vh-4rem)]">
@@ -14,3 +14,46 @@ import AIMarkdownGenerator from '../components/AIMarkdownGenerator';
     </ProtectedRoute>
   </LayoutComponent>
 </Layout>
+
+<style>
+  /* Ensure the AI generator takes full height */
+  :global(.ai-generator-container) {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Smooth transitions */
+  :global(.transition-all) {
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 200ms;
+  }
+  
+  /* Enhanced scrollbars */
+  :global(::-webkit-scrollbar) {
+    width: 6px;
+    height: 6px;
+  }
+  
+  :global(::-webkit-scrollbar-track) {
+    background: transparent;
+  }
+  
+  :global(::-webkit-scrollbar-thumb) {
+    background: rgba(203, 213, 225, 0.8);
+    border-radius: 3px;
+  }
+  
+  :global(.dark ::-webkit-scrollbar-thumb) {
+    background: rgba(71, 85, 105, 0.8);
+  }
+  
+  :global(::-webkit-scrollbar-thumb:hover) {
+    background: rgba(148, 163, 184, 0.8);
+  }
+  
+  :global(.dark ::-webkit-scrollbar-thumb:hover) {
+    background: rgba(100, 116, 139, 0.8);
+  }
+</style>

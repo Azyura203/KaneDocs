@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import { Sparkles, Send, Loader, Copy, Check, Download, Wand2, FileText, Code, Book, Zap } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Sparkles, Send, Loader, Copy, Check, Download, Wand2, FileText, Code, Book, Zap, X, ChevronRight, ChevronDown, Clipboard, ClipboardCheck } from 'lucide-react';
 import MarkdownRenderer from './MarkdownRenderer';
+import { clsx } from 'clsx';
 
 interface AIMarkdownGeneratorProps {
   onGenerated?: (markdown: string) => void;
@@ -11,6 +12,7 @@ interface PromptTemplate {
   icon: React.ReactNode;
   description: string;
   prompt: string;
+  category: 'api' | 'guide' | 'readme' | 'tutorial';
 }
 
 const promptTemplates: PromptTemplate[] = [
@@ -18,25 +20,57 @@ const promptTemplates: PromptTemplate[] = [
     title: 'API Documentation',
     icon: <Code size={16} />,
     description: 'Generate comprehensive API documentation',
-    prompt: 'Create detailed API documentation for a REST API including endpoints, request/response examples, authentication, and error handling.'
+    prompt: 'Create detailed API documentation for a REST API including endpoints, request/response examples, authentication, and error handling.',
+    category: 'api'
   },
   {
     title: 'Getting Started Guide',
     icon: <Zap size={16} />,
     description: 'Create installation and setup instructions',
-    prompt: 'Write a comprehensive getting started guide including installation, configuration, and first steps for a new software project.'
+    prompt: 'Write a comprehensive getting started guide including installation, configuration, and first steps for a new software project.',
+    category: 'guide'
   },
   {
     title: 'README Template',
     icon: <FileText size={16} />,
     description: 'Generate a professional README file',
-    prompt: 'Create a professional README.md file with project description, features, installation, usage examples, and contribution guidelines.'
+    prompt: 'Create a professional README.md file with project description, features, installation, usage examples, and contribution guidelines.',
+    category: 'readme'
   },
   {
     title: 'Tutorial Guide',
     icon: <Book size={16} />,
     description: 'Step-by-step tutorial documentation',
-    prompt: 'Write a detailed step-by-step tutorial guide with code examples, explanations, and best practices for learning a new technology.'
+    prompt: 'Write a detailed step-by-step tutorial guide with code examples, explanations, and best practices for learning a new technology.',
+    category: 'tutorial'
+  },
+  {
+    title: 'API Reference',
+    icon: <Code size={16} />,
+    description: 'Detailed API method reference',
+    prompt: 'Create a comprehensive API reference documentation with detailed method descriptions, parameters, return values, and examples.',
+    category: 'api'
+  },
+  {
+    title: 'User Guide',
+    icon: <Book size={16} />,
+    description: 'End-user focused documentation',
+    prompt: 'Write a user guide that explains how to use the software from an end-user perspective, with screenshots, examples, and troubleshooting.',
+    category: 'guide'
+  },
+  {
+    title: 'Architecture Overview',
+    icon: <FileText size={16} />,
+    description: 'System architecture documentation',
+    prompt: 'Create a technical architecture overview document explaining the system components, data flow, and design decisions.',
+    category: 'readme'
+  },
+  {
+    title: 'Code Walkthrough',
+    icon: <Code size={16} />,
+    description: 'Detailed code explanation',
+    prompt: 'Write a detailed code walkthrough that explains the implementation details, patterns used, and reasoning behind key decisions.',
+    category: 'tutorial'
   }
 ];
 
@@ -45,19 +79,70 @@ export default function AIMarkdownGenerator({ onGenerated }: AIMarkdownGenerator
   const [generatedMarkdown, setGeneratedMarkdown] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const [showTemplates, setShowTemplates] = useState(true);
+  const [generationProgress, setGenerationProgress] = useState(0);
+  const [recentPrompts, setRecentPrompts] = useState<string[]>([]);
+  const [showRecentPrompts, setShowRecentPrompts] = useState(false);
+  const [selectedTemplate, setSelectedTemplate] = useState<PromptTemplate | null>(null);
+  const promptInputRef = useRef<HTMLTextAreaElement>(null);
+  const progressIntervalRef = useRef<number | null>(null);
+
+  // Load recent prompts from localStorage
+  useEffect(() => {
+    const savedPrompts = localStorage.getItem('kodex-recent-prompts');
+    if (savedPrompts) {
+      try {
+        setRecentPrompts(JSON.parse(savedPrompts).slice(0, 5));
+      } catch (e) {
+        console.error('Failed to parse recent prompts:', e);
+      }
+    }
+  }, []);
+
+  // Save recent prompts to localStorage
+  const saveRecentPrompt = (newPrompt: string) => {
+    if (!newPrompt.trim()) return;
+    
+    const updatedPrompts = [
+      newPrompt,
+      ...recentPrompts.filter(p => p !== newPrompt)
+    ].slice(0, 5);
+    
+    setRecentPrompts(updatedPrompts);
+    localStorage.setItem('kodex-recent-prompts', JSON.stringify(updatedPrompts));
+  };
 
   const generateMarkdown = async () => {
     if (!prompt.trim()) return;
 
     setIsGenerating(true);
+    setGenerationProgress(0);
+    saveRecentPrompt(prompt);
     
     try {
-      // Simulate AI generation with a realistic delay
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Simulate AI generation with a realistic delay and progress
+      const startTime = Date.now();
+      const totalTime = Math.random() * 1000 + 1500; // 1.5-2.5 seconds
+      
+      // Update progress every 100ms
+      if (progressIntervalRef.current) {
+        window.clearInterval(progressIntervalRef.current);
+      }
+      
+      progressIntervalRef.current = window.setInterval(() => {
+        const elapsed = Date.now() - startTime;
+        const progress = Math.min(elapsed / totalTime, 0.95); // Cap at 95% until complete
+        setGenerationProgress(progress);
+      }, 100);
+      
+      // Wait for the total time
+      await new Promise(resolve => setTimeout(resolve, totalTime));
       
       // Generate comprehensive markdown based on the prompt
       const markdown = generateMockMarkdown(prompt);
       setGeneratedMarkdown(markdown);
+      setGenerationProgress(1); // 100%
       
       if (onGenerated) {
         onGenerated(markdown);
@@ -66,6 +151,10 @@ export default function AIMarkdownGenerator({ onGenerated }: AIMarkdownGenerator
       console.error('Error generating markdown:', error);
     } finally {
       setIsGenerating(false);
+      if (progressIntervalRef.current) {
+        window.clearInterval(progressIntervalRef.current);
+        progressIntervalRef.current = null;
+      }
     }
   };
 
@@ -830,13 +919,60 @@ For questions and support, please visit our [documentation](https://docs.example
 
   const useTemplate = (template: PromptTemplate) => {
     setPrompt(template.prompt);
+    setSelectedTemplate(template);
+    if (promptInputRef.current) {
+      promptInputRef.current.focus();
+    }
   };
+
+  const clearPrompt = () => {
+    setPrompt('');
+    setSelectedTemplate(null);
+    if (promptInputRef.current) {
+      promptInputRef.current.focus();
+    }
+  };
+
+  const filteredTemplates = activeCategory 
+    ? promptTemplates.filter(t => t.category === activeCategory)
+    : promptTemplates;
+
+  const categories = [
+    { id: 'api', label: 'API Docs', icon: <Code size={14} /> },
+    { id: 'guide', label: 'Guides', icon: <Book size={14} /> },
+    { id: 'readme', label: 'READMEs', icon: <FileText size={14} /> },
+    { id: 'tutorial', label: 'Tutorials', icon: <Zap size={14} /> }
+  ];
+
+  // Handle keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Ctrl/Cmd + Enter to generate
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter' && prompt.trim()) {
+        e.preventDefault();
+        generateMarkdown();
+      }
+      
+      // Escape to clear
+      if (e.key === 'Escape' && !isGenerating) {
+        e.preventDefault();
+        if (generatedMarkdown) {
+          setGeneratedMarkdown('');
+        } else {
+          clearPrompt();
+        }
+      }
+    };
+    
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [prompt, isGenerating, generatedMarkdown]);
 
   return (
     <div className="h-full flex flex-col bg-white dark:bg-slate-900">
       {/* Header */}
       <div className="border-b border-slate-200 dark:border-slate-700 bg-gradient-to-r from-blue-50 via-purple-50 to-pink-50 dark:from-blue-900/20 dark:via-purple-900/20 dark:to-pink-900/20">
-        <div className="p-8">
+        <div className="p-6">
           <div className="flex items-center gap-3 mb-6">
             <div className="p-3 bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 rounded-xl shadow-lg">
               <Sparkles className="text-white" size={24} />
@@ -851,43 +987,117 @@ For questions and support, please visit our [documentation](https://docs.example
             </div>
           </div>
 
-          {/* Quick Templates */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-            {promptTemplates.map((template, index) => (
-              <button
-                key={index}
-                onClick={() => useTemplate(template)}
-                className="p-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl hover:border-blue-300 dark:hover:border-blue-600 transition-all duration-200 text-left group hover:shadow-lg hover:-translate-y-1"
-              >
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="text-blue-600 group-hover:text-blue-700 transition-colors">
-                    {template.icon}
-                  </div>
-                  <h3 className="font-semibold text-slate-900 dark:text-white">
-                    {template.title}
-                  </h3>
-                </div>
-                <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-                  {template.description}
-                </p>
-              </button>
-            ))}
-          </div>
+          {/* Template Categories */}
+          {showTemplates && (
+            <div className="mb-6">
+              <div className="flex items-center justify-between mb-3">
+                <h2 className="text-lg font-semibold text-slate-900 dark:text-white font-display flex items-center gap-2">
+                  <Wand2 size={18} className="text-purple-600" />
+                  Quick Templates
+                </h2>
+                <button 
+                  onClick={() => setShowTemplates(!showTemplates)}
+                  className="text-sm text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300 flex items-center gap-1"
+                >
+                  {showTemplates ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+                  {showTemplates ? 'Hide' : 'Show'} Templates
+                </button>
+              </div>
+              
+              <div className="flex flex-wrap gap-2 mb-4">
+                <button
+                  onClick={() => setActiveCategory(null)}
+                  className={clsx(
+                    "px-3 py-1.5 text-sm rounded-lg transition-all duration-200 font-medium",
+                    activeCategory === null
+                      ? "bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white shadow-md"
+                      : "bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-blue-300 dark:hover:border-blue-600"
+                  )}
+                >
+                  All
+                </button>
+                
+                {categories.map(category => (
+                  <button
+                    key={category.id}
+                    onClick={() => setActiveCategory(category.id)}
+                    className={clsx(
+                      "px-3 py-1.5 text-sm rounded-lg transition-all duration-200 font-medium flex items-center gap-1.5",
+                      activeCategory === category.id
+                        ? "bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white shadow-md"
+                        : "bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-blue-300 dark:hover:border-blue-600"
+                    )}
+                  >
+                    {category.icon}
+                    {category.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Template Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                {filteredTemplates.map((template, index) => (
+                  <button
+                    key={index}
+                    onClick={() => useTemplate(template)}
+                    className={clsx(
+                      "p-4 bg-white dark:bg-slate-800 border rounded-xl transition-all duration-200 text-left group hover:shadow-lg hover:-translate-y-1",
+                      selectedTemplate?.title === template.title
+                        ? "border-blue-400 dark:border-blue-500 shadow-md bg-blue-50 dark:bg-blue-900/20"
+                        : "border-slate-200 dark:border-slate-700 hover:border-blue-300 dark:hover:border-blue-600"
+                    )}
+                  >
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className={clsx(
+                        "p-2 rounded-lg transition-colors",
+                        template.category === 'api' && "bg-blue-100 dark:bg-blue-900/30 text-blue-600",
+                        template.category === 'guide' && "bg-green-100 dark:bg-green-900/30 text-green-600",
+                        template.category === 'readme' && "bg-purple-100 dark:bg-purple-900/30 text-purple-600",
+                        template.category === 'tutorial' && "bg-amber-100 dark:bg-amber-900/30 text-amber-600"
+                      )}>
+                        {template.icon}
+                      </div>
+                      <h3 className="font-semibold text-slate-900 dark:text-white">
+                        {template.title}
+                      </h3>
+                    </div>
+                    <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed line-clamp-2">
+                      {template.description}
+                    </p>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Enhanced Input Area */}
           <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-lg">
             <div className="p-6">
-              <div className="flex items-center gap-3 mb-4">
-                <Sparkles className="text-blue-600" size={20} />
-                <h3 className="text-lg font-semibold text-slate-900 dark:text-white font-display">
-                  Describe your documentation needs
-                </h3>
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <Sparkles className="text-blue-600" size={18} />
+                  <h3 className="text-lg font-semibold text-slate-900 dark:text-white font-display">
+                    {selectedTemplate ? `Customize: ${selectedTemplate.title}` : "Describe your documentation needs"}
+                  </h3>
+                </div>
+                
+                {selectedTemplate && (
+                  <button
+                    onClick={clearPrompt}
+                    className="text-sm text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300 p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700"
+                    title="Clear template"
+                  >
+                    <X size={16} />
+                  </button>
+                )}
               </div>
               
-              <textarea
-                value={prompt}
-                onChange={(e) => setPrompt(e.target.value)}
-                placeholder="Tell me what kind of documentation you want to generate...
+              <div className="relative">
+                <textarea
+                  ref={promptInputRef}
+                  value={prompt}
+                  onChange={(e) => setPrompt(e.target.value)}
+                  placeholder="Tell me what kind of documentation you want to generate...
 
 Examples:
 • 'Create comprehensive API documentation for a user management system with authentication'
@@ -896,36 +1106,88 @@ Examples:
 • 'Create step-by-step tutorial documentation for building a REST API with Node.js'
 
 Be as specific as possible - the more details you provide, the better the generated documentation will be!"
-                className="w-full h-40 p-4 border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-base leading-relaxed"
-              />
+                  className="w-full h-32 p-4 border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-base leading-relaxed"
+                />
+                
+                {/* Recent prompts dropdown */}
+                {showRecentPrompts && recentPrompts.length > 0 && (
+                  <div className="absolute z-10 mt-1 w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                    {recentPrompts.map((recentPrompt, index) => (
+                      <button
+                        key={index}
+                        onClick={() => {
+                          setPrompt(recentPrompt);
+                          setShowRecentPrompts(false);
+                        }}
+                        className="w-full text-left p-3 hover:bg-slate-100 dark:hover:bg-slate-700 border-b border-slate-200 dark:border-slate-700 last:border-0"
+                      >
+                        <p className="text-sm text-slate-900 dark:text-white line-clamp-2">{recentPrompt}</p>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
               
               <div className="flex items-center justify-between mt-4">
-                <div className="text-sm text-slate-500 dark:text-slate-400">
-                  💡 <strong>Pro tip:</strong> Include specific technologies, features, or use cases for better results
+                <div className="flex items-center gap-2">
+                  {recentPrompts.length > 0 && (
+                    <button
+                      onClick={() => setShowRecentPrompts(!showRecentPrompts)}
+                      className="text-sm text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300 flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700"
+                    >
+                      <Clock size={14} />
+                      Recent
+                      {showRecentPrompts ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+                    </button>
+                  )}
+                  
+                  <div className="text-xs text-slate-500 dark:text-slate-400 hidden sm:block">
+                    <kbd className="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded text-slate-500 dark:text-slate-400 font-mono">Ctrl</kbd>
+                    <span className="mx-1">+</span>
+                    <kbd className="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded text-slate-500 dark:text-slate-400 font-mono">Enter</kbd>
+                    <span className="ml-1">to generate</span>
+                  </div>
                 </div>
                 
                 <button
                   onClick={generateMarkdown}
                   disabled={!prompt.trim() || isGenerating}
-                  className={`px-8 py-3 rounded-lg font-semibold transition-all duration-200 flex items-center gap-3 text-lg ${
+                  className={clsx(
+                    "px-6 py-3 rounded-lg font-semibold transition-all duration-200 flex items-center gap-2",
                     !prompt.trim() || isGenerating
-                      ? 'bg-slate-300 dark:bg-slate-600 text-slate-500 dark:text-slate-400 cursor-not-allowed'
-                      : 'bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 hover:from-blue-700 hover:via-purple-700 hover:to-pink-700 text-white shadow-lg hover:shadow-xl transform hover:scale-105'
-                  }`}
+                      ? "bg-slate-300 dark:bg-slate-600 text-slate-500 dark:text-slate-400 cursor-not-allowed"
+                      : "bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 hover:from-blue-700 hover:via-purple-700 hover:to-pink-700 text-white shadow-lg hover:shadow-xl transform hover:scale-105"
+                  )}
                 >
                   {isGenerating ? (
                     <>
-                      <Loader className="animate-spin" size={20} />
+                      <Loader className="animate-spin" size={18} />
                       Generating...
                     </>
                   ) : (
                     <>
-                      <Wand2 size={20} />
-                      Generate Documentation
+                      <Wand2 size={18} />
+                      Generate
                     </>
                   )}
                 </button>
               </div>
+              
+              {/* Generation Progress Bar */}
+              {isGenerating && (
+                <div className="mt-4">
+                  <div className="h-1.5 w-full bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                    <div 
+                      className="h-full bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 rounded-full transition-all duration-300"
+                      style={{ width: `${generationProgress * 100}%` }}
+                    />
+                  </div>
+                  <div className="flex justify-between mt-1 text-xs text-slate-500 dark:text-slate-400">
+                    <span>Generating documentation...</span>
+                    <span>{Math.round(generationProgress * 100)}%</span>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -938,17 +1200,17 @@ Be as specific as possible - the more details you provide, the better the genera
             {/* Generated Markdown Display */}
             <div className="flex-1 flex flex-col">
               {/* Toolbar */}
-              <div className="flex items-center justify-between p-6 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800">
+              <div className="flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800">
                 <h2 className="text-xl font-semibold text-slate-900 dark:text-white flex items-center gap-3 font-display">
                   <FileText size={20} />
                   Generated Documentation
                 </h2>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2">
                   <button
                     onClick={copyToClipboard}
                     className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-600 transition-colors font-medium"
                   >
-                    {copied ? <Check size={18} /> : <Copy size={18} />}
+                    {copied ? <ClipboardCheck size={18} /> : <Clipboard size={18} />}
                     {copied ? 'Copied!' : 'Copy'}
                   </button>
                   <button
@@ -961,10 +1223,35 @@ Be as specific as possible - the more details you provide, the better the genera
                 </div>
               </div>
 
-              {/* Preview */}
-              <div className="flex-1 overflow-y-auto p-8 scrollbar-thin scrollbar-thumb-slate-300 dark:scrollbar-thumb-slate-600">
+              {/* Preview with smooth scrolling */}
+              <div className="flex-1 overflow-y-auto p-8 scrollbar-thin scrollbar-thumb-slate-300 dark:scrollbar-thumb-slate-600 animate-fade-in">
                 <div className="max-w-4xl mx-auto">
                   <MarkdownRenderer content={generatedMarkdown} />
+                </div>
+              </div>
+              
+              {/* Bottom Actions */}
+              <div className="p-4 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800">
+                <div className="flex items-center justify-between">
+                  <button
+                    onClick={() => setGeneratedMarkdown('')}
+                    className="text-sm text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300 flex items-center gap-1 px-3 py-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700"
+                  >
+                    <X size={14} />
+                    Clear & Start Over
+                  </button>
+                  
+                  <button
+                    onClick={() => {
+                      if (onGenerated) {
+                        onGenerated(generatedMarkdown);
+                      }
+                    }}
+                    className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white rounded-lg transition-colors font-medium shadow-md"
+                  >
+                    <Check size={18} />
+                    Use This Document
+                  </button>
                 </div>
               </div>
             </div>
