@@ -47,7 +47,7 @@ export default function Header({ onMenuToggle, isMenuOpen, onSidebarToggle, isSi
 
   return (
     <>
-      <header className="sticky top-0 z-40 w-full border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md">
+      <header className="sticky top-0 z-40 w-full border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md transition-all duration-200">
         <div className="flex h-16 items-center justify-between px-4 lg:px-6">
           {/* Left side */}
           <div className="flex items-center gap-4">
@@ -55,10 +55,14 @@ export default function Header({ onMenuToggle, isMenuOpen, onSidebarToggle, isSi
             {onMenuToggle && (
               <button
                 onClick={onMenuToggle}
-                className="lg:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                className="lg:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-200 hover:scale-105"
                 aria-label="Toggle menu"
               >
-                {isMenuOpen ? <X size={20} /> : <Menu size={20} />}
+                <div className="relative w-5 h-5">
+                  <span className={`absolute block h-0.5 w-5 bg-current transform transition-all duration-300 ${isMenuOpen ? 'rotate-45 translate-y-2' : 'translate-y-0'}`} />
+                  <span className={`absolute block h-0.5 w-5 bg-current transform transition-all duration-300 translate-y-2 ${isMenuOpen ? 'opacity-0' : 'opacity-100'}`} />
+                  <span className={`absolute block h-0.5 w-5 bg-current transform transition-all duration-300 ${isMenuOpen ? '-rotate-45 translate-y-2' : 'translate-y-4'}`} />
+                </div>
               </button>
             )}
 
@@ -66,18 +70,23 @@ export default function Header({ onMenuToggle, isMenuOpen, onSidebarToggle, isSi
             {onSidebarToggle && (
               <button
                 onClick={onSidebarToggle}
-                className="hidden lg:flex p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-200 hover:scale-105"
+                className="hidden lg:flex p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-200 hover:scale-105 group"
                 aria-label="Toggle sidebar"
                 title={`${isSidebarOpen ? 'Hide' : 'Show'} sidebar (⌘B)`}
               >
-                {isSidebarOpen ? <PanelLeftClose size={20} /> : <PanelLeft size={20} />}
+                <div className="transition-transform duration-200 group-hover:scale-110">
+                  {isSidebarOpen ? <PanelLeftClose size={20} /> : <PanelLeft size={20} />}
+                </div>
               </button>
             )}
             
-            {/* Logo and Title */}
+            {/* Logo and Title with enhanced styling */}
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center transition-transform duration-200 hover:scale-110">
-                <span className="text-white font-bold text-sm">K</span>
+              <div className="relative">
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center transition-all duration-200 hover:scale-110 hover:shadow-lg">
+                  <span className="text-white font-bold text-sm">K</span>
+                </div>
+                <div className="absolute -inset-1 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg blur opacity-25 group-hover:opacity-40 transition-opacity duration-200" />
               </div>
               <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                 KaneDocs
@@ -89,14 +98,14 @@ export default function Header({ onMenuToggle, isMenuOpen, onSidebarToggle, isSi
           <div className="hidden md:flex flex-1 max-w-md mx-8">
             <button
               onClick={() => setIsSearchOpen(true)}
-              className="w-full flex items-center justify-between px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 transition-all text-left group"
+              className="w-full flex items-center justify-between px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 transition-all duration-200 text-left group hover:shadow-md"
             >
               <div className="flex items-center gap-3 text-slate-500 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-300">
-                <Search size={16} />
+                <Search size={16} className="transition-transform duration-200 group-hover:scale-110" />
                 <span className="text-sm">Search documentation...</span>
               </div>
               <div className="flex items-center gap-1">
-                <kbd className="px-2 py-1 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded text-xs text-slate-500 dark:text-slate-400 font-mono">
+                <kbd className="px-2 py-1 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded text-xs text-slate-500 dark:text-slate-400 font-mono shadow-sm">
                   ⌘K
                 </kbd>
               </div>
@@ -114,14 +123,31 @@ export default function Header({ onMenuToggle, isMenuOpen, onSidebarToggle, isSi
               <Search size={18} />
             </button>
             
-            {/* Theme toggle */}
+            {/* Theme toggle with enhanced animation */}
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-200 hover:scale-105"
+              className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-200 hover:scale-105 group"
               aria-label="Toggle theme"
               title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
             >
-              {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
+              <div className="relative w-5 h-5">
+                <Moon 
+                  size={18} 
+                  className={`absolute inset-0 transition-all duration-300 ${
+                    theme === 'light' 
+                      ? 'opacity-100 rotate-0 scale-100' 
+                      : 'opacity-0 rotate-90 scale-0'
+                  }`} 
+                />
+                <Sun 
+                  size={18} 
+                  className={`absolute inset-0 transition-all duration-300 ${
+                    theme === 'dark' 
+                      ? 'opacity-100 rotate-0 scale-100' 
+                      : 'opacity-0 -rotate-90 scale-0'
+                  }`} 
+                />
+              </div>
             </button>
             
             {/* GitHub link */}
@@ -129,11 +155,11 @@ export default function Header({ onMenuToggle, isMenuOpen, onSidebarToggle, isSi
               href="https://github.com/yourusername/kanedocs"
               target="_blank"
               rel="noopener noreferrer"
-              className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-200 hover:scale-105"
+              className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-200 hover:scale-105 group"
               aria-label="GitHub"
               title="View on GitHub"
             >
-              <Github size={18} />
+              <Github size={18} className="transition-transform duration-200 group-hover:scale-110" />
             </a>
 
             {/* Auth Button */}
@@ -141,7 +167,7 @@ export default function Header({ onMenuToggle, isMenuOpen, onSidebarToggle, isSi
 
             {/* Sidebar toggle hint for desktop */}
             {onSidebarToggle && (
-              <div className="hidden xl:flex items-center gap-1 ml-2 px-2 py-1 bg-slate-100 dark:bg-slate-800 rounded text-xs text-slate-500 dark:text-slate-400">
+              <div className="hidden xl:flex items-center gap-1 ml-2 px-2 py-1 bg-slate-100 dark:bg-slate-800 rounded text-xs text-slate-500 dark:text-slate-400 transition-all duration-200 hover:bg-slate-200 dark:hover:bg-slate-700">
                 <kbd className="px-1 py-0.5 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded text-xs">
                   ⌘B
                 </kbd>
@@ -155,7 +181,7 @@ export default function Header({ onMenuToggle, isMenuOpen, onSidebarToggle, isSi
         <div className="md:hidden px-4 pb-3">
           <button
             onClick={() => setIsSearchOpen(true)}
-            className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-500 dark:text-slate-400"
+            className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 transition-all duration-200"
           >
             <Search size={16} />
             <span className="text-sm">Search documentation...</span>

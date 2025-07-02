@@ -13,6 +13,7 @@ export default function Layout({ children, showSidebar = true }: LayoutProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(false);
 
   // Ensure component is mounted before rendering
   useEffect(() => {
@@ -57,6 +58,29 @@ export default function Layout({ children, showSidebar = true }: LayoutProps) {
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [mounted]);
 
+  // Handle page transitions
+  useEffect(() => {
+    const handleTransitionStart = () => setIsTransitioning(true);
+    const handleTransitionEnd = () => setIsTransitioning(false);
+
+    // Listen for navigation events
+    window.addEventListener('beforeunload', handleTransitionStart);
+    window.addEventListener('load', handleTransitionEnd);
+    
+    // Custom navigation events
+    window.addEventListener('navigation', handleTransitionStart);
+    
+    // End transition after a delay
+    const transitionTimer = setTimeout(handleTransitionEnd, 300);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleTransitionStart);
+      window.removeEventListener('load', handleTransitionEnd);
+      window.removeEventListener('navigation', handleTransitionStart);
+      clearTimeout(transitionTimer);
+    };
+  }, []);
+
   const toggleSidebar = () => {
     setIsSidebarOpen(prev => !prev);
   };
@@ -73,13 +97,16 @@ export default function Layout({ children, showSidebar = true }: LayoutProps) {
   if (!mounted) {
     return (
       <div className="min-h-screen bg-white dark:bg-gray-900 flex items-center justify-center">
-        <div className="text-gray-600 dark:text-gray-400">Loading...</div>
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 animate-spin" />
+          <span className="text-gray-600 dark:text-gray-400 font-medium">Loading KaneDocs...</span>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900">
+    <div className={`min-h-screen bg-white dark:bg-gray-900 transition-all duration-300 ${isTransitioning ? 'opacity-95' : 'opacity-100'}`}>
       <Header 
         onSidebarToggle={showSidebar ? toggleSidebar : undefined}
         isSidebarOpen={showSidebar ? isSidebarOpen : false}
@@ -98,13 +125,20 @@ export default function Layout({ children, showSidebar = true }: LayoutProps) {
 
         <main className={`flex-1 min-w-0 transition-all duration-300 ${
           showSidebar && isSidebarOpen ? 'lg:ml-0' : 'lg:ml-0'
-        }`}>
-          {children}
+        } ${isTransitioning ? 'transform scale-[0.99]' : 'transform scale-100'}`}>
+          <div className="transition-all duration-300">
+            {children}
+          </div>
         </main>
       </div>
 
       {/* Notification Container - Only render once */}
       <NotificationContainer />
+      
+      {/* Page transition overlay */}
+      {isTransitioning && (
+        <div className="fixed inset-0 bg-white/20 dark:bg-black/20 backdrop-blur-sm z-50 pointer-events-none transition-opacity duration-300" />
+      )}
     </div>
   );
 }

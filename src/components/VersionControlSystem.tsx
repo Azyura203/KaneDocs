@@ -453,43 +453,46 @@ docker run -p 3000:3000 kanedocs
 
   if (loading) {
     return (
-      <div className="h-full flex items-center justify-center">
+      <div className="h-full flex items-center justify-center bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-blue-900/20">
         <div className="text-center">
+          <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl flex items-center justify-center mx-auto mb-6 animate-pulse">
+            <GitBranch className="text-white" size={24} />
+          </div>
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600 mx-auto mb-4"></div>
-          <p className="text-gray-600 dark:text-gray-400">Loading...</p>
+          <p className="text-gray-600 dark:text-gray-400 font-medium">Loading Version Control...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="h-full flex flex-col bg-white dark:bg-gray-900">
-      {/* Clean Header */}
-      <div className="border-b border-gray-200 dark:border-gray-700">
+    <div className="h-full flex flex-col bg-white dark:bg-gray-900 transition-all duration-300">
+      {/* Enhanced Header */}
+      <div className="border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-slate-50 to-blue-50 dark:from-slate-800 dark:to-blue-900/20">
         <div className="p-4 lg:p-6">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-primary-600 rounded-lg">
-                <GitBranch className="text-white" size={20} />
+              <div className="p-3 bg-gradient-to-br from-primary-600 to-accent-600 rounded-xl shadow-lg">
+                <GitBranch className="text-white" size={24} />
               </div>
               <div>
-                <h1 className="text-xl lg:text-2xl font-bold text-gray-900 dark:text-white">
+                <h1 className="text-2xl lg:text-3xl font-bold bg-gradient-to-r from-primary-600 to-accent-600 bg-clip-text text-transparent">
                   Version Control
                 </h1>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
+                <p className="text-slate-600 dark:text-slate-400">
                   Track changes and manage documentation versions
                 </p>
               </div>
             </div>
 
             <div className="flex items-center gap-3">
-              {/* Branch Selector */}
-              <div className="flex items-center gap-2 px-3 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg">
-                <GitBranch size={14} className="text-gray-500" />
+              {/* Enhanced Branch Selector */}
+              <div className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm hover:shadow-md transition-all duration-200">
+                <GitBranch size={16} className="text-slate-500" />
                 <select
                   value={currentBranch}
                   onChange={(e) => setBranch(e.target.value)}
-                  className="bg-transparent text-sm text-gray-900 dark:text-white focus:outline-none"
+                  className="bg-transparent text-sm text-slate-900 dark:text-white focus:outline-none font-medium"
                 >
                   {branches.map((branch) => (
                     <option key={branch.name} value={branch.name}>
@@ -499,171 +502,204 @@ docker run -p 3000:3000 kanedocs
                 </select>
               </div>
 
-              {/* Actions */}
-              <button className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white border border-gray-300 dark:border-gray-600 rounded-lg transition-colors">
-                <Edit3 size={14} />
+              {/* Enhanced Actions */}
+              <button className="flex items-center gap-2 px-4 py-2 text-sm text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white border border-slate-300 dark:border-slate-600 rounded-xl transition-all duration-200 hover:shadow-md hover:scale-105">
+                <Edit3 size={16} />
                 <span className="hidden sm:inline">Edit</span>
               </button>
             </div>
           </div>
 
-          {/* Clean Tab Navigation */}
-          <div className="flex mt-4 border-b border-gray-200 dark:border-gray-700">
+          {/* Enhanced Tab Navigation */}
+          <div className="flex mt-6 bg-white dark:bg-slate-800 rounded-xl p-1 shadow-sm border border-slate-200 dark:border-slate-700">
             {[
-              { id: 'files', label: 'Files', icon: <Folder size={16} /> },
-              { id: 'history', label: 'History', icon: <Clock size={16} /> },
-              { id: 'insights', label: 'Insights', icon: <Activity size={16} /> },
-              { id: 'branches', label: 'Branches', icon: <GitBranch size={16} /> }
+              { id: 'files', label: 'Files', icon: <Folder size={16} />, count: files.length },
+              { id: 'history', label: 'History', icon: <Clock size={16} />, count: currentFile?.versions.length || 0 },
+              { id: 'insights', label: 'Insights', icon: <Activity size={16} />, count: contributors.length },
+              { id: 'branches', label: 'Branches', icon: <GitBranch size={16} />, count: branches.length }
             ].map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as any)}
                 className={clsx(
-                  'flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors',
+                  'flex items-center gap-2 px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 relative',
                   activeTab === tab.id
-                    ? 'border-primary-600 text-primary-600 dark:text-primary-400'
-                    : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                    ? 'bg-gradient-to-r from-primary-500 to-accent-500 text-white shadow-md transform scale-105'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-700'
                 )}
               >
-                {tab.icon}
-                {tab.label}
+                <span className={clsx(
+                  'transition-transform duration-200',
+                  activeTab === tab.id && 'scale-110'
+                )}>
+                  {tab.icon}
+                </span>
+                <span>{tab.label}</span>
+                {tab.count > 0 && (
+                  <span className={clsx(
+                    'px-2 py-0.5 text-xs rounded-full font-medium transition-all duration-200',
+                    activeTab === tab.id
+                      ? 'bg-white/20 text-white'
+                      : 'bg-slate-200 dark:bg-slate-600 text-slate-600 dark:text-slate-400'
+                  )}>
+                    {tab.count}
+                  </span>
+                )}
+                
+                {/* Active indicator */}
+                {activeTab === tab.id && (
+                  <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-8 h-0.5 bg-white rounded-full" />
+                )}
               </button>
             ))}
           </div>
         </div>
       </div>
 
-      {/* Content */}
+      {/* Content with smooth transitions */}
       <div className="flex-1 flex overflow-hidden">
-        {/* Sidebar */}
-        <div className="w-full lg:w-80 border-r border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 overflow-y-auto">
-          {activeTab === 'files' && (
-            <FileExplorer
-              files={files}
-              currentFile={currentFile}
-              onFileSelect={handleFileSelect}
-            />
-          )}
+        {/* Enhanced Sidebar */}
+        <div className="w-full lg:w-80 border-r border-gray-200 dark:border-gray-700 bg-gradient-to-b from-slate-50 to-white dark:from-slate-800 dark:to-slate-900 overflow-y-auto transition-all duration-300">
+          <div className="animate-fade-in">
+            {activeTab === 'files' && (
+              <FileExplorer
+                files={files}
+                currentFile={currentFile}
+                onFileSelect={handleFileSelect}
+              />
+            )}
 
-          {activeTab === 'history' && currentFile && (
-            <div className="p-4">
-              <h3 className="font-semibold text-gray-900 dark:text-white mb-4">
-                History ({currentFile.versions.length})
-              </h3>
-              <div className="space-y-3">
-                {currentFile.versions.map((version) => (
-                  <div
-                    key={version.id}
-                    className={clsx(
-                      'p-3 rounded-lg border cursor-pointer transition-all',
-                      currentVersion?.id === version.id
-                        ? 'bg-primary-50 dark:bg-primary-900/20 border-primary-200 dark:border-primary-800'
-                        : 'bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-600'
-                    )}
-                    onClick={() => handleVersionSelect(version)}
-                  >
-                    <div className="flex items-start gap-3">
-                      <img
-                        src={version.author.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(version.author.name)}&size=32`}
-                        alt={version.author.name}
-                        className="w-8 h-8 rounded-full"
-                      />
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
-                          {version.message}
-                        </p>
-                        <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400 mt-1">
-                          <span>{version.author.name}</span>
-                          <span>•</span>
-                          <span>{formatDate(version.timestamp)}</span>
+            {activeTab === 'history' && currentFile && (
+              <div className="p-4">
+                <h3 className="font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                  <Clock size={16} />
+                  History ({currentFile.versions.length})
+                </h3>
+                <div className="space-y-3">
+                  {currentFile.versions.map((version, index) => (
+                    <div
+                      key={version.id}
+                      className={clsx(
+                        'p-4 rounded-xl border cursor-pointer transition-all duration-200 hover:shadow-md hover:scale-[1.02]',
+                        currentVersion?.id === version.id
+                          ? 'bg-gradient-to-r from-primary-50 to-accent-50 dark:from-primary-900/20 dark:to-accent-900/20 border-primary-200 dark:border-primary-800 shadow-md'
+                          : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-600'
+                      )}
+                      onClick={() => handleVersionSelect(version)}
+                    >
+                      <div className="flex items-start gap-3">
+                        <img
+                          src={version.author.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(version.author.name)}&size=32`}
+                          alt={version.author.name}
+                          className="w-8 h-8 rounded-full border-2 border-white shadow-sm"
+                        />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
+                            {version.message}
+                          </p>
+                          <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400 mt-1">
+                            <span>{version.author.name}</span>
+                            <span>•</span>
+                            <span>{formatDate(version.timestamp)}</span>
+                          </div>
+                          <div className="flex items-center gap-3 text-xs text-gray-500 dark:text-gray-400 mt-2">
+                            <span className="font-mono bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded">
+                              {version.sha.substring(0, 7)}
+                            </span>
+                            <span className="text-green-600 font-medium">+{version.additions}</span>
+                            <span className="text-red-600 font-medium">-{version.deletions}</span>
+                          </div>
+                          {version.tags.length > 0 && (
+                            <div className="flex gap-1 mt-2">
+                              {version.tags.map((tag) => (
+                                <span
+                                  key={tag}
+                                  className="px-2 py-1 bg-gradient-to-r from-yellow-400 to-orange-400 text-white text-xs rounded-full font-medium shadow-sm"
+                                >
+                                  {tag}
+                                </span>
+                              ))}
+                            </div>
+                          )}
                         </div>
-                        <div className="flex items-center gap-3 text-xs text-gray-500 dark:text-gray-400 mt-1">
-                          <span className="font-mono">{version.sha.substring(0, 7)}</span>
-                          <span className="text-green-600">+{version.additions}</span>
-                          <span className="text-red-600">-{version.deletions}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'insights' && (
+              <ContributorInsights contributors={contributors} stats={projectStats} />
+            )}
+
+            {activeTab === 'branches' && (
+              <div className="p-4">
+                <h3 className="font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                  <GitBranch size={16} />
+                  Branches ({branches.length})
+                </h3>
+                <div className="space-y-3">
+                  {branches.map((branch) => (
+                    <div
+                      key={branch.name}
+                      className={clsx(
+                        'p-4 rounded-xl border transition-all duration-200 hover:shadow-md',
+                        currentBranch === branch.name
+                          ? 'bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border-green-200 dark:border-green-800 shadow-md'
+                          : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-green-300 dark:hover:border-green-600'
+                      )}
+                    >
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-2">
+                          <GitBranch size={16} className={currentBranch === branch.name ? 'text-green-600' : 'text-gray-500'} />
+                          <span className="font-medium text-gray-900 dark:text-white">
+                            {branch.name}
+                          </span>
+                          {branch.isDefault && (
+                            <span className="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 text-xs rounded-full font-medium">
+                              default
+                            </span>
+                          )}
+                          {branch.isProtected && (
+                            <span className="px-2 py-1 bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-300 text-xs rounded-full font-medium">
+                              protected
+                            </span>
+                          )}
                         </div>
-                        {version.tags.length > 0 && (
-                          <div className="flex gap-1 mt-2">
-                            {version.tags.map((tag) => (
-                              <span
-                                key={tag}
-                                className="px-2 py-1 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 text-xs rounded-full"
-                              >
-                                {tag}
-                              </span>
-                            ))}
+                      </div>
+                      <div className="text-sm text-gray-600 dark:text-gray-400">
+                        <p>Updated {formatDate(branch.lastCommit.timestamp)}</p>
+                        {(branch.ahead > 0 || branch.behind > 0) && (
+                          <div className="flex items-center gap-2 mt-1">
+                            {branch.ahead > 0 && (
+                              <span className="text-green-600 font-medium">↑{branch.ahead} ahead</span>
+                            )}
+                            {branch.behind > 0 && (
+                              <span className="text-red-600 font-medium">↓{branch.behind} behind</span>
+                            )}
                           </div>
                         )}
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
-          )}
-
-          {activeTab === 'insights' && (
-            <ContributorInsights contributors={contributors} stats={projectStats} />
-          )}
-
-          {activeTab === 'branches' && (
-            <div className="p-4">
-              <h3 className="font-semibold text-gray-900 dark:text-white mb-4">
-                Branches ({branches.length})
-              </h3>
-              <div className="space-y-3">
-                {branches.map((branch) => (
-                  <div
-                    key={branch.name}
-                    className={clsx(
-                      'p-3 rounded-lg border',
-                      currentBranch === branch.name
-                        ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800'
-                        : 'bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700'
-                    )}
-                  >
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center gap-2">
-                        <GitBranch size={16} className={currentBranch === branch.name ? 'text-green-600' : 'text-gray-500'} />
-                        <span className="font-medium text-gray-900 dark:text-white">
-                          {branch.name}
-                        </span>
-                        {branch.isDefault && (
-                          <span className="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 text-xs rounded-full">
-                            default
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400">
-                      <p>Updated {formatDate(branch.lastCommit.timestamp)}</p>
-                      {(branch.ahead > 0 || branch.behind > 0) && (
-                        <div className="flex items-center gap-2 mt-1">
-                          {branch.ahead > 0 && (
-                            <span className="text-green-600">↑{branch.ahead}</span>
-                          )}
-                          {branch.behind > 0 && (
-                            <span className="text-red-600">↓{branch.behind}</span>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
 
-        {/* Main Content */}
+        {/* Enhanced Main Content */}
         <div className="flex-1 flex flex-col overflow-hidden">
           {currentFile && currentVersion && (
             <>
-              {/* File Header */}
-              <div className="border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-4">
+              {/* Enhanced File Header */}
+              <div className="border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-4 shadow-sm">
                 <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                   <div className="flex items-center gap-3">
-                    <FileText size={20} className="text-primary-600" />
+                    <div className="p-2 bg-primary-100 dark:bg-primary-900/30 rounded-lg">
+                      <FileText size={20} className="text-primary-600" />
+                    </div>
                     <div>
                       <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
                         {currentFile.name}
@@ -687,14 +723,19 @@ docker run -p 3000:3000 kanedocs
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() => setShowDiff(!showDiff)}
-                        className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white border border-gray-300 dark:border-gray-600 rounded-lg transition-colors"
+                        className={clsx(
+                          'flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 hover:scale-105',
+                          showDiff
+                            ? 'bg-primary-600 text-white shadow-md'
+                            : 'text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white border border-gray-300 dark:border-gray-600 hover:shadow-md'
+                        )}
                       >
                         <Eye size={14} />
                         {showDiff ? 'View' : 'Diff'}
                       </button>
                       <button
                         onClick={() => navigator.clipboard.writeText(currentVersion.sha)}
-                        className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white border border-gray-300 dark:border-gray-600 rounded-lg transition-colors"
+                        className="flex items-center gap-2 px-4 py-2 text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white border border-gray-300 dark:border-gray-600 rounded-lg transition-all duration-200 hover:shadow-md hover:scale-105"
                       >
                         <Copy size={14} />
                         <span className="hidden sm:inline">Copy SHA</span>
@@ -704,26 +745,30 @@ docker run -p 3000:3000 kanedocs
                 </div>
               </div>
 
-              {/* Content */}
+              {/* Enhanced Content */}
               <div className="flex-1 overflow-y-auto">
-                {showDiff ? (
-                  <DiffViewer
-                    oldContent="Previous version content..."
-                    newContent={currentFile.content}
-                    fileName={currentFile.name}
-                  />
-                ) : (
-                  <div className="p-4 lg:p-6">
-                    <MarkdownRenderer content={currentFile.content} />
-                  </div>
-                )}
+                <div className="animate-fade-in">
+                  {showDiff ? (
+                    <DiffViewer
+                      oldContent="Previous version content..."
+                      newContent={currentFile.content}
+                      fileName={currentFile.name}
+                    />
+                  ) : (
+                    <div className="p-6 lg:p-8 max-w-4xl mx-auto">
+                      <MarkdownRenderer content={currentFile.content} />
+                    </div>
+                  )}
+                </div>
               </div>
             </>
           )}
 
           {activeTab === 'insights' && (
-            <div className="flex-1 p-4 lg:p-6">
-              <CommitGraph commits={files.flatMap(f => f.versions)} />
+            <div className="flex-1 p-6 lg:p-8 overflow-y-auto">
+              <div className="animate-fade-in">
+                <CommitGraph commits={files.flatMap(f => f.versions)} />
+              </div>
             </div>
           )}
         </div>

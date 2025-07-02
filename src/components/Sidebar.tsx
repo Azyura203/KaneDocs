@@ -99,7 +99,7 @@ function NavItemComponent({ item, level = 0, isCollapsed }: { item: NavItem; lev
   const [isActive, setIsActive] = useState(false);
   const hasChildren = item.children && item.children.length > 0;
 
-  // Check if this item is active based on current URL
+  // Enhanced active state detection with proper URL matching
   useEffect(() => {
     const checkActive = () => {
       if (typeof window === 'undefined') return;
@@ -110,35 +110,38 @@ function NavItemComponent({ item, level = 0, isCollapsed }: { item: NavItem; lev
       if (item.href === '/') {
         setIsActive(pathname === '/' || pathname === '');
       } else {
-        // For other pages, check exact match only
+        // For other pages, check exact match only to prevent cross-highlighting
         setIsActive(pathname === item.href);
       }
     };
 
+    // Initial check
     checkActive();
     
-    // Listen for navigation events (including programmatic navigation)
+    // Create a more robust listener for URL changes
+    let lastPathname = window.location.pathname;
+    
+    // Listen for navigation events with proper cleanup
     const handleLocationChange = () => {
-      setTimeout(checkActive, 100); // Small delay to ensure URL has updated
+      // Small delay to ensure URL has updated
+      setTimeout(checkActive, 50);
     };
 
-    // Listen for both popstate and custom navigation events
+    // Listen for popstate (back/forward buttons)
     window.addEventListener('popstate', handleLocationChange);
     
-    // Also listen for clicks on the document to catch navigation
+    // Listen for clicks that might trigger navigation
     const handleClick = (e: Event) => {
       const target = e.target as HTMLElement;
-      if (target.tagName === 'A' || target.closest('a')) {
-        setTimeout(checkActive, 100);
+      const link = target.closest('a');
+      if (link && link.href) {
+        setTimeout(checkActive, 50);
       }
     };
     
     document.addEventListener('click', handleClick);
     
-    // Capture the initial pathname for comparison in MutationObserver
-    let lastPathname = window.location.pathname;
-    
-    // Check on mount and when pathname might change
+    // Use MutationObserver to detect URL changes from programmatic navigation
     const observer = new MutationObserver(() => {
       const currentPathname = window.location.pathname;
       if (currentPathname !== lastPathname) {
@@ -149,59 +152,67 @@ function NavItemComponent({ item, level = 0, isCollapsed }: { item: NavItem; lev
     
     observer.observe(document.body, { 
       childList: true, 
-      subtree: true 
+      subtree: true,
+      attributes: false,
+      characterData: false
     });
+
+    // Also listen for custom navigation events
+    const handleCustomNavigation = () => {
+      setTimeout(checkActive, 50);
+    };
+    
+    window.addEventListener('navigation', handleCustomNavigation);
 
     return () => {
       window.removeEventListener('popstate', handleLocationChange);
       document.removeEventListener('click', handleClick);
+      window.removeEventListener('navigation', handleCustomNavigation);
       observer.disconnect();
     };
   }, [item.href]);
 
-  // Also check when the component mounts or updates
-  useEffect(() => {
-    const checkActive = () => {
-      if (typeof window === 'undefined') return;
-      
-      const pathname = window.location.pathname;
-      
-      if (item.href === '/') {
-        setIsActive(pathname === '/' || pathname === '');
-      } else {
-        setIsActive(pathname === item.href);
-      }
-    };
+  // Handle navigation with smooth transitions
+  const handleNavigation = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (hasChildren) {
+      e.preventDefault();
+      setIsExpanded(!isExpanded);
+      return;
+    }
 
-    checkActive();
-  });
+    // Add smooth transition class to body
+    document.body.classList.add('page-transitioning');
+    
+    // Remove transition class after navigation
+    setTimeout(() => {
+      document.body.classList.remove('page-transitioning');
+    }, 300);
+
+    // Dispatch custom navigation event
+    window.dispatchEvent(new CustomEvent('navigation'));
+  };
 
   return (
     <div>
       <a
         href={item.href}
+        onClick={handleNavigation}
         className={clsx(
           'flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 group relative',
-          'hover:bg-slate-100 dark:hover:bg-slate-800',
+          'hover:bg-slate-100 dark:hover:bg-slate-800 hover:scale-[1.02]',
           isActive 
-            ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border-r-2 border-blue-500' 
+            ? 'bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900/30 dark:to-blue-800/30 text-blue-600 dark:text-blue-400 shadow-sm border-l-4 border-blue-500' 
             : 'text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400',
           level > 0 && 'ml-4 text-xs',
           isCollapsed && 'justify-center px-2',
-          item.requiresAuth && !isActive && 'border-l-2 border-transparent hover:border-blue-500'
+          item.requiresAuth && !isActive && 'border-l-2 border-transparent hover:border-blue-300'
         )}
-        onClick={(e) => {
-          if (hasChildren) {
-            e.preventDefault();
-            setIsExpanded(!isExpanded);
-          }
-        }}
         title={isCollapsed ? item.title : undefined}
       >
         <span className={clsx('flex items-center gap-3 flex-1', isCollapsed && 'justify-center')}>
           <span className={clsx(
-            'text-slate-500 dark:text-slate-400 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors',
-            isActive && 'text-blue-500 dark:text-blue-400'
+            'text-slate-500 dark:text-slate-400 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-all duration-200',
+            isActive && 'text-blue-500 dark:text-blue-400 scale-110'
           )}>
             {item.icon}
           </span>
@@ -210,15 +221,16 @@ function NavItemComponent({ item, level = 0, isCollapsed }: { item: NavItem; lev
               <span className="truncate">{item.title}</span>
               {item.badge && (
                 <span className={clsx(
-                  'px-2 py-0.5 text-white text-xs rounded-full font-medium ml-auto',
-                  item.badge === 'AI' && 'bg-gradient-to-r from-purple-500 to-pink-500',
-                  item.badge === 'VCS' && 'bg-gradient-to-r from-blue-500 to-cyan-500'
+                  'px-2 py-0.5 text-white text-xs rounded-full font-medium ml-auto transition-all duration-200',
+                  item.badge === 'AI' && 'bg-gradient-to-r from-purple-500 to-pink-500 shadow-sm',
+                  item.badge === 'VCS' && 'bg-gradient-to-r from-blue-500 to-cyan-500 shadow-sm',
+                  isActive && 'scale-105 shadow-md'
                 )}>
                   {item.badge}
                 </span>
               )}
               {item.requiresAuth && !isActive && (
-                <span className="w-1.5 h-1.5 bg-blue-500 rounded-full opacity-60" title="Requires authentication" />
+                <span className="w-1.5 h-1.5 bg-blue-500 rounded-full opacity-60 transition-opacity duration-200" title="Requires authentication" />
               )}
             </>
           )}
@@ -228,10 +240,15 @@ function NavItemComponent({ item, level = 0, isCollapsed }: { item: NavItem; lev
             {isExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
           </span>
         )}
+        
+        {/* Active indicator */}
+        {isActive && (
+          <div className="absolute right-0 top-1/2 transform -translate-y-1/2 w-1 h-8 bg-blue-500 rounded-l-full transition-all duration-200" />
+        )}
       </a>
       
       {hasChildren && isExpanded && !isCollapsed && (
-        <div className="ml-2 mt-1 space-y-1">
+        <div className="ml-2 mt-1 space-y-1 animate-fade-in">
           {item.children!.map((child, index) => (
             <NavItemComponent key={index} item={child} level={level + 1} isCollapsed={isCollapsed} />
           ))}
@@ -244,25 +261,26 @@ function NavItemComponent({ item, level = 0, isCollapsed }: { item: NavItem; lev
 export default function Sidebar({ isOpen = false, onClose, isCollapsed = false }: SidebarProps) {
   return (
     <>
-      {/* Overlay for mobile */}
+      {/* Overlay for mobile with smooth transition */}
       {isOpen && (
         <div
-          className="fixed inset-0 z-40 bg-slate-900/50 backdrop-blur-sm lg:hidden"
+          className="fixed inset-0 z-40 bg-slate-900/50 backdrop-blur-sm lg:hidden transition-all duration-300 ease-out"
           onClick={onClose}
         />
       )}
 
-      {/* Sidebar */}
+      {/* Sidebar with enhanced transitions */}
       <aside
         className={clsx(
-          'fixed top-16 left-0 z-50 h-[calc(100vh-4rem)] transform bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 transition-all duration-300 ease-in-out',
-          'lg:relative lg:top-0 lg:h-[calc(100vh-4rem)] lg:translate-x-0 lg:z-0',
+          'fixed top-16 left-0 z-50 h-[calc(100vh-4rem)] transform bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 transition-all duration-300 ease-in-out shadow-lg',
+          'lg:relative lg:top-0 lg:h-[calc(100vh-4rem)] lg:translate-x-0 lg:z-0 lg:shadow-none',
           isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0',
           isCollapsed ? 'w-16' : 'w-64'
         )}
       >
         <div className="flex flex-col h-full">
-          <div className="flex-1 overflow-y-auto px-3 py-6">
+          {/* Navigation with smooth scrolling */}
+          <div className="flex-1 overflow-y-auto px-3 py-6 scrollbar-thin scrollbar-thumb-slate-300 dark:scrollbar-thumb-slate-600 scrollbar-track-transparent">
             <nav className="space-y-1">
               {navigationItems.map((item, index) => (
                 <NavItemComponent key={index} item={item} isCollapsed={isCollapsed} />
@@ -270,23 +288,28 @@ export default function Sidebar({ isOpen = false, onClose, isCollapsed = false }
             </nav>
           </div>
 
-          {/* Footer */}
+          {/* Enhanced Footer */}
           {!isCollapsed && (
-            <div className="border-t border-slate-200 dark:border-slate-800 px-4 py-4">
+            <div className="border-t border-slate-200 dark:border-slate-800 px-4 py-4 bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-900">
               <div className="text-xs text-slate-500 dark:text-slate-400">
                 <div className="flex items-center justify-between mb-2">
                   <span>Version:</span>
-                  <span className="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded text-xs font-medium">
+                  <span className="px-2 py-1 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded text-xs font-medium shadow-sm">
                     v2.1.0
                   </span>
                 </div>
-                <div className="text-center">
-                  <span className="text-slate-400 dark:text-slate-500">KaneDocs</span>
+                <div className="text-center mb-2">
+                  <span className="font-semibold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">KaneDocs</span>
                 </div>
-                <div className="mt-2 text-center">
-                  <div className="flex items-center justify-center gap-1 text-xs">
+                <div className="flex items-center justify-center gap-2 text-xs">
+                  <div className="flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
+                    <span>Online</span>
+                  </div>
+                  <span className="text-slate-300 dark:text-slate-600">•</span>
+                  <div className="flex items-center gap-1">
                     <span className="w-1.5 h-1.5 bg-blue-500 rounded-full" />
-                    <span>Auth Required</span>
+                    <span>Secure</span>
                   </div>
                 </div>
               </div>
