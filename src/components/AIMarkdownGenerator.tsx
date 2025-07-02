@@ -833,19 +833,19 @@ For questions and support, please visit our [documentation](https://docs.example
   };
 
   return (
-    <div className="h-full flex flex-col bg-white dark:bg-gray-900">
+    <div className="h-full flex flex-col bg-white dark:bg-slate-900">
       {/* Header */}
-      <div className="border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-primary-50 to-accent-50 dark:from-primary-900/20 dark:to-accent-900/20">
+      <div className="border-b border-slate-200 dark:border-slate-700 bg-gradient-to-r from-blue-50 via-purple-50 to-pink-50 dark:from-blue-900/20 dark:via-purple-900/20 dark:to-pink-900/20">
         <div className="p-8">
           <div className="flex items-center gap-3 mb-6">
-            <div className="p-3 bg-gradient-to-br from-primary-500 to-accent-500 rounded-xl">
+            <div className="p-3 bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 rounded-xl shadow-lg">
               <Sparkles className="text-white" size={24} />
             </div>
             <div>
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-primary-600 to-accent-600 bg-clip-text text-transparent">
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent font-display">
                 AI Markdown Generator
               </h1>
-              <p className="text-lg text-gray-600 dark:text-gray-400 mt-1">
+              <p className="text-lg text-slate-600 dark:text-slate-400 mt-1">
                 Generate professional documentation with AI assistance
               </p>
             </div>
@@ -857,17 +857,17 @@ For questions and support, please visit our [documentation](https://docs.example
               <button
                 key={index}
                 onClick={() => useTemplate(template)}
-                className="p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl hover:border-primary-300 dark:hover:border-primary-600 transition-all duration-200 text-left group hover:shadow-lg hover:-translate-y-1"
+                className="p-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl hover:border-blue-300 dark:hover:border-blue-600 transition-all duration-200 text-left group hover:shadow-lg hover:-translate-y-1"
               >
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="text-primary-500 group-hover:text-primary-600 transition-colors">
+                  <div className="text-blue-600 group-hover:text-blue-700 transition-colors">
                     {template.icon}
                   </div>
-                  <h3 className="font-semibold text-gray-900 dark:text-white">
+                  <h3 className="font-semibold text-slate-900 dark:text-white">
                     {template.title}
                   </h3>
                 </div>
-                <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+                <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
                   {template.description}
                 </p>
               </button>
@@ -875,11 +875,11 @@ For questions and support, please visit our [documentation](https://docs.example
           </div>
 
           {/* Enhanced Input Area */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-lg">
+          <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-lg">
             <div className="p-6">
               <div className="flex items-center gap-3 mb-4">
-                <Sparkles className="text-primary-500" size={20} />
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                <Sparkles className="text-blue-600" size={20} />
+                <h3 className="text-lg font-semibold text-slate-900 dark:text-white font-display">
                   Describe your documentation needs
                 </h3>
               </div>
@@ -896,11 +896,11 @@ Examples:
 • 'Create step-by-step tutorial documentation for building a REST API with Node.js'
 
 Be as specific as possible - the more details you provide, the better the generated documentation will be!"
-                className="w-full h-40 p-4 border border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none text-base leading-relaxed"
+                className="w-full h-40 p-4 border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-base leading-relaxed"
               />
               
               <div className="flex items-center justify-between mt-4">
-                <div className="text-sm text-gray-500 dark:text-gray-400">
+                <div className="text-sm text-slate-500 dark:text-slate-400">
                   💡 <strong>Pro tip:</strong> Include specific technologies, features, or use cases for better results
                 </div>
                 
@@ -909,8 +909,8 @@ Be as specific as possible - the more details you provide, the better the genera
                   disabled={!prompt.trim() || isGenerating}
                   className={`px-8 py-3 rounded-lg font-semibold transition-all duration-200 flex items-center gap-3 text-lg ${
                     !prompt.trim() || isGenerating
-                      ? 'bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed'
-                      : 'bg-gradient-to-r from-primary-600 to-accent-600 hover:from-primary-700 hover:to-accent-700 text-white shadow-lg hover:shadow-xl transform hover:scale-105'
+                      ? 'bg-slate-300 dark:bg-slate-600 text-slate-500 dark:text-slate-400 cursor-not-allowed'
+                      : 'bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 hover:from-blue-700 hover:via-purple-700 hover:to-pink-700 text-white shadow-lg hover:shadow-xl transform hover:scale-105'
                   }`}
                 >
                   {isGenerating ? (
@@ -938,22 +938,22 @@ Be as specific as possible - the more details you provide, the better the genera
             {/* Generated Markdown Display */}
             <div className="flex-1 flex flex-col">
               {/* Toolbar */}
-              <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
-                <h2 className="text-xl font-semibold text-gray-900 dark:text-white flex items-center gap-3">
+              <div className="flex items-center justify-between p-6 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800">
+                <h2 className="text-xl font-semibold text-slate-900 dark:text-white flex items-center gap-3 font-display">
                   <FileText size={20} />
                   Generated Documentation
                 </h2>
                 <div className="flex items-center gap-3">
                   <button
                     onClick={copyToClipboard}
-                    className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors font-medium"
+                    className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-600 transition-colors font-medium"
                   >
                     {copied ? <Check size={18} /> : <Copy size={18} />}
                     {copied ? 'Copied!' : 'Copy'}
                   </button>
                   <button
                     onClick={downloadMarkdown}
-                    className="flex items-center gap-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors font-medium"
+                    className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-lg transition-colors font-medium shadow-md"
                   >
                     <Download size={18} />
                     Download
@@ -962,7 +962,7 @@ Be as specific as possible - the more details you provide, the better the genera
               </div>
 
               {/* Preview */}
-              <div className="flex-1 overflow-y-auto p-8">
+              <div className="flex-1 overflow-y-auto p-8 scrollbar-thin scrollbar-thumb-slate-300 dark:scrollbar-thumb-slate-600">
                 <div className="max-w-4xl mx-auto">
                   <MarkdownRenderer content={generatedMarkdown} />
                 </div>
@@ -973,31 +973,31 @@ Be as specific as possible - the more details you provide, the better the genera
           /* Empty State */
           <div className="flex-1 flex items-center justify-center p-8">
             <div className="text-center max-w-2xl">
-              <div className="w-24 h-24 bg-gradient-to-br from-primary-100 to-accent-100 dark:from-primary-900/30 dark:to-accent-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
-                <Sparkles className="text-primary-600 dark:text-primary-400" size={32} />
+              <div className="w-24 h-24 bg-gradient-to-br from-blue-100 via-purple-100 to-pink-100 dark:from-blue-900/30 dark:via-purple-900/30 dark:to-pink-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
+                <Sparkles className="text-blue-600 dark:text-blue-400" size={32} />
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+              <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-4 font-display">
                 Ready to Generate Amazing Documentation
               </h3>
-              <p className="text-lg text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">
+              <p className="text-lg text-slate-600 dark:text-slate-400 mb-6 leading-relaxed">
                 Describe what kind of documentation you need, and our AI will generate professional, 
                 comprehensive markdown content tailored to your requirements.
               </p>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-500 dark:text-gray-400">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-slate-500 dark:text-slate-400">
                 <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-primary-500 rounded-full"></div>
+                  <div className="w-2 h-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"></div>
                   <span>Use quick templates above</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-accent-500 rounded-full"></div>
+                  <div className="w-2 h-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"></div>
                   <span>Write custom prompts</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  <div className="w-2 h-2 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full"></div>
                   <span>Get instant results</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                  <div className="w-2 h-2 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full"></div>
                   <span>Copy or download output</span>
                 </div>
               </div>

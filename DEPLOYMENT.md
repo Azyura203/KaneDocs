@@ -1,10 +1,10 @@
-# KaneDocs Deployment Guide
+# KODEX Deployment Guide
 
-Since Git is not available in the WebContainer environment, follow these steps to deploy your KaneDocs project:
+Since Git is not available in the WebContainer environment, follow these steps to deploy your KODEX project:
 
 ## 📋 Pre-Deployment Checklist
 
-Your KaneDocs project is now ready for deployment with:
+Your KODEX project is now ready for deployment with:
 
 - ✅ Complete documentation (README.md, CHANGELOG.md, CONTRIBUTING.md)
 - ✅ GitHub Actions workflow for automated deployment
@@ -35,12 +35,12 @@ git init
 git add .
 
 # Create initial commit
-git commit -m "feat: initial commit - KaneDocs v2.1.0 with version control and AI features"
+git commit -m "feat: initial commit - KODEX v2.1.0 with version control and AI features"
 ```
 
 ### Step 3: Create GitHub Repository
 
-1. **Go to GitHub** and create a new repository named `kanedocs`
+1. **Go to GitHub** and create a new repository named `kodex`
 2. **Don't initialize** with README (we already have one)
 3. **Copy the repository URL**
 
@@ -48,7 +48,7 @@ git commit -m "feat: initial commit - KaneDocs v2.1.0 with version control and A
 
 ```bash
 # Add remote origin (replace with your GitHub username)
-git remote add origin https://github.com/yourusername/kanedocs.git
+git remote add origin https://github.com/yourusername/kodex.git
 
 # Push to GitHub
 git branch -M main
@@ -97,8 +97,8 @@ After deployment, to continue development:
 
 ```bash
 # Clone your repository
-git clone https://github.com/yourusername/kanedocs.git
-cd kanedocs
+git clone https://github.com/yourusername/kodex.git
+cd kodex
 
 # Install dependencies
 npm install
@@ -117,10 +117,10 @@ Before deploying, update these files with your actual information:
   "homepage": "https://your-site-name.netlify.app",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/kanedocs.git"
+    "url": "https://github.com/yourusername/kodex.git"
   },
   "bugs": {
-    "url": "https://github.com/yourusername/kanedocs/issues"
+    "url": "https://github.com/yourusername/kodex/issues"
   }
 }
 ```
@@ -141,7 +141,7 @@ Add these secrets to your GitHub repository:
 
 ## 🌟 Features Ready for Use
 
-Your deployed KaneDocs will include:
+Your deployed KODEX will include:
 
 ### 📜 Version Control System
 - Complete Git-like interface
@@ -229,6 +229,6 @@ Monitor your deployment:
 
 ---
 
-Your KaneDocs platform is now ready for production! 🎉
+Your KODEX platform is now ready for production! 🎉
 
 The combination of version control features, AI generation, and clean UI makes it a powerful documentation platform that rivals GitHub's documentation experience.

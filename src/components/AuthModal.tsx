@@ -59,14 +59,14 @@ export default function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps
           setEmailSent(true);
           notificationManager.success(
             'Account Created! 🎉',
-            `Welcome to KaneDocs! We've sent a confirmation email to ${email}.`,
+            `Welcome to KODEX! We've sent a confirmation email to ${email}.`,
             6000
           );
         } else if (data.session) {
           // User is automatically signed in
           sessionManager.saveSession(data.session);
           notificationManager.success(
-            `Welcome to KaneDocs, ${fullName}! 🎉`,
+            `Welcome to KODEX, ${fullName}! 🎉`,
             'Your account has been created and you are now signed in.',
             4000
           );
@@ -139,7 +139,7 @@ export default function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps
       {/* Modal */}
       <div className="relative w-full max-w-md bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden animate-scale-in">
         {/* Header */}
-        <div className="relative bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-6">
+        <div className="relative bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 px-6 py-6">
           <button
             onClick={onClose}
             className="absolute top-4 right-4 p-2 rounded-lg hover:bg-white/10 transition-colors"
@@ -149,10 +149,10 @@ export default function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps
           
           <div className="text-center text-white">
             <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mx-auto mb-3">
-              <span className="text-xl font-bold">K</span>
+              <span className="text-xl font-bold font-display">K</span>
             </div>
-            <h2 className="text-xl font-bold mb-1">
-              {emailSent ? 'Check Your Email' : (isSignUp ? 'Join KaneDocs' : 'Welcome Back')}
+            <h2 className="text-xl font-bold mb-1 font-display">
+              {emailSent ? 'Check Your Email' : (isSignUp ? 'Join KODEX' : 'Welcome Back')}
             </h2>
             <p className="text-white/80 text-sm">
               {emailSent ? 'Verification email sent' : (isSignUp ? 'Create your free account' : 'Sign in to continue')}
@@ -182,7 +182,7 @@ export default function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps
                     setIsSignUp(false);
                     resetForm();
                   }}
-                  className="w-full px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-medium"
+                  className="w-full px-4 py-3 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 hover:from-blue-700 hover:via-purple-700 hover:to-pink-700 text-white rounded-lg transition-colors font-medium"
                 >
                   Sign In Instead
                 </button>
@@ -284,7 +284,7 @@ export default function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 disabled:from-slate-400 disabled:to-slate-500 text-white rounded-lg font-medium transition-all duration-200 shadow-lg hover:shadow-xl disabled:cursor-not-allowed"
+                className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 hover:from-blue-700 hover:via-purple-700 hover:to-pink-700 disabled:from-slate-400 disabled:to-slate-500 text-white rounded-lg font-medium transition-all duration-200 shadow-lg hover:shadow-xl disabled:cursor-not-allowed"
               >
                 {loading ? (
                   <>

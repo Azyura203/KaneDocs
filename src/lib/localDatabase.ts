@@ -57,11 +57,11 @@ export interface WorkingFile {
 
 // Local storage keys
 const STORAGE_KEYS = {
-  repositories: 'kanedocs_repositories',
-  branches: 'kanedocs_branches',
-  commits: 'kanedocs_commits',
-  workingFiles: 'kanedocs_working_files',
-  currentUser: 'kanedocs_current_user'
+  repositories: 'kodex_repositories',
+  branches: 'kodex_branches',
+  commits: 'kodex_commits',
+  workingFiles: 'kodex_working_files',
+  currentUser: 'kodex_current_user'
 };
 
 // Check if we're in a browser environment
@@ -104,7 +104,7 @@ export const getCurrentUser = () => {
     // Return default user for server-side rendering
     return {
       id: 'demo-user',
-      email: 'demo@kanedocs.com',
+      email: 'demo@kodex.dev',
       name: 'Demo User'
     };
   }
@@ -116,7 +116,7 @@ export const getCurrentUser = () => {
   
   const user = {
     id: 'demo-user',
-    email: 'demo@kanedocs.com',
+    email: 'demo@kodex.dev',
     name: 'Demo User'
   };
   
@@ -441,8 +441,8 @@ export const initializeSampleData = () => {
     
     // Create sample repository
     const sampleRepo = repositoryService.create({
-      name: 'kanedocs-demo',
-      description: 'A demo repository for KaneDocs with sample content',
+      name: 'kodex-demo',
+      description: 'A demo repository for KODEX with sample content',
       language: 'TypeScript',
       topics: ['documentation', 'demo', 'typescript']
     });
@@ -451,9 +451,9 @@ export const initializeSampleData = () => {
     workingDirectoryService.addFile(
       sampleRepo.id,
       'README.md',
-      `# KaneDocs Demo Repository
+      `# KODEX Demo Repository
 
-Welcome to the KaneDocs demo! This repository showcases the local database git functionality.
+Welcome to the KODEX demo! This repository showcases the local database git functionality.
 
 ## Features
 
@@ -509,9 +509,9 @@ export class UserService {
       sampleRepo.id,
       'package.json',
       `{
-  "name": "kanedocs-demo",
+  "name": "kodex-demo",
   "version": "1.0.0",
-  "description": "Demo repository for KaneDocs",
+  "description": "Demo repository for KODEX",
   "main": "src/index.ts",
   "scripts": {
     "build": "tsc",

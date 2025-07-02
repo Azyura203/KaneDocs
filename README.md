@@ -1,56 +1,56 @@
-# KaneDocs 📚
+# KODEX 📚
 
-> A modern documentation platform with integrated GitHub-like version control features
+> The next-generation AI-powered documentation platform with integrated Git-like version control
 
-[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/yourusername/kanedocs)
+[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/yourusername/kodex)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Astro](https://img.shields.io/badge/Astro-FF5D01?logo=astro&logoColor=white)](https://astro.build/)
 
 ## ✨ Features
 
-### 📜 **Version Control System**
+### 🧠 **AI-Powered Content Generation**
+- Advanced AI markdown generation with intelligent templates
+- Context-aware documentation creation
+- Smart content optimization and suggestions
+- Custom prompt support for specialized content
+
+### 📜 **Enterprise Version Control**
 - Complete Git-like versioning for documentation
-- Commit history with detailed diffs
-- Branch management and switching
-- Tag support for releases
+- Intelligent commit history with detailed diffs
+- Advanced branch management and switching
+- Tag support for releases and milestones
 
-### 🧠 **Smart Diffs**
-- Visual diff viewer with syntax highlighting
-- Side-by-side comparison like GitHub pull requests
-- Line-by-line change tracking
-- Addition/deletion highlighting
+### 🔍 **Visual Intelligence**
+- Smart diff viewer with syntax highlighting
+- Side-by-side comparison like GitHub
+- Line-by-line change tracking with context
+- Advanced merge conflict resolution
 
-### ⚙️ **AI-Powered Generation**
-- AI markdown generation with templates
-- Smart commit message suggestions
-- Automated documentation creation
-- Content optimization recommendations
-
-### 🌿 **Branch Management**
+### 🌿 **Advanced Branching**
 - Multiple documentation branches
-- Branch switching and comparison
 - Protected branch support
-- Merge conflict resolution
+- Intelligent branch comparison
+- Seamless branch switching and merging
 
-### 🔍 **Contributor Insights**
+### 👥 **Team Collaboration**
+- Real-time collaborative editing
 - Detailed contributor analytics
-- Commit activity graphs
-- Project statistics dashboard
-- Language distribution charts
+- Advanced permission controls
+- Team insights and activity tracking
 
-### 📊 **Project Analytics**
+### 📊 **Analytics & Insights**
 - Comprehensive project metrics
-- Visual commit timeline
-- Activity heatmaps
-- Performance insights
+- Visual commit timeline and activity graphs
+- Language distribution analysis
+- Performance and usage insights
 
 ### 🛠️ **Developer Experience**
-- GitHub-like file browser
-- Markdown editor with live preview
-- File upload and management
-- Search functionality
-- Dark/light mode toggle
+- GitHub-like file browser with tree view
+- Advanced markdown editor with live preview
+- Intelligent file upload and management
+- Global search with keyboard shortcuts
+- Dark/light mode with system preference detection
 
 ## 🚀 Quick Start
 
@@ -64,10 +64,10 @@
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/kanedocs.git
+git clone https://github.com/yourusername/kodex.git
 
 # Navigate to project directory
-cd kanedocs
+cd kodex
 
 # Install dependencies
 npm install
@@ -76,7 +76,7 @@ npm install
 npm run dev
 ```
 
-Visit `http://localhost:4321` to see your documentation site.
+Visit `http://localhost:4321` to see your documentation platform.
 
 ### Environment Setup
 
@@ -88,7 +88,7 @@ VITE_SUPABASE_URL=your_supabase_url
 VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
 
 # App Configuration
-VITE_APP_NAME=KaneDocs
+VITE_APP_NAME=KODEX
 VITE_ENABLE_ANALYTICS=true
 ```
 
@@ -96,49 +96,55 @@ VITE_ENABLE_ANALYTICS=true
 
 ### Creating Documentation
 
-1. **Navigate to the Editor**: Go to `/editor` to create new documentation
-2. **Write in Markdown**: Use the built-in editor with live preview
-3. **Commit Changes**: Save your work with meaningful commit messages
-4. **Manage Versions**: Switch between different versions and branches
+1. **Navigate to Projects**: Go to `/projects` to start creating documentation
+2. **AI Generation**: Use `/ai-generator` for intelligent content creation
+3. **Version Control**: Manage versions with `/version-control`
+4. **Real-time Editing**: Collaborate with the built-in editor
+
+### AI-Powered Workflow
+
+```markdown
+# Example AI workflow
+
+1. Describe your documentation needs
+2. Choose from intelligent templates
+3. Let AI generate comprehensive content
+4. Edit and refine with live preview
+5. Commit with smart version control
+6. Collaborate with your team
+```
 
 ### Version Control Features
 
 ```markdown
-# Example workflow
+# Advanced version control
 
-1. Create a new branch for your feature
-2. Edit documentation files
-3. Stage your changes
-4. Commit with descriptive messages
-5. Switch between branches to compare
-6. View diff to see what changed
+1. Create branches for different features
+2. Make changes with intelligent tracking
+3. Stage and commit with meaningful messages
+4. Compare versions with visual diffs
+5. Merge branches with conflict resolution
+6. Tag releases for important milestones
 ```
-
-### AI Generation
-
-1. **Go to AI Generator**: Visit `/ai-generator`
-2. **Choose Template**: Select from pre-built templates
-3. **Describe Your Needs**: Write what documentation you want
-4. **Generate**: Let AI create comprehensive markdown
-5. **Edit & Refine**: Customize the generated content
 
 ## 🏗️ Project Structure
 
 ```
-kanedocs/
+kodex/
 ├── src/
 │   ├── components/          # React components
 │   │   ├── Layout.tsx       # Main layout wrapper
+│   │   ├── Header.tsx       # Navigation header
 │   │   ├── Sidebar.tsx      # Navigation sidebar
-│   │   ├── Header.tsx       # Top navigation
 │   │   ├── VersionControlSystem.tsx  # VCS interface
 │   │   ├── AIMarkdownGenerator.tsx   # AI generation
-│   │   ├── DocumentationEditor.tsx  # Markdown editor
+│   │   ├── DocumentationEditor.tsx  # Advanced editor
 │   │   ├── GitManager.tsx   # Git-like interface
-│   │   ├── DiffViewer.tsx   # Diff comparison
+│   │   ├── DiffViewer.tsx   # Visual diff comparison
 │   │   └── ...
 │   ├── pages/               # Astro pages
 │   │   ├── index.astro      # Homepage
+│   │   ├── projects.astro   # Project management
 │   │   ├── editor.astro     # Documentation editor
 │   │   ├── version-control.astro  # Version control
 │   │   ├── ai-generator.astro     # AI generation
@@ -156,7 +162,7 @@ kanedocs/
 
 ### Theming
 
-KaneDocs supports custom themes through Tailwind CSS:
+KODEX supports advanced theming through Tailwind CSS:
 
 ```javascript
 // tailwind.config.mjs
@@ -170,6 +176,11 @@ export default {
         accent: {
           // Your accent color palette
         }
+      },
+      fontFamily: {
+        display: ['Space Grotesk', 'Inter', 'system-ui', 'sans-serif'],
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+        mono: ['JetBrains Mono', 'Consolas', 'Monaco', 'monospace'],
       }
     }
   }
@@ -178,7 +189,7 @@ export default {
 
 ### Configuration
 
-Customize your documentation in `astro.config.mjs`:
+Customize your documentation platform in `astro.config.mjs`:
 
 ```javascript
 export default defineConfig({
@@ -226,6 +237,8 @@ npm run dev          # Start development server
 npm run build        # Build for production
 npm run preview      # Preview production build
 npm run astro        # Run Astro CLI commands
+npm run lint         # Lint code
+npm run format       # Format code
 ```
 
 ### Adding New Features
@@ -237,14 +250,15 @@ npm run astro        # Run Astro CLI commands
 
 ### Local Database
 
-KaneDocs uses browser localStorage for the Git-like functionality:
+KODEX uses browser localStorage for Git-like functionality:
 
-- Repository data
-- Commit history
-- Branch information
+- Repository data and metadata
+- Complete commit history
+- Branch information and switching
 - Working directory changes
+- User preferences and settings
 
-All data is stored locally in your browser.
+All data is stored locally in your browser for privacy and performance.
 
 ## 🤝 Contributing
 
@@ -254,7 +268,7 @@ We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.
 
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Make your changes
+3. Make your changes following our coding standards
 4. Commit your changes (`git commit -m 'Add amazing feature'`)
 5. Push to the branch (`git push origin feature/amazing-feature`)
 6. Open a Pull Request
@@ -266,6 +280,7 @@ We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.
 - Use Tailwind CSS for styling
 - Write meaningful commit messages
 - Add comments for complex logic
+- Maintain consistent file organization
 
 ## 📄 License
 
@@ -279,31 +294,33 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Lucide React** - For the beautiful icons
 - **Marked** - For markdown parsing
 - **Highlight.js** - For syntax highlighting
+- **Supabase** - For authentication infrastructure
 
 ## 📞 Support
 
-- 📧 **Email**: support@kanedocs.com
-- 💬 **Discord**: [Join our community](https://discord.gg/kanedocs)
-- 🐛 **Issues**: [GitHub Issues](https://github.com/yourusername/kanedocs/issues)
-- 📖 **Documentation**: [Full Documentation](https://kanedocs.netlify.app)
+- 📧 **Email**: support@kodex.dev
+- 💬 **Discord**: [Join our community](https://discord.gg/kodex)
+- 🐛 **Issues**: [GitHub Issues](https://github.com/yourusername/kodex/issues)
+- 📖 **Documentation**: [Full Documentation](https://kodex.netlify.app)
 
 ## 🗺️ Roadmap
 
 - [ ] **Real Git Integration**: Connect with actual Git repositories
-- [ ] **Collaborative Editing**: Real-time collaboration features
+- [ ] **Advanced AI Features**: Code analysis and intelligent suggestions
 - [ ] **Plugin System**: Extensible plugin architecture
-- [ ] **Advanced Search**: Full-text search across documentation
+- [ ] **Advanced Search**: Full-text search with AI-powered relevance
 - [ ] **API Integration**: REST API for external integrations
 - [ ] **Mobile App**: Native mobile application
 - [ ] **Enterprise Features**: SSO, advanced permissions, audit logs
+- [ ] **Multi-language Support**: Internationalization and localization
 
 ---
 
 <div align="center">
-  <p>Made with ❤️ by the KaneDocs team</p>
+  <p>Made with ❤️ by the KODEX team</p>
   <p>
-    <a href="https://kanedocs.netlify.app">Website</a> •
-    <a href="https://github.com/yourusername/kanedocs">GitHub</a> •
-    <a href="https://twitter.com/kanedocs">Twitter</a>
+    <a href="https://kodex.netlify.app">Website</a> •
+    <a href="https://github.com/yourusername/kodex">GitHub</a> •
+    <a href="https://twitter.com/kodex">Twitter</a>
   </p>
 </div>

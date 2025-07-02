@@ -1,6 +1,6 @@
-# Contributing to KaneDocs
+# Contributing to KODEX
 
-Thank you for your interest in contributing to KaneDocs! This document provides guidelines and information for contributors.
+Thank you for your interest in contributing to KODEX! This document provides guidelines and information for contributors.
 
 ## 🤝 How to Contribute
 
@@ -32,8 +32,8 @@ We welcome feature suggestions! Please:
 1. **Fork the repository**
 2. **Clone your fork**:
    ```bash
-   git clone https://github.com/yourusername/kanedocs.git
-   cd kanedocs
+   git clone https://github.com/yourusername/kodex.git
+   cd kodex
    ```
 3. **Install dependencies**:
    ```bash
@@ -373,10 +373,10 @@ Contributors are recognized in:
 
 If you need help contributing:
 
-- 💬 **Discord**: [Join our community](https://discord.gg/kanedocs)
-- 📧 **Email**: contributors@kanedocs.com
-- 🐛 **Issues**: [GitHub Issues](https://github.com/yourusername/kanedocs/issues)
-- 📖 **Docs**: [Contributing Guide](https://kanedocs.netlify.app/contributing)
+- 💬 **Discord**: [Join our community](https://discord.gg/kodex)
+- 📧 **Email**: contributors@kodex.dev
+- 🐛 **Issues**: [GitHub Issues](https://github.com/yourusername/kodex/issues)
+- 📖 **Docs**: [Contributing Guide](https://kodex.netlify.app/contributing)
 
 ## 📜 Code of Conduct
 
@@ -401,8 +401,8 @@ We pledge to make participation in our project a harassment-free experience for 
 
 ### Enforcement
 
-Instances of abusive, harassing, or otherwise unacceptable behavior may be reported by contacting the project team at conduct@kanedocs.com. All complaints will be reviewed and investigated promptly and fairly.
+Instances of abusive, harassing, or otherwise unacceptable behavior may be reported by contacting the project team at conduct@kodex.dev. All complaints will be reviewed and investigated promptly and fairly.
 
 ---
 
-Thank you for contributing to KaneDocs! 🚀
+Thank you for contributing to KODEX! 🚀

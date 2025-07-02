@@ -7,7 +7,7 @@ const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYm
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
     persistSession: true,
-    storageKey: 'kanedocs-auth',
+    storageKey: 'kodex-auth',
     storage: typeof window !== 'undefined' ? window.localStorage : undefined,
     autoRefreshToken: true,
     detectSessionInUrl: true
@@ -20,15 +20,15 @@ export const sessionManager = {
   saveSession(session: any) {
     if (typeof window !== 'undefined' && session) {
       try {
-        localStorage.setItem('kanedocs-session', JSON.stringify({
+        localStorage.setItem('kodex-session', JSON.stringify({
           user: session.user,
           access_token: session.access_token,
           refresh_token: session.refresh_token,
           expires_at: session.expires_at,
           saved_at: Date.now()
         }));
-        localStorage.setItem('kanedocs-auth-timestamp', Date.now().toString());
-        localStorage.setItem('kanedocs-session-active', 'true');
+        localStorage.setItem('kodex-auth-timestamp', Date.now().toString());
+        localStorage.setItem('kodex-session-active', 'true');
       } catch (error) {
         console.error('Error saving session:', error);
       }
@@ -40,7 +40,7 @@ export const sessionManager = {
     if (typeof window === 'undefined') return null;
     
     try {
-      const stored = localStorage.getItem('kanedocs-session');
+      const stored = localStorage.getItem('kodex-session');
       if (!stored) return null;
       
       const session = JSON.parse(stored);
@@ -62,10 +62,10 @@ export const sessionManager = {
   // Clear session from localStorage
   clearSession() {
     if (typeof window !== 'undefined') {
-      localStorage.removeItem('kanedocs-session');
-      localStorage.removeItem('kanedocs-auth');
-      localStorage.removeItem('kanedocs-auth-timestamp');
-      localStorage.removeItem('kanedocs-session-active');
+      localStorage.removeItem('kodex-session');
+      localStorage.removeItem('kodex-auth');
+      localStorage.removeItem('kodex-auth-timestamp');
+      localStorage.removeItem('kodex-session-active');
     }
   },
 
@@ -84,14 +84,14 @@ export const sessionManager = {
   isFreshSession() {
     if (typeof window === 'undefined') return false;
     
-    const isActive = localStorage.getItem('kanedocs-session-active');
+    const isActive = localStorage.getItem('kodex-session-active');
     return !isActive;
   },
 
   // Mark session as active (after showing welcome notification)
   markSessionActive() {
     if (typeof window !== 'undefined') {
-      localStorage.setItem('kanedocs-session-active', 'true');
+      localStorage.setItem('kodex-session-active', 'true');
     }
   },
 
@@ -163,7 +163,7 @@ export const authService = {
       sessionManager.saveSession(data.session);
     }
     
-    return data;
+    return { data };
   },
 
   async signIn(email: string, password: string) {
@@ -179,7 +179,7 @@ export const authService = {
       sessionManager.saveSession(data.session);
     }
     
-    return data;
+    return { data };
   },
 
   async signOut() {

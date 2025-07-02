@@ -1,4 +1,4 @@
-# KaneDocs Quick Start Guide
+# KODEX Quick Start Guide
 
 ## 🚀 Get Started in 5 Minutes
 
@@ -7,11 +7,11 @@
 # After downloading files from WebContainer
 git init
 git add .
-git commit -m "feat: initial KaneDocs setup"
+git commit -m "feat: initial KODEX setup"
 ```
 
 ### 2. Deploy to Netlify
-[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/yourusername/kanedocs)
+[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/yourusername/kodex)
 
 ### 3. Start Using Features
 
@@ -51,7 +51,7 @@ colors: {
 ### 5. Go Live
 ```bash
 # Push to GitHub
-git remote add origin https://github.com/yourusername/kanedocs.git
+git remote add origin https://github.com/yourusername/kodex.git
 git push -u origin main
 
 # Netlify will auto-deploy!
@@ -59,8 +59,8 @@ git push -u origin main
 
 ## ✨ Key Features
 
+- 🧠 **AI Content Generation** - Create docs with AI assistance
 - 📜 **Git-like Version Control** - Track documentation changes
-- 🧠 **AI Content Generation** - Create docs with AI assistance  
 - 🎨 **Clean, Responsive UI** - Beautiful on all devices
 - 🔍 **Advanced Search** - Find content quickly
 - 📊 **Analytics Dashboard** - Track usage and contributions

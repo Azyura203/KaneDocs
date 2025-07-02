@@ -96,17 +96,19 @@ export default function Layout({ children, showSidebar = true }: LayoutProps) {
   // Don't render until mounted to avoid hydration issues
   if (!mounted) {
     return (
-      <div className="min-h-screen bg-white dark:bg-gray-900 flex items-center justify-center">
+      <div className="min-h-screen bg-white dark:bg-slate-900 flex items-center justify-center">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 animate-spin" />
-          <span className="text-gray-600 dark:text-gray-400 font-medium">Loading KaneDocs...</span>
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 animate-pulse flex items-center justify-center">
+            <span className="text-white font-bold text-lg font-display">K</span>
+          </div>
+          <span className="text-slate-600 dark:text-slate-400 font-medium">Loading KODEX...</span>
         </div>
       </div>
     );
   }
 
   return (
-    <div className={`min-h-screen bg-white dark:bg-gray-900 transition-all duration-300 ${isTransitioning ? 'opacity-95' : 'opacity-100'}`}>
+    <div className={`min-h-screen bg-white dark:bg-slate-900 transition-all duration-300 ${isTransitioning ? 'opacity-95' : 'opacity-100'}`}>
       <Header 
         onSidebarToggle={showSidebar ? toggleSidebar : undefined}
         isSidebarOpen={showSidebar ? isSidebarOpen : false}

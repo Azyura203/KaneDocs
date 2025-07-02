@@ -201,7 +201,7 @@ function NavItemComponent({ item, level = 0, isCollapsed }: { item: NavItem; lev
           'flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 group relative',
           'hover:bg-slate-100 dark:hover:bg-slate-800 hover:scale-[1.02]',
           isActive 
-            ? 'bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900/30 dark:to-blue-800/30 text-blue-600 dark:text-blue-400 shadow-sm border-l-4 border-blue-500' 
+            ? 'bg-gradient-to-r from-blue-50 via-purple-50 to-pink-50 dark:from-blue-900/30 dark:via-purple-900/30 dark:to-pink-900/30 text-blue-600 dark:text-blue-400 shadow-sm border-l-4 border-gradient-to-b border-blue-500' 
             : 'text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 border-l-4 border-transparent',
           level > 0 && 'ml-4 text-xs',
           isCollapsed && 'justify-center px-2',
@@ -217,12 +217,12 @@ function NavItemComponent({ item, level = 0, isCollapsed }: { item: NavItem; lev
           </span>
           {!isCollapsed && (
             <>
-              <span className="truncate">{item.title}</span>
+              <span className="truncate font-medium">{item.title}</span>
               {item.badge && (
                 <span className={clsx(
-                  'px-2 py-0.5 text-white text-xs rounded-full font-medium ml-auto transition-all duration-200',
-                  item.badge === 'AI' && 'bg-gradient-to-r from-purple-500 to-pink-500 shadow-sm',
-                  item.badge === 'VCS' && 'bg-gradient-to-r from-blue-500 to-cyan-500 shadow-sm',
+                  'px-2 py-0.5 text-white text-xs rounded-full font-medium ml-auto transition-all duration-200 shadow-sm',
+                  item.badge === 'AI' && 'bg-gradient-to-r from-purple-500 to-pink-500',
+                  item.badge === 'VCS' && 'bg-gradient-to-r from-blue-500 to-cyan-500',
                   isActive && 'scale-105 shadow-md'
                 )}>
                   {item.badge}
@@ -263,7 +263,7 @@ export default function Sidebar({ isOpen = false, onClose, isCollapsed = false }
       {/* Sidebar with enhanced transitions */}
       <aside
         className={clsx(
-          'fixed top-16 left-0 z-50 h-[calc(100vh-4rem)] transform bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 transition-all duration-300 ease-in-out shadow-lg',
+          'fixed top-16 left-0 z-50 h-[calc(100vh-4rem)] transform bg-white dark:bg-slate-900 border-r border-slate-200/60 dark:border-slate-800/60 transition-all duration-300 ease-in-out shadow-xl',
           'lg:relative lg:top-0 lg:h-[calc(100vh-4rem)] lg:translate-x-0 lg:z-0 lg:shadow-none',
           isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0',
           isCollapsed ? 'w-16' : 'w-64'
@@ -281,16 +281,16 @@ export default function Sidebar({ isOpen = false, onClose, isCollapsed = false }
 
           {/* Enhanced Footer */}
           {!isCollapsed && (
-            <div className="border-t border-slate-200 dark:border-slate-800 px-4 py-4 bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-900">
+            <div className="border-t border-slate-200/60 dark:border-slate-800/60 px-4 py-4 bg-gradient-to-r from-slate-50 to-blue-50/30 dark:from-slate-800 dark:to-blue-900/10">
               <div className="text-xs text-slate-500 dark:text-slate-400">
                 <div className="flex items-center justify-between mb-2">
-                  <span>Version:</span>
-                  <span className="px-2 py-1 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded text-xs font-medium shadow-sm">
+                  <span className="font-medium">Version:</span>
+                  <span className="px-2 py-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white rounded-md text-xs font-medium shadow-sm">
                     v2.1.0
                   </span>
                 </div>
                 <div className="text-center mb-2">
-                  <span className="font-semibold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">KaneDocs</span>
+                  <span className="font-bold font-display bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">KODEX</span>
                 </div>
                 <div className="flex items-center justify-center gap-2 text-xs">
                   <div className="flex items-center gap-1">

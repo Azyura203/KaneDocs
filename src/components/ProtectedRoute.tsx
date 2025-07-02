@@ -37,7 +37,7 @@ export default function ProtectedRoute({ children, fallback }: ProtectedRoutePro
 
     // Also listen for storage changes (for cross-tab sync)
     const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'kanedocs-session') {
+      if (e.key === 'kodex-session') {
         if (e.newValue) {
           try {
             const session = JSON.parse(e.newValue);
@@ -69,11 +69,11 @@ export default function ProtectedRoute({ children, fallback }: ProtectedRoutePro
     return (
       <div className="min-h-screen bg-white dark:bg-slate-900 flex items-center justify-center">
         <div className="text-center">
-          <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6 animate-pulse">
-            <span className="text-white font-bold text-2xl">K</span>
+          <div className="w-16 h-16 bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 rounded-2xl flex items-center justify-center mx-auto mb-6 animate-pulse">
+            <span className="text-white font-bold text-2xl font-display">K</span>
           </div>
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-slate-600 dark:text-slate-400">Loading KaneDocs...</p>
+          <p className="text-slate-600 dark:text-slate-400">Loading KODEX...</p>
         </div>
       </div>
     );
@@ -86,37 +86,37 @@ export default function ProtectedRoute({ children, fallback }: ProtectedRoutePro
 
     return (
       <>
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-blue-900/20 flex items-center justify-center p-4">
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 dark:from-slate-900 dark:via-blue-900/20 dark:to-purple-900/20 flex items-center justify-center p-4">
           <div className="max-w-md w-full">
             <div className="text-center mb-8">
-              <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-2xl">
-                <span className="text-white font-bold text-3xl">K</span>
+              <div className="w-20 h-20 bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-2xl">
+                <span className="text-white font-bold text-3xl font-display">K</span>
               </div>
-              <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-3">
+              <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-3 font-display">
                 Authentication Required
               </h1>
               <p className="text-lg text-slate-600 dark:text-slate-400 leading-relaxed">
-                Please sign in to access KaneDocs' powerful documentation and version control features.
+                Please sign in to access KODEX's powerful documentation and version control features.
               </p>
             </div>
 
             <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 p-8">
               <div className="space-y-6">
                 <div className="text-center">
-                  <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  <div className="w-16 h-16 bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900/30 dark:to-purple-900/30 rounded-2xl flex items-center justify-center mx-auto mb-4">
                     <Lock className="text-blue-600" size={28} />
                   </div>
-                  <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-3">
+                  <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-3 font-display">
                     Secure Access Required
                   </h2>
                   <p className="text-slate-600 dark:text-slate-400 mb-6">
-                    KaneDocs protects your documentation and provides personalized features through secure authentication.
+                    KODEX protects your documentation and provides personalized features through secure authentication.
                   </p>
                 </div>
 
                 <button
                   onClick={() => setShowAuthModal(true)}
-                  className="w-full flex items-center justify-center gap-3 px-6 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
+                  className="w-full flex items-center justify-center gap-3 px-6 py-4 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 hover:from-blue-700 hover:via-purple-700 hover:to-pink-700 text-white rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 font-display"
                 >
                   <User size={20} />
                   Sign In / Create Account

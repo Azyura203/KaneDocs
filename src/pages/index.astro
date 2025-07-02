@@ -3,36 +3,36 @@ import Layout from '../layouts/Layout.astro';
 import PublicLayout from '../components/PublicLayout';
 ---
 
-<Layout title="KaneDocs - Modern Documentation Platform">
+<Layout title="KODEX - AI-Powered Documentation Platform">
   <PublicLayout client:load>
     <div class="max-w-7xl mx-auto px-6 py-12 lg:px-8">
       {/* Hero Section */}
       <div class="text-center mb-20">
         <div class="relative inline-block mb-8">
-          <div class="w-32 h-32 bg-gradient-to-br from-blue-500 to-purple-600 rounded-3xl flex items-center justify-center shadow-2xl transform rotate-3 hover:rotate-0 transition-transform duration-300">
-            <span class="text-white font-bold text-4xl">K</span>
+          <div class="w-32 h-32 bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 rounded-3xl flex items-center justify-center shadow-2xl transform rotate-3 hover:rotate-0 transition-transform duration-500">
+            <span class="text-white font-bold text-5xl font-display tracking-tight">K</span>
           </div>
-          <div class="absolute -inset-2 bg-gradient-to-r from-blue-500 to-purple-600 rounded-3xl blur opacity-25 animate-pulse"></div>
+          <div class="absolute -inset-4 bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 rounded-3xl blur-xl opacity-30 animate-pulse"></div>
         </div>
         
-        <h1 class="text-5xl lg:text-7xl font-bold mb-6 bg-gradient-to-r from-slate-900 via-blue-900 to-purple-900 dark:from-white dark:via-blue-100 dark:to-purple-100 bg-clip-text text-transparent">
-          KaneDocs
+        <h1 class="text-6xl lg:text-8xl font-bold mb-6 font-display bg-gradient-to-r from-slate-900 via-blue-900 to-purple-900 dark:from-white dark:via-blue-100 dark:to-purple-100 bg-clip-text text-transparent tracking-tight">
+          KODEX
         </h1>
         <p class="text-xl lg:text-2xl text-slate-600 dark:text-slate-300 max-w-4xl mx-auto leading-relaxed mb-8">
-          The modern documentation platform with integrated 
-          <span class="font-semibold text-blue-600 dark:text-blue-400"> GitHub-like version control</span> features
+          The next-generation AI-powered documentation platform with integrated 
+          <span class="font-semibold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent"> Git-like version control</span>
         </p>
         
         <div class="flex flex-col sm:flex-row gap-4 justify-center mb-12">
           <a
             href="/projects"
-            class="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
+            class="px-8 py-4 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white rounded-xl font-semibold hover:from-blue-700 hover:via-purple-700 hover:to-pink-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 font-display"
           >
             Get Started Free
           </a>
           <a
             href="/about"
-            class="px-8 py-4 border-2 border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 rounded-xl font-semibold hover:bg-slate-50 dark:hover:bg-slate-700 transition-all duration-200"
+            class="px-8 py-4 border-2 border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 rounded-xl font-semibold hover:bg-slate-50 dark:hover:bg-slate-700 transition-all duration-200 font-display"
           >
             Learn More
           </a>
@@ -41,12 +41,12 @@ import PublicLayout from '../components/PublicLayout';
         {/* Trust Indicators */}
         <div class="flex items-center justify-center gap-8 text-sm text-slate-500 dark:text-slate-400">
           <div class="flex items-center gap-2">
-            <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+            <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
             <span>Free Forever</span>
           </div>
           <div class="flex items-center gap-2">
             <div class="w-2 h-2 bg-blue-500 rounded-full"></div>
-            <span>Secure Authentication</span>
+            <span>Enterprise Security</span>
           </div>
           <div class="flex items-center gap-2">
             <div class="w-2 h-2 bg-purple-500 rounded-full"></div>
@@ -57,31 +57,31 @@ import PublicLayout from '../components/PublicLayout';
 
       {/* Authentication Notice */}
       <div class="mb-20">
-        <div class="max-w-4xl mx-auto bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-2xl p-8 border border-blue-200 dark:border-blue-800 text-center">
-          <div class="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-2xl flex items-center justify-center mx-auto mb-6">
-            <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="max-w-4xl mx-auto bg-gradient-to-r from-blue-50 via-purple-50 to-pink-50 dark:from-blue-900/20 dark:via-purple-900/20 dark:to-pink-900/20 rounded-2xl p-8 border border-blue-200 dark:border-blue-800 text-center">
+          <div class="w-16 h-16 bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
             </svg>
           </div>
-          <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-4">
-            Secure Platform Access
+          <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-4 font-display">
+            Enterprise-Grade Security
           </h2>
           <p class="text-lg text-slate-600 dark:text-slate-400 mb-6 max-w-3xl mx-auto leading-relaxed">
-            KaneDocs requires user authentication to ensure the security of your documentation and provide personalized features. 
-            Create your free account to access all features including version control, AI generation, and collaborative editing.
+            KODEX requires secure authentication to protect your documentation and provide personalized AI-powered features. 
+            Create your free account to access advanced version control, intelligent content generation, and collaborative editing.
           </p>
           <div class="flex items-center justify-center gap-8 text-sm text-slate-600 dark:text-slate-400">
             <div class="flex items-center gap-2">
               <svg class="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
               </svg>
-              <span>Free Forever</span>
+              <span>Always Free</span>
             </div>
             <div class="flex items-center gap-2">
               <svg class="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
               </svg>
-              <span>Secure Authentication</span>
+              <span>Zero Setup</span>
             </div>
             <div class="flex items-center gap-2">
               <svg class="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
@@ -93,69 +93,69 @@ import PublicLayout from '../components/PublicLayout';
         </div>
       </div>
 
-      {/* What is KaneDocs */}
+      {/* What is KODEX */}
       <div class="mb-20">
         <div class="text-center mb-16">
-          <h2 class="text-4xl font-bold text-slate-900 dark:text-white mb-6">
-            What is KaneDocs?
+          <h2 class="text-4xl font-bold text-slate-900 dark:text-white mb-6 font-display">
+            What is KODEX?
           </h2>
           <p class="text-xl text-slate-600 dark:text-slate-400 max-w-4xl mx-auto leading-relaxed">
-            KaneDocs transforms how you create, manage, and collaborate on documentation by bringing 
-            the power of version control directly to your documentation workflow.
+            KODEX revolutionizes documentation by combining AI-powered content generation with 
+            enterprise-grade version control, creating the most advanced documentation platform for modern teams.
           </p>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <div>
-            <h3 class="text-3xl font-bold text-slate-900 dark:text-white mb-8">
-              Documentation Meets Version Control
+            <h3 class="text-3xl font-bold text-slate-900 dark:text-white mb-8 font-display">
+              AI Meets Version Control
             </h3>
             <div class="space-y-6">
               <div class="flex items-start gap-4">
-                <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center flex-shrink-0 mt-1">
-                  <span class="text-blue-600 font-bold text-lg">1</span>
+                <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-500 rounded-xl flex items-center justify-center flex-shrink-0 mt-1">
+                  <span class="text-white font-bold text-lg">1</span>
                 </div>
                 <div>
-                  <h4 class="font-semibold text-slate-900 dark:text-white mb-2 text-lg">Track Every Change</h4>
-                  <p class="text-slate-600 dark:text-slate-400 leading-relaxed">Every edit, update, and revision is tracked with full commit history, just like your code.</p>
+                  <h4 class="font-semibold text-slate-900 dark:text-white mb-2 text-lg">AI-Generated Content</h4>
+                  <p class="text-slate-600 dark:text-slate-400 leading-relaxed">Generate comprehensive documentation instantly with advanced AI that understands your codebase and requirements.</p>
                 </div>
               </div>
               <div class="flex items-start gap-4">
-                <div class="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center flex-shrink-0 mt-1">
-                  <span class="text-purple-600 font-bold text-lg">2</span>
+                <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center flex-shrink-0 mt-1">
+                  <span class="text-white font-bold text-lg">2</span>
                 </div>
                 <div>
-                  <h4 class="font-semibold text-slate-900 dark:text-white mb-2 text-lg">Visual Diffs</h4>
-                  <p class="text-slate-600 dark:text-slate-400 leading-relaxed">See exactly what changed between versions with GitHub-style diff viewing.</p>
+                  <h4 class="font-semibold text-slate-900 dark:text-white mb-2 text-lg">Smart Version Control</h4>
+                  <p class="text-slate-600 dark:text-slate-400 leading-relaxed">Track every change with intelligent Git-like versioning that understands documentation context and relationships.</p>
                 </div>
               </div>
               <div class="flex items-start gap-4">
-                <div class="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center flex-shrink-0 mt-1">
-                  <span class="text-green-600 font-bold text-lg">3</span>
+                <div class="w-10 h-10 bg-gradient-to-br from-pink-500 to-red-500 rounded-xl flex items-center justify-center flex-shrink-0 mt-1">
+                  <span class="text-white font-bold text-lg">3</span>
                 </div>
                 <div>
-                  <h4 class="font-semibold text-slate-900 dark:text-white mb-2 text-lg">Branch & Collaborate</h4>
-                  <p class="text-slate-600 dark:text-slate-400 leading-relaxed">Create branches for different versions, features, or team members.</p>
+                  <h4 class="font-semibold text-slate-900 dark:text-white mb-2 text-lg">Team Collaboration</h4>
+                  <p class="text-slate-600 dark:text-slate-400 leading-relaxed">Collaborate seamlessly with real-time editing, intelligent merge conflicts, and advanced permission controls.</p>
                 </div>
               </div>
             </div>
           </div>
-          <div class="bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-800 dark:to-blue-900/20 rounded-2xl p-8">
+          <div class="bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 dark:from-slate-800 dark:via-blue-900/20 dark:to-purple-900/20 rounded-2xl p-8 border border-slate-200 dark:border-slate-700">
             <div class="space-y-4">
-              <div class="flex items-center gap-3 p-4 bg-white dark:bg-slate-800 rounded-xl shadow-sm">
-                <div class="w-3 h-3 bg-green-500 rounded-full"></div>
-                <span class="text-sm font-mono text-slate-700 dark:text-slate-300">feat: add API documentation</span>
+              <div class="flex items-center gap-3 p-4 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
+                <div class="w-3 h-3 bg-gradient-to-r from-green-400 to-emerald-400 rounded-full"></div>
+                <span class="text-sm font-mono text-slate-700 dark:text-slate-300">feat: AI-generated API documentation</span>
               </div>
-              <div class="flex items-center gap-3 p-4 bg-white dark:bg-slate-800 rounded-xl shadow-sm">
-                <div class="w-3 h-3 bg-blue-500 rounded-full"></div>
-                <span class="text-sm font-mono text-slate-700 dark:text-slate-300">docs: update installation guide</span>
+              <div class="flex items-center gap-3 p-4 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
+                <div class="w-3 h-3 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full"></div>
+                <span class="text-sm font-mono text-slate-700 dark:text-slate-300">docs: smart content optimization</span>
               </div>
-              <div class="flex items-center gap-3 p-4 bg-white dark:bg-slate-800 rounded-xl shadow-sm">
-                <div class="w-3 h-3 bg-purple-500 rounded-full"></div>
-                <span class="text-sm font-mono text-slate-700 dark:text-slate-300">fix: resolve broken links</span>
+              <div class="flex items-center gap-3 p-4 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
+                <div class="w-3 h-3 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full"></div>
+                <span class="text-sm font-mono text-slate-700 dark:text-slate-300">fix: intelligent link resolution</span>
               </div>
               <div class="text-center pt-4">
-                <span class="text-sm text-slate-500 dark:text-slate-400">Git-like commit history for docs</span>
+                <span class="text-sm text-slate-500 dark:text-slate-400 font-medium">AI-powered commit intelligence</span>
               </div>
             </div>
           </div>
@@ -165,241 +165,145 @@ import PublicLayout from '../components/PublicLayout';
       {/* Key Features */}
       <div class="mb-20">
         <div class="text-center mb-16">
-          <h2 class="text-4xl font-bold text-slate-900 dark:text-white mb-6">
-            Powerful Features for Modern Documentation
+          <h2 class="text-4xl font-bold text-slate-900 dark:text-white mb-6 font-display">
+            Next-Generation Documentation Features
           </h2>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <div class="group bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-8 hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
-            <div class="w-14 h-14 bg-blue-100 dark:bg-blue-900/30 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-              <svg class="w-7 h-7 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-              </svg>
-            </div>
-            <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">
-              Version Control
-            </h3>
-            <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
-              Complete Git-like versioning with commit history, branching, and tagging for your documentation.
-            </p>
-          </div>
-
-          <div class="group bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-8 hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
-            <div class="w-14 h-14 bg-purple-100 dark:bg-purple-900/30 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-              <svg class="w-7 h-7 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="group bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-8 hover:shadow-xl transition-all duration-300 hover:-translate-y-2 hover:border-blue-300 dark:hover:border-blue-600">
+            <div class="w-14 h-14 bg-gradient-to-br from-blue-500 to-purple-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+              <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
               </svg>
             </div>
-            <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">
-              AI Generation
+            <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3 font-display">
+              AI Content Generation
             </h3>
             <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
-              Generate comprehensive documentation using AI with templates for APIs, guides, and more.
+              Generate comprehensive documentation instantly with advanced AI that understands context, code, and user intent.
             </p>
           </div>
 
-          <div class="group bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-8 hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
-            <div class="w-14 h-14 bg-green-100 dark:bg-green-900/30 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-              <svg class="w-7 h-7 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="group bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-8 hover:shadow-xl transition-all duration-300 hover:-translate-y-2 hover:border-purple-300 dark:hover:border-purple-600">
+            <div class="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+              <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3 font-display">
+              Smart Version Control
+            </h3>
+            <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+              Enterprise-grade Git-like versioning with intelligent branching, merging, and conflict resolution for documentation.
+            </p>
+          </div>
+
+          <div class="group bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-8 hover:shadow-xl transition-all duration-300 hover:-translate-y-2 hover:border-green-300 dark:hover:border-green-600">
+            <div class="w-14 h-14 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+              <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
               </svg>
             </div>
-            <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">
-              Visual Diffs
+            <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3 font-display">
+              Visual Intelligence
             </h3>
             <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
-              See exactly what changed between versions with GitHub-style diff viewing and syntax highlighting.
+              Advanced diff visualization with syntax highlighting and intelligent change detection for perfect clarity.
             </p>
           </div>
 
-          <div class="group bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-8 hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
-            <div class="w-14 h-14 bg-yellow-100 dark:bg-yellow-900/30 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-              <svg class="w-7 h-7 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="group bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-8 hover:shadow-xl transition-all duration-300 hover:-translate-y-2 hover:border-yellow-300 dark:hover:border-yellow-600">
+            <div class="w-14 h-14 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+              <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a1 1 0 01-1-1V9a1 1 0 011-1h1a2 2 0 100-4H4a1 1 0 01-1-1V4a1 1 0 011-1h3a1 1 0 011 1v1z"></path>
               </svg>
             </div>
-            <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">
-              Branch Management
+            <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3 font-display">
+              Advanced Branching
             </h3>
             <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
-              Create and manage documentation branches for different versions, features, or environments.
+              Create and manage documentation branches for different versions, features, or environments with ease.
             </p>
           </div>
 
-          <div class="group bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-8 hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
-            <div class="w-14 h-14 bg-red-100 dark:bg-red-900/30 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-              <svg class="w-7 h-7 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="group bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-8 hover:shadow-xl transition-all duration-300 hover:-translate-y-2 hover:border-red-300 dark:hover:border-red-600">
+            <div class="w-14 h-14 bg-gradient-to-br from-red-500 to-pink-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+              <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
               </svg>
             </div>
-            <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">
-              Team Insights
+            <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3 font-display">
+              Team Analytics
             </h3>
             <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
-              Track contributor activity, commit patterns, and project statistics with detailed analytics.
+              Comprehensive insights into team contributions, documentation health, and collaboration patterns.
             </p>
           </div>
 
-          <div class="group bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-8 hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
-            <div class="w-14 h-14 bg-indigo-100 dark:bg-indigo-900/30 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-              <svg class="w-7 h-7 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="group bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-8 hover:shadow-xl transition-all duration-300 hover:-translate-y-2 hover:border-indigo-300 dark:hover:border-indigo-600">
+            <div class="w-14 h-14 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+              <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4"></path>
               </svg>
             </div>
-            <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">
-              Live Editor
+            <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3 font-display">
+              Real-time Collaboration
             </h3>
             <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
-              Edit documentation with live preview, syntax highlighting, and real-time collaboration features.
+              Live editing with intelligent conflict resolution, real-time comments, and seamless team synchronization.
             </p>
           </div>
         </div>
       </div>
 
-      {/* Use Cases */}
-      <div class="mb-20">
-        <div class="text-center mb-16">
-          <h2 class="text-4xl font-bold text-slate-900 dark:text-white mb-6">
-            Perfect For Every Documentation Need
-          </h2>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div class="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-2xl p-8 border border-blue-200 dark:border-blue-800">
-            <h3 class="text-2xl font-bold text-slate-900 dark:text-white mb-4">
-              🚀 API Documentation
-            </h3>
-            <p class="text-slate-600 dark:text-slate-400 mb-6 leading-relaxed">
-              Create comprehensive API documentation with version control for different API versions, 
-              track changes to endpoints, and maintain documentation alongside your code.
-            </p>
-            <ul class="text-sm text-slate-600 dark:text-slate-400 space-y-2">
-              <li>• Version different API releases</li>
-              <li>• Track endpoint changes</li>
-              <li>• Generate docs with AI</li>
-              <li>• Collaborate with team</li>
-            </ul>
-          </div>
-
-          <div class="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 rounded-2xl p-8 border border-green-200 dark:border-green-800">
-            <h3 class="text-2xl font-bold text-slate-900 dark:text-white mb-4">
-              📚 Project Documentation
-            </h3>
-            <p class="text-slate-600 dark:text-slate-400 mb-6 leading-relaxed">
-              Maintain project documentation with the same rigor as your codebase. 
-              Track changes, manage versions, and ensure documentation stays current.
-            </p>
-            <ul class="text-sm text-slate-600 dark:text-slate-400 space-y-2">
-              <li>• Git-like workflow</li>
-              <li>• Branch for features</li>
-              <li>• Review changes</li>
-              <li>• Release documentation</li>
-            </ul>
-          </div>
-
-          <div class="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 rounded-2xl p-8 border border-purple-200 dark:border-purple-800">
-            <h3 class="text-2xl font-bold text-slate-900 dark:text-white mb-4">
-              🏢 Team Wikis
-            </h3>
-            <p class="text-slate-600 dark:text-slate-400 mb-6 leading-relaxed">
-              Build internal knowledge bases with version control. Track who contributed what, 
-              when changes were made, and maintain a complete history of your team's knowledge.
-            </p>
-            <ul class="text-sm text-slate-600 dark:text-slate-400 space-y-2">
-              <li>• Track contributions</li>
-              <li>• Maintain history</li>
-              <li>• Collaborative editing</li>
-              <li>• Knowledge management</li>
-            </ul>
-          </div>
-
-          <div class="bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-900/20 dark:to-orange-800/20 rounded-2xl p-8 border border-orange-200 dark:border-orange-800">
-            <h3 class="text-2xl font-bold text-slate-900 dark:text-white mb-4">
-              🎓 Tutorial Sites
-            </h3>
-            <p class="text-slate-600 dark:text-slate-400 mb-6 leading-relaxed">
-              Create step-by-step tutorials and guides with version control. 
-              Update content as technologies evolve and track improvements over time.
-            </p>
-            <ul class="text-sm text-slate-600 dark:text-slate-400 space-y-2">
-              <li>• Version tutorials</li>
-              <li>• Track improvements</li>
-              <li>• AI-generated content</li>
-              <li>• Community contributions</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-
-      {/* Getting Started */}
-      <div class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-12 text-white text-center">
-        <h2 class="text-3xl lg:text-4xl font-bold mb-6">
+      {/* Call to Action */}
+      <div class="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 rounded-2xl p-12 text-white text-center">
+        <h2 class="text-3xl lg:text-4xl font-bold mb-6 font-display">
           Ready to Transform Your Documentation?
         </h2>
         <p class="text-xl mb-10 opacity-90 max-w-3xl mx-auto leading-relaxed">
-          Join developers who are already using KaneDocs to create better documentation 
-          with the power of version control and AI assistance.
+          Join forward-thinking teams who are already using KODEX to create intelligent documentation 
+          with the power of AI and enterprise-grade version control.
         </p>
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
           <a
             href="/projects"
-            class="px-8 py-4 bg-white text-blue-600 rounded-xl font-semibold hover:bg-slate-100 transition-colors shadow-lg"
+            class="px-8 py-4 bg-white text-blue-600 rounded-xl font-semibold hover:bg-slate-100 transition-colors shadow-lg font-display"
           >
-            Get Started Free
+            Start Building Free
           </a>
           <a
             href="/about"
-            class="px-8 py-4 border-2 border-white text-white rounded-xl font-semibold hover:bg-white hover:text-blue-600 transition-colors"
+            class="px-8 py-4 border-2 border-white text-white rounded-xl font-semibold hover:bg-white hover:text-blue-600 transition-colors font-display"
           >
-            Learn More
+            Explore Features
           </a>
         </div>
       </div>
     </div>
   </PublicLayout>
 
-  <!-- Add highlight.js theme -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" class="light-theme">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" class="dark-theme">
-
+  <!-- Add enhanced fonts -->
   <style>
-    /* Theme-specific highlight.js styles */
-    .light-theme {
-      display: block;
+    /* Enhanced typography */
+    .font-display {
+      font-family: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+      font-feature-settings: 'ss01', 'ss02';
     }
     
-    .dark-theme {
-      display: none;
-    }
-    
-    html.dark .light-theme {
-      display: none;
-    }
-    
-    html.dark .dark-theme {
-      display: block;
-    }
-
-    /* Fix any potential SVG issues */
-    svg {
-      display: block;
-      max-width: 100%;
-      height: auto;
-    }
-
-    /* Ensure proper spacing and layout */
-    .group:hover svg {
-      transform: scale(1.05);
-      transition: transform 0.3s ease;
-    }
-
     /* Smooth animations */
     * {
       transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
       transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-      transition-duration: 150ms;
+      transition-duration: 200ms;
+    }
+    
+    /* Enhanced gradient text */
+    .bg-clip-text {
+      -webkit-background-clip: text;
+      background-clip: text;
     }
   </style>
 </Layout>

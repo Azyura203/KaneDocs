@@ -62,7 +62,7 @@ export default function AuthButton() {
           setTimeout(() => {
             notificationManager.success(
               `Welcome, ${displayName}!`,
-              'Successfully signed in to KaneDocs.',
+              'Successfully signed in to KODEX.',
               3000
             );
             
@@ -149,7 +149,7 @@ export default function AuthButton() {
           </button>
 
           {showUserMenu && (
-            <div className="absolute top-full right-0 mt-2 w-56 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-lg py-2 z-50">
+            <div className="absolute top-full right-0 mt-2 w-56 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-lg py-2 z-50 animate-scale-in">
               <div className="px-4 py-3 border-b border-slate-200 dark:border-slate-700">
                 <p className="text-sm font-medium text-slate-900 dark:text-white">
                   {user.user_metadata?.full_name || 'User'}
@@ -182,7 +182,7 @@ export default function AuthButton() {
       ) : (
         <button
           onClick={() => setShowAuthModal(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 font-medium"
+          className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 hover:from-blue-700 hover:via-purple-700 hover:to-pink-700 text-white rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 font-medium"
         >
           <User size={16} />
           <span className="hidden sm:inline">Sign In</span>
