@@ -135,9 +135,14 @@ function NavItemComponent({ item, level = 0, isCollapsed }: { item: NavItem; lev
     
     document.addEventListener('click', handleClick);
     
+    // Capture the initial pathname for comparison in MutationObserver
+    let lastPathname = window.location.pathname;
+    
     // Check on mount and when pathname might change
     const observer = new MutationObserver(() => {
-      if (window.location.pathname !== pathname) {
+      const currentPathname = window.location.pathname;
+      if (currentPathname !== lastPathname) {
+        lastPathname = currentPathname;
         checkActive();
       }
     });
