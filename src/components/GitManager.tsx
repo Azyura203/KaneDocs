@@ -28,22 +28,9 @@ import {
   Filter,
   Search,
   MoreHorizontal,
-  ChevronDown,
-  Server,
-  Lock,
-  Unlock,
-  ArrowUpRight,
-  ArrowDownRight,
-  Loader,
-  Clipboard,
-  ClipboardCheck,
-  RotateCcw,
-  Shield,
-  Zap,
-  HelpCircle
+  ChevronDown
 } from 'lucide-react';
 import { clsx } from 'clsx';
-import { notificationManager } from './SimpleNotification';
 
 interface FileChange {
   path: string;
@@ -71,60 +58,14 @@ interface Branch {
   behind: number;
 }
 
-interface RemoteRepository {
-  name: string;
-  url: string;
-  isDefault: boolean;
-}
-
 export default function GitManager() {
-  // State for repository data
   const [currentBranch, setCurrentBranch] = useState('main');
   const [branches, setBranches] = useState<Branch[]>([
-    { name: 'main', current: true, lastCommit: '2 hours ago', ahead: 0, behind: 0 },
-    { name: 'feature/ai-generator', current: false, lastCommit: '1 day ago', ahead: 3, behind: 1 },
-    { name: 'docs/update', current: false, lastCommit: '3 days ago', ahead: 1, behind: 5 }
+    { name: 'main', current: true, lastCommit: 'just now', ahead: 0, behind: 0 }
   ]);
   
-  const [fileChanges, setFileChanges] = useState<FileChange[]>([
-    { path: 'src/components/AIMarkdownGenerator.tsx', status: 'modified', additions: 45, deletions: 12, staged: false },
-    { path: 'src/pages/ai-generator.astro', status: 'modified', additions: 8, deletions: 3, staged: false },
-    { path: 'docs/README.md', status: 'added', additions: 120, deletions: 0, staged: false },
-    { path: 'src/components/GitManager.tsx', status: 'added', additions: 350, deletions: 0, staged: false },
-    { path: 'package.json', status: 'modified', additions: 2, deletions: 0, staged: true }
-  ]);
-
-  const [commits, setCommits] = useState<Commit[]>([
-    {
-      id: 'a1b2c3d',
-      message: 'feat: enhance AI markdown generator with better UI',
-      author: 'John Doe',
-      date: '2 hours ago',
-      files: 3,
-      additions: 45,
-      deletions: 12
-    },
-    {
-      id: 'e4f5g6h',
-      message: 'fix: resolve sidebar toggle issues',
-      author: 'John Doe',
-      date: '1 day ago',
-      files: 2,
-      additions: 23,
-      deletions: 8
-    },
-    {
-      id: 'i7j8k9l',
-      message: 'docs: update installation guide',
-      author: 'Jane Smith',
-      date: '2 days ago',
-      files: 1,
-      additions: 15,
-      deletions: 5
-    }
-  ]);
-
-  // State for UI controls
+  const [fileChanges, setFileChanges] = useState<FileChange[]>([]);
+  const [commits, setCommits] = useState<Commit[]>([]);
   const [commitMessage, setCommitMessage] = useState('');
   const [commitDescription, setCommitDescription] = useState('');
   const [newBranchName, setNewBranchName] = useState('');
@@ -133,25 +74,7 @@ export default function GitManager() {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterStatus, setFilterStatus] = useState<'all' | 'staged' | 'unstaged'>('all');
   const [showCommitOptions, setShowCommitOptions] = useState(false);
-  const [showBranchMenu, setShowBranchMenu] = useState(false);
-  
-  // State for Git operations
-  const [isPulling, setIsPulling] = useState(false);
-  const [isPushing, setIsPushing] = useState(false);
-  const [isSyncing, setIsSyncing] = useState(false);
-  const [showSettings, setShowSettings] = useState(false);
-  const [showTerminal, setShowTerminal] = useState(false);
-  const [terminalOutput, setTerminalOutput] = useState<string[]>([]);
-  const [terminalInput, setTerminalInput] = useState('');
-  const [remotes, setRemotes] = useState<RemoteRepository[]>([
-    { name: 'origin', url: 'https://github.com/yourusername/kodex.git', isDefault: true }
-  ]);
-  const [showRemoteForm, setShowRemoteForm] = useState(false);
-  const [newRemoteName, setNewRemoteName] = useState('');
-  const [newRemoteUrl, setNewRemoteUrl] = useState('');
-  const [copiedCommitId, setCopiedCommitId] = useState<string | null>(null);
 
-  // Derived state
   const stagedFiles = fileChanges.filter(file => file.staged);
   const unstagedFiles = fileChanges.filter(file => !file.staged);
 
@@ -165,7 +88,6 @@ export default function GitManager() {
     return matchesSearch && matchesFilter;
   });
 
-  // File operations
   const toggleFileStaging = (path: string) => {
     setFileChanges(prev => 
       prev.map(file => 
@@ -176,23 +98,12 @@ export default function GitManager() {
 
   const stageAllFiles = () => {
     setFileChanges(prev => prev.map(file => ({ ...file, staged: true })));
-    notificationManager.success(
-      'Files Staged',
-      'All files have been staged for commit',
-      3000
-    );
   };
 
   const unstageAllFiles = () => {
     setFileChanges(prev => prev.map(file => ({ ...file, staged: false })));
-    notificationManager.info(
-      'Files Unstaged',
-      'All files have been unstaged',
-      3000
-    );
   };
 
-  // Commit operations
   const handleCommit = () => {
     if (!commitMessage.trim() || stagedFiles.length === 0) return;
 
@@ -211,15 +122,8 @@ export default function GitManager() {
     setCommitMessage('');
     setCommitDescription('');
     setShowCommitOptions(false);
-    
-    notificationManager.success(
-      'Commit Created',
-      `Successfully committed ${stagedFiles.length} files to ${currentBranch}`,
-      3000
-    );
   };
 
-  // Branch operations
   const createBranch = () => {
     if (!newBranchName.trim()) return;
 
@@ -234,12 +138,6 @@ export default function GitManager() {
     setBranches(prev => [...prev, newBranch]);
     setNewBranchName('');
     setShowNewBranch(false);
-    
-    notificationManager.success(
-      'Branch Created',
-      `Successfully created branch '${newBranchName}'`,
-      3000
-    );
   };
 
   const switchBranch = (branchName: string) => {
@@ -250,338 +148,8 @@ export default function GitManager() {
       }))
     );
     setCurrentBranch(branchName);
-    setShowBranchMenu(false);
-    
-    notificationManager.info(
-      'Branch Switched',
-      `Switched to branch '${branchName}'`,
-      3000
-    );
   };
 
-  const deleteBranch = (branchName: string) => {
-    if (branchName === 'main') {
-      notificationManager.error(
-        'Cannot Delete Main Branch',
-        'The main branch cannot be deleted',
-        3000
-      );
-      return;
-    }
-    
-    if (branchName === currentBranch) {
-      notificationManager.error(
-        'Cannot Delete Current Branch',
-        'You cannot delete the branch you are currently on',
-        3000
-      );
-      return;
-    }
-    
-    setBranches(prev => prev.filter(branch => branch.name !== branchName));
-    
-    notificationManager.success(
-      'Branch Deleted',
-      `Successfully deleted branch '${branchName}'`,
-      3000
-    );
-  };
-
-  // Remote operations
-  const addRemote = () => {
-    if (!newRemoteName.trim() || !newRemoteUrl.trim()) return;
-    
-    setRemotes(prev => [...prev, {
-      name: newRemoteName,
-      url: newRemoteUrl,
-      isDefault: false
-    }]);
-    
-    setNewRemoteName('');
-    setNewRemoteUrl('');
-    setShowRemoteForm(false);
-    
-    notificationManager.success(
-      'Remote Added',
-      `Added remote '${newRemoteName}' pointing to ${newRemoteUrl}`,
-      3000
-    );
-  };
-
-  const removeRemote = (name: string) => {
-    setRemotes(prev => prev.filter(remote => remote.name !== name));
-    
-    notificationManager.info(
-      'Remote Removed',
-      `Removed remote '${name}'`,
-      3000
-    );
-  };
-
-  const setDefaultRemote = (name: string) => {
-    setRemotes(prev => prev.map(remote => ({
-      ...remote,
-      isDefault: remote.name === name
-    })));
-    
-    notificationManager.success(
-      'Default Remote Updated',
-      `Set '${name}' as the default remote`,
-      3000
-    );
-  };
-
-  // Git operations
-  const handlePull = () => {
-    setIsPulling(true);
-    
-    // Simulate network delay
-    setTimeout(() => {
-      // Simulate getting new commits
-      const newCommit: Commit = {
-        id: Math.random().toString(36).substr(2, 7),
-        message: 'feat: add new feature from remote',
-        author: 'Remote Contributor',
-        date: 'just now',
-        files: 2,
-        additions: 120,
-        deletions: 5
-      };
-      
-      setCommits(prev => [newCommit, ...prev]);
-      
-      // Update branch status
-      setBranches(prev => 
-        prev.map(branch => 
-          branch.name === currentBranch 
-            ? { ...branch, behind: 0 } 
-            : branch
-        )
-      );
-      
-      setIsPulling(false);
-      
-      notificationManager.success(
-        'Pull Successful',
-        'Successfully pulled latest changes from remote',
-        3000
-      );
-    }, 2000);
-  };
-
-  const handlePush = () => {
-    setIsPushing(true);
-    
-    // Simulate network delay
-    setTimeout(() => {
-      // Update branch status
-      setBranches(prev => 
-        prev.map(branch => 
-          branch.name === currentBranch 
-            ? { ...branch, ahead: 0 } 
-            : branch
-        )
-      );
-      
-      setIsPushing(false);
-      
-      notificationManager.success(
-        'Push Successful',
-        'Successfully pushed local commits to remote',
-        3000
-      );
-    }, 2000);
-  };
-
-  const handleSync = () => {
-    setIsSyncing(true);
-    
-    // Simulate network delay
-    setTimeout(() => {
-      // First pull
-      const newCommit: Commit = {
-        id: Math.random().toString(36).substr(2, 7),
-        message: 'fix: resolve issue from remote',
-        author: 'Remote Contributor',
-        date: 'just now',
-        files: 1,
-        additions: 5,
-        deletions: 2
-      };
-      
-      setCommits(prev => [newCommit, ...prev]);
-      
-      // Then push
-      setBranches(prev => 
-        prev.map(branch => 
-          branch.name === currentBranch 
-            ? { ...branch, ahead: 0, behind: 0 } 
-            : branch
-        )
-      );
-      
-      setIsSyncing(false);
-      
-      notificationManager.success(
-        'Sync Successful',
-        'Successfully synchronized with remote repository',
-        3000
-      );
-    }, 3000);
-  };
-
-  // Terminal operations
-  const executeTerminalCommand = () => {
-    if (!terminalInput.trim()) return;
-    
-    setTerminalOutput(prev => [...prev, `$ ${terminalInput}`]);
-    
-    // Simulate command execution
-    let output: string[] = [];
-    
-    if (terminalInput.startsWith('git status')) {
-      output = [
-        'On branch ' + currentBranch,
-        'Your branch is up to date with \'origin/' + currentBranch + '\'.',
-        '',
-        'Changes to be committed:',
-        '  (use "git restore --staged <file>..." to unstage)',
-        ...stagedFiles.map(file => `\t${file.status === 'added' ? 'new file:' : file.status === 'deleted' ? 'deleted:' : 'modified:'} ${file.path}`),
-        '',
-        'Changes not staged for commit:',
-        '  (use "git add <file>..." to update what will be committed)',
-        '  (use "git restore <file>..." to discard changes in working directory)',
-        ...unstagedFiles.map(file => `\t${file.status === 'added' ? 'new file:' : file.status === 'deleted' ? 'deleted:' : 'modified:'} ${file.path}`)
-      ];
-    } else if (terminalInput.startsWith('git branch')) {
-      output = branches.map(branch => `${branch.current ? '* ' : '  '}${branch.name}`);
-    } else if (terminalInput.startsWith('git log')) {
-      output = commits.flatMap(commit => [
-        `commit ${commit.id}`,
-        `Author: ${commit.author}`,
-        `Date: ${commit.date}`,
-        '',
-        `    ${commit.message}`,
-        ''
-      ]);
-    } else if (terminalInput.startsWith('git remote -v')) {
-      output = remotes.flatMap(remote => [
-        `${remote.name}\t${remote.url} (fetch)`,
-        `${remote.name}\t${remote.url} (push)`
-      ]);
-    } else if (terminalInput.startsWith('git add')) {
-      const filePath = terminalInput.replace('git add', '').trim();
-      if (filePath === '.') {
-        setFileChanges(prev => prev.map(file => ({ ...file, staged: true })));
-        output = ['Added all files to staging area'];
-      } else {
-        const fileExists = fileChanges.some(file => file.path === filePath);
-        if (fileExists) {
-          setFileChanges(prev => prev.map(file => 
-            file.path === filePath ? { ...file, staged: true } : file
-          ));
-          output = [`Added ${filePath} to staging area`];
-        } else {
-          output = [`fatal: pathspec '${filePath}' did not match any files`];
-        }
-      }
-    } else if (terminalInput.startsWith('git commit')) {
-      if (stagedFiles.length === 0) {
-        output = ['nothing to commit, working tree clean'];
-      } else {
-        const msgMatch = terminalInput.match(/-m "([^"]+)"/);
-        const message = msgMatch ? msgMatch[1] : 'Commit via terminal';
-        
-        const newCommit: Commit = {
-          id: Math.random().toString(36).substr(2, 7),
-          message,
-          author: 'You',
-          date: 'just now',
-          files: stagedFiles.length,
-          additions: stagedFiles.reduce((sum, file) => sum + file.additions, 0),
-          deletions: stagedFiles.reduce((sum, file) => sum + file.deletions, 0)
-        };
-        
-        setCommits(prev => [newCommit, ...prev]);
-        setFileChanges(prev => prev.filter(file => !file.staged));
-        
-        output = [
-          `[${currentBranch} ${newCommit.id}] ${message}`,
-          ` ${stagedFiles.length} files changed, ${newCommit.additions} insertions(+), ${newCommit.deletions} deletions(-)`,
-        ];
-      }
-    } else if (terminalInput.startsWith('git checkout')) {
-      const branchName = terminalInput.replace('git checkout', '').trim();
-      const branchExists = branches.some(branch => branch.name === branchName);
-      
-      if (branchExists) {
-        setBranches(prev => 
-          prev.map(branch => ({
-            ...branch,
-            current: branch.name === branchName
-          }))
-        );
-        setCurrentBranch(branchName);
-        output = [`Switched to branch '${branchName}'`];
-      } else if (branchName.startsWith('-b ')) {
-        const newBranchName = branchName.replace('-b ', '').trim();
-        const newBranch: Branch = {
-          name: newBranchName,
-          current: true,
-          lastCommit: 'just now',
-          ahead: 0,
-          behind: 0
-        };
-        
-        setBranches(prev => prev.map(branch => ({
-          ...branch,
-          current: false
-        })));
-        setBranches(prev => [...prev, newBranch]);
-        setCurrentBranch(newBranchName);
-        
-        output = [`Switched to a new branch '${newBranchName}'`];
-      } else {
-        output = [`error: pathspec '${branchName}' did not match any file(s) known to git`];
-      }
-    } else if (terminalInput.startsWith('git pull')) {
-      output = ['Simulating pull operation...'];
-      handlePull();
-    } else if (terminalInput.startsWith('git push')) {
-      output = ['Simulating push operation...'];
-      handlePush();
-    } else if (terminalInput.startsWith('clear') || terminalInput.startsWith('cls')) {
-      setTerminalOutput([]);
-      setTerminalInput('');
-      return;
-    } else if (terminalInput.startsWith('help')) {
-      output = [
-        'Available Git commands:',
-        '  git status - Show working tree status',
-        '  git branch - List branches',
-        '  git checkout <branch> - Switch branches',
-        '  git checkout -b <branch> - Create and switch to a new branch',
-        '  git add <file> - Add file to staging area',
-        '  git add . - Add all files to staging area',
-        '  git commit -m "message" - Commit staged changes',
-        '  git log - Show commit history',
-        '  git remote -v - List remotes',
-        '  git pull - Pull changes from remote',
-        '  git push - Push changes to remote',
-        '',
-        'Other commands:',
-        '  clear - Clear terminal',
-        '  help - Show this help message'
-      ];
-    } else {
-      output = [`Command not found: ${terminalInput}`];
-    }
-    
-    setTerminalOutput(prev => [...prev, ...output]);
-    setTerminalInput('');
-  };
-
-  // UI helpers
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'added':
@@ -608,10 +176,32 @@ export default function GitManager() {
     }
   };
 
-  const copyCommitId = (id: string) => {
-    navigator.clipboard.writeText(id);
-    setCopiedCommitId(id);
-    setTimeout(() => setCopiedCommitId(null), 2000);
+  // Function to handle pull operation
+  const handlePull = () => {
+    alert("Pull operation would fetch and merge changes from remote repository");
+  };
+
+  // Function to handle push operation
+  const handlePush = () => {
+    alert("Push operation would upload local commits to remote repository");
+  };
+
+  // Function to handle sync operation
+  const handleSync = () => {
+    alert("Sync operation would synchronize local and remote repositories");
+    setShowCommitOptions(false);
+  };
+
+  // Function to handle repository settings
+  const handleRepoSettings = () => {
+    alert("Repository settings would allow configuration of repository options");
+    setShowCommitOptions(false);
+  };
+
+  // Function to handle terminal
+  const handleOpenTerminal = () => {
+    alert("Terminal would allow running git commands directly");
+    setShowCommitOptions(false);
   };
 
   return (
@@ -621,8 +211,8 @@ export default function GitManager() {
         <div className="p-6">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
-              <div className="p-3 bg-gradient-to-br from-gray-700 to-gray-900 rounded-xl shadow-lg">
-                <GitBranch className="text-white" size={24} />
+              <div className="p-2 bg-gradient-to-br from-gray-700 to-gray-900 rounded-lg">
+                <GitBranch className="text-white" size={20} />
               </div>
               <div>
                 <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
@@ -636,100 +226,27 @@ export default function GitManager() {
             
             {/* Enhanced Action Bar */}
             <div className="flex items-center gap-3">
-              {/* Branch Selector */}
-              <div className="relative">
-                <button
-                  onClick={() => setShowBranchMenu(!showBranchMenu)}
-                  className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg hover:shadow-md transition-all duration-200"
-                >
-                  <GitBranch size={16} className="text-gray-500" />
-                  <span className="font-medium text-gray-900 dark:text-white">{currentBranch}</span>
-                  <ChevronDown size={14} className="text-gray-400" />
-                </button>
-                
-                {showBranchMenu && (
-                  <div className="absolute top-full left-0 mt-2 w-64 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-10 overflow-hidden">
-                    <div className="p-2 border-b border-gray-200 dark:border-gray-700">
-                      <div className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                        Switch branch
-                      </div>
-                    </div>
-                    <div className="max-h-64 overflow-y-auto">
-                      {branches.map((branch) => (
-                        <button
-                          key={branch.name}
-                          onClick={() => switchBranch(branch.name)}
-                          className={clsx(
-                            "w-full flex items-center gap-3 px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors",
-                            branch.current ? "bg-blue-50 dark:bg-blue-900/20" : ""
-                          )}
-                        >
-                          <GitBranch size={14} className={branch.current ? "text-blue-600" : "text-gray-500"} />
-                          <span className={clsx(
-                            "flex-1 text-left truncate",
-                            branch.current ? "font-medium text-blue-600 dark:text-blue-400" : "text-gray-700 dark:text-gray-300"
-                          )}>
-                            {branch.name}
-                          </span>
-                          {branch.current && (
-                            <Check size={14} className="text-blue-600" />
-                          )}
-                        </button>
-                      ))}
-                    </div>
-                    <div className="p-2 border-t border-gray-200 dark:border-gray-700">
-                      <button
-                        onClick={() => {
-                          setShowBranchMenu(false);
-                          setShowNewBranch(true);
-                        }}
-                        className="w-full flex items-center gap-2 px-3 py-2 text-sm text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-md transition-colors"
-                      >
-                        <Plus size={14} />
-                        Create new branch
-                      </button>
-                    </div>
-                  </div>
-                )}
+              <div className="flex items-center gap-2 px-3 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg">
+                <GitBranch size={16} className="text-gray-500" />
+                <span className="font-medium text-gray-900 dark:text-white">{currentBranch}</span>
+                <ChevronDown size={14} className="text-gray-400" />
               </div>
               
               <div className="flex items-center gap-2">
-                {/* Pull Button */}
                 <button 
                   onClick={handlePull}
-                  disabled={isPulling}
-                  className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-medium disabled:opacity-70 disabled:cursor-not-allowed"
+                  className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-medium"
                 >
-                  {isPulling ? (
-                    <>
-                      <Loader size={16} className="animate-spin" />
-                      <span>Pulling...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Download size={16} />
-                      <span>Pull</span>
-                    </>
-                  )}
+                  <Download size={16} />
+                  Pull
                 </button>
                 
-                {/* Push Button */}
-                <button
+                <button 
                   onClick={handlePush}
-                  disabled={isPushing || branches.find(b => b.current)?.ahead === 0}
-                  className="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors font-medium disabled:opacity-70 disabled:cursor-not-allowed"
+                  className="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors font-medium"
                 >
-                  {isPushing ? (
-                    <>
-                      <Loader size={16} className="animate-spin" />
-                      <span>Pushing...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Upload size={16} />
-                      <span>Push</span>
-                    </>
-                  )}
+                  <Upload size={16} />
+                  Push
                 </button>
 
                 <div className="relative">
@@ -741,46 +258,27 @@ export default function GitManager() {
                   </button>
 
                   {showCommitOptions && (
-                    <div className="absolute top-full right-0 mt-2 w-56 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg py-1 z-10">
+                    <div className="absolute top-full right-0 mt-1 w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg py-1 z-10">
                       <button 
-                        onClick={() => {
-                          setShowCommitOptions(false);
-                          handleSync();
-                        }}
-                        disabled={isSyncing}
-                        className="w-full flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                        onClick={handleSync}
+                        className="w-full flex items-center gap-3 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
                       >
-                        {isSyncing ? (
-                          <>
-                            <Loader size={14} className="animate-spin" />
-                            <span>Syncing...</span>
-                          </>
-                        ) : (
-                          <>
-                            <RefreshCw size={14} />
-                            <span>Sync Changes</span>
-                          </>
-                        )}
+                        <RefreshCw size={14} />
+                        Sync Changes
                       </button>
                       <button 
-                        onClick={() => {
-                          setShowCommitOptions(false);
-                          setShowSettings(true);
-                        }}
-                        className="w-full flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                        onClick={handleRepoSettings}
+                        className="w-full flex items-center gap-3 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
                       >
                         <Settings size={14} />
-                        <span>Repository Settings</span>
+                        Repository Settings
                       </button>
                       <button 
-                        onClick={() => {
-                          setShowCommitOptions(false);
-                          setShowTerminal(true);
-                        }}
-                        className="w-full flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                        onClick={handleOpenTerminal}
+                        className="w-full flex items-center gap-3 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
                       >
                         <Terminal size={14} />
-                        <span>Open Terminal</span>
+                        Open Terminal
                       </button>
                     </div>
                   )}
@@ -855,156 +353,34 @@ export default function GitManager() {
       {/* Content */}
       <div className="flex-1 overflow-hidden">
         {activeTab === 'changes' && (
-          <div className="h-full flex flex-col lg:flex-row">
-            {/* Enhanced File Changes */}
-            <div className="flex-1 flex flex-col border-r border-gray-200 dark:border-gray-700">
-              <div className="p-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="font-semibold text-gray-900 dark:text-white">
-                    Changes ({filteredFiles.length})
-                  </h3>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={stageAllFiles}
-                      disabled={unstagedFiles.length === 0}
-                      className="text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      Stage all
-                    </button>
-                    <button
-                      onClick={unstageAllFiles}
-                      disabled={stagedFiles.length === 0}
-                      className="text-sm text-gray-600 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      Unstage all
-                    </button>
-                  </div>
+          <div className="h-full flex">
+            {/* Empty State for Changes */}
+            <div className="flex-1 flex items-center justify-center">
+              <div className="text-center max-w-md p-8">
+                <div className="w-20 h-20 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <CheckCircle className="w-10 h-10 text-green-500" />
                 </div>
-
-                {/* Quick Stats */}
-                <div className="grid grid-cols-3 gap-4 text-sm">
-                  <div className="text-center">
-                    <div className="text-lg font-bold text-green-600">{stagedFiles.length}</div>
-                    <div className="text-gray-600 dark:text-gray-400">Staged</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-lg font-bold text-yellow-600">{unstagedFiles.length}</div>
-                    <div className="text-gray-600 dark:text-gray-400">Unstaged</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-lg font-bold text-gray-600 dark:text-gray-400">{fileChanges.length}</div>
-                    <div className="text-gray-600 dark:text-gray-400">Total</div>
-                  </div>
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+                  Working Directory Clean
+                </h3>
+                <p className="text-gray-600 dark:text-gray-400 mb-8">
+                  There are no changes to commit. Create or modify files to start tracking changes.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                  <button className="flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors">
+                    <Plus size={16} />
+                    Create File
+                  </button>
+                  <button className="flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors">
+                    <Edit3 size={16} />
+                    Modify File
+                  </button>
                 </div>
-              </div>
-
-              <div className="flex-1 overflow-y-auto">
-                {/* Staged Files */}
-                {stagedFiles.length > 0 && (
-                  <div className="p-4 border-b border-gray-200 dark:border-gray-700">
-                    <h4 className="text-sm font-medium text-gray-900 dark:text-white mb-3 flex items-center gap-2">
-                      <CheckCircle size={16} className="text-green-500" />
-                      Staged Changes ({stagedFiles.length})
-                    </h4>
-                    <div className="space-y-2">
-                      {stagedFiles.map((file) => (
-                        <div
-                          key={file.path}
-                          className="flex items-center gap-3 p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg group hover:bg-green-100 dark:hover:bg-green-900/30 transition-colors"
-                        >
-                          {getStatusIcon(file.status)}
-                          <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
-                              {file.path}
-                            </p>
-                            <div className="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
-                              <span className={`px-2 py-1 rounded-full ${getStatusColor(file.status)}`}>
-                                {file.status}
-                              </span>
-                              <span className="text-green-600">+{file.additions}</span>
-                              <span className="text-red-600">-{file.deletions}</span>
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <button
-                              onClick={() => toggleFileStaging(file.path)}
-                              className="p-1 text-green-600 hover:text-green-700 transition-colors"
-                              title="Unstage file"
-                            >
-                              <Minus size={16} />
-                            </button>
-                            <button className="p-1 text-gray-600 hover:text-gray-700 transition-colors" title="View diff">
-                              <Eye size={16} />
-                            </button>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Unstaged Files */}
-                {unstagedFiles.length > 0 && (
-                  <div className="p-4">
-                    <h4 className="text-sm font-medium text-gray-900 dark:text-white mb-3 flex items-center gap-2">
-                      <AlertCircle size={16} className="text-yellow-500" />
-                      Unstaged Changes ({unstagedFiles.length})
-                    </h4>
-                    <div className="space-y-2">
-                      {unstagedFiles.map((file) => (
-                        <div
-                          key={file.path}
-                          className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg group hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                        >
-                          {getStatusIcon(file.status)}
-                          <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
-                              {file.path}
-                            </p>
-                            <div className="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
-                              <span className={`px-2 py-1 rounded-full ${getStatusColor(file.status)}`}>
-                                {file.status}
-                              </span>
-                              <span className="text-green-600">+{file.additions}</span>
-                              <span className="text-red-600">-{file.deletions}</span>
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <button
-                              onClick={() => toggleFileStaging(file.path)}
-                              className="p-1 text-gray-600 hover:text-green-600 transition-colors"
-                              title="Stage file"
-                            >
-                              <Plus size={16} />
-                            </button>
-                            <button className="p-1 text-gray-600 hover:text-gray-700 transition-colors" title="View diff">
-                              <Eye size={16} />
-                            </button>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {filteredFiles.length === 0 && (
-                  <div className="flex-1 flex items-center justify-center p-8">
-                    <div className="text-center">
-                      <CheckCircle className="mx-auto mb-4 text-green-500" size={48} />
-                      <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
-                        {searchQuery ? 'No matching files' : 'No changes'}
-                      </h3>
-                      <p className="text-gray-600 dark:text-gray-400">
-                        {searchQuery ? 'Try adjusting your search or filter' : 'Your working directory is clean'}
-                      </p>
-                    </div>
-                  </div>
-                )}
               </div>
             </div>
 
-            {/* Enhanced Commit Panel */}
-            <div className="w-full lg:w-96 flex flex-col bg-gray-50 dark:bg-gray-800">
+            {/* Commit Panel */}
+            <div className="w-96 flex flex-col bg-gray-50 dark:bg-gray-800 border-l border-gray-200 dark:border-gray-700">
               <div className="p-4 border-b border-gray-200 dark:border-gray-700">
                 <h3 className="font-semibold text-gray-900 dark:text-white flex items-center gap-2">
                   <GitCommit size={16} />
@@ -1080,74 +456,28 @@ export default function GitManager() {
                   Commit to {currentBranch}
                 </button>
 
-                {stagedFiles.length === 0 && (
-                  <p className="text-xs text-gray-500 dark:text-gray-400 text-center">
-                    Stage some files to enable committing
-                  </p>
-                )}
+                <p className="text-xs text-gray-500 dark:text-gray-400 text-center">
+                  Stage files to enable committing
+                </p>
               </div>
             </div>
           </div>
         )}
 
-        {/* History tab with enhanced styling */}
         {activeTab === 'history' && (
           <div className="p-6">
-            <div className="space-y-4">
-              {commits.map((commit) => (
-                <div
-                  key={commit.id}
-                  className="flex items-start gap-4 p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg hover:shadow-md transition-all duration-200 group"
-                >
-                  <div className="w-8 h-8 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center flex-shrink-0">
-                    <GitCommit size={16} className="text-gray-600 dark:text-gray-400" />
-                  </div>
-                  
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                      <h4 className="font-medium text-gray-900 dark:text-white truncate">
-                        {commit.message}
-                      </h4>
-                      <span className="px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 text-xs rounded font-mono">
-                        {commit.id}
-                      </span>
-                    </div>
-                    
-                    <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
-                      <div className="flex items-center gap-1">
-                        <User size={14} />
-                        <span>{commit.author}</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Calendar size={14} />
-                        <span>{commit.date}</span>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <span>{commit.files} files</span>
-                        <span className="text-green-600">+{commit.additions}</span>
-                        <span className="text-red-600">-{commit.deletions}</span>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button className="p-2 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors" title="View commit">
-                      <Eye size={16} />
-                    </button>
-                    <button 
-                      onClick={() => copyCommitId(commit.id)}
-                      className="p-2 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors" 
-                      title="Copy commit ID"
-                    >
-                      {copiedCommitId === commit.id ? (
-                        <ClipboardCheck size={16} className="text-green-500" />
-                      ) : (
-                        <Clipboard size={16} />
-                      )}
-                    </button>
-                  </div>
-                </div>
-              ))}
+            {/* Empty State for History */}
+            <div className="text-center py-12">
+              <Clock className="mx-auto mb-4 text-slate-400" size={48} />
+              <h3 className="text-lg font-medium text-slate-900 dark:text-white mb-2">
+                No Commit History
+              </h3>
+              <p className="text-slate-600 dark:text-slate-400 mb-6">
+                Your commit history will appear here after you make your first commit.
+              </p>
+              <button className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors">
+                Create First Commit
+              </button>
             </div>
           </div>
         )}
@@ -1155,7 +485,7 @@ export default function GitManager() {
         {activeTab === 'branches' && (
           <div className="p-6">
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+              <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
                 Branches ({branches.length})
               </h3>
               <button
@@ -1229,16 +559,10 @@ export default function GitManager() {
                         {(branch.ahead > 0 || branch.behind > 0) && (
                           <div className="flex items-center gap-2">
                             {branch.ahead > 0 && (
-                              <span className="flex items-center text-green-600">
-                                <ArrowUpRight size={14} className="mr-1" />
-                                {branch.ahead}
-                              </span>
+                              <span className="text-green-600">↑{branch.ahead}</span>
                             )}
                             {branch.behind > 0 && (
-                              <span className="flex items-center text-red-600">
-                                <ArrowDownRight size={14} className="mr-1" />
-                                {branch.behind}
-                              </span>
+                              <span className="text-red-600">↓{branch.behind}</span>
                             )}
                           </div>
                         )}
@@ -1255,11 +579,8 @@ export default function GitManager() {
                         Switch
                       </button>
                     )}
-                    {!branch.current && branch.name !== 'main' && (
-                      <button 
-                        onClick={() => deleteBranch(branch.name)}
-                        className="p-2 text-gray-600 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400 transition-colors"
-                      >
+                    {branch.name !== 'main' && (
+                      <button className="p-2 text-gray-600 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400 transition-colors">
                         <Trash2 size={16} />
                       </button>
                     )}
@@ -1271,342 +592,11 @@ export default function GitManager() {
         )}
       </div>
 
-      {/* Repository Settings Modal */}
-      {showSettings && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl w-full max-w-2xl max-h-[80vh] overflow-hidden">
-            <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-                <Settings size={18} />
-                Repository Settings
-              </h3>
-              <button 
-                onClick={() => setShowSettings(false)}
-                className="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-              >
-                <X size={18} />
-              </button>
-            </div>
-            
-            <div className="p-6 overflow-y-auto max-h-[calc(80vh-4rem)]">
-              {/* Repository Info */}
-              <div className="mb-8">
-                <h4 className="text-md font-semibold text-gray-900 dark:text-white mb-4">Repository Information</h4>
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                      Repository Name
-                    </label>
-                    <input
-                      type="text"
-                      value="kodex"
-                      disabled
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white cursor-not-allowed"
-                    />
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                      Default Branch
-                    </label>
-                    <select
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
-                    >
-                      {branches.map(branch => (
-                        <option key={branch.name} value={branch.name}>{branch.name}</option>
-                      ))}
-                    </select>
-                    <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                      The default branch will be used for new pull requests and merges
-                    </p>
-                  </div>
-                  
-                  <div className="flex items-center gap-4">
-                    <div className="flex items-center gap-2">
-                      <input type="checkbox" id="private" className="rounded text-blue-600" checked />
-                      <label htmlFor="private" className="text-sm text-gray-700 dark:text-gray-300">
-                        Private Repository
-                      </label>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <input type="checkbox" id="protected" className="rounded text-blue-600" checked />
-                      <label htmlFor="protected" className="text-sm text-gray-700 dark:text-gray-300">
-                        Protected Main Branch
-                      </label>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Remote Repositories */}
-              <div className="mb-8">
-                <div className="flex items-center justify-between mb-4">
-                  <h4 className="text-md font-semibold text-gray-900 dark:text-white">Remote Repositories</h4>
-                  <button
-                    onClick={() => setShowRemoteForm(!showRemoteForm)}
-                    className="text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium"
-                  >
-                    {showRemoteForm ? 'Cancel' : 'Add Remote'}
-                  </button>
-                </div>
-                
-                {showRemoteForm && (
-                  <div className="mb-4 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
-                    <div className="space-y-3">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                          Remote Name
-                        </label>
-                        <input
-                          type="text"
-                          value={newRemoteName}
-                          onChange={(e) => setNewRemoteName(e.target.value)}
-                          placeholder="e.g., origin"
-                          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                      </div>
-                      
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                          Remote URL
-                        </label>
-                        <input
-                          type="text"
-                          value={newRemoteUrl}
-                          onChange={(e) => setNewRemoteUrl(e.target.value)}
-                          placeholder="https://github.com/username/repo.git"
-                          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                      </div>
-                      
-                      <div className="flex justify-end">
-                        <button
-                          onClick={addRemote}
-                          disabled={!newRemoteName.trim() || !newRemoteUrl.trim()}
-                          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white rounded-lg transition-colors"
-                        >
-                          Add Remote
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                )}
-                
-                <div className="space-y-3">
-                  {remotes.map((remote) => (
-                    <div
-                      key={remote.name}
-                      className="flex items-center justify-between p-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg"
-                    >
-                      <div className="flex items-center gap-3">
-                        <Server size={16} className="text-gray-500" />
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <span className="font-medium text-gray-900 dark:text-white">
-                              {remote.name}
-                            </span>
-                            {remote.isDefault && (
-                              <span className="px-2 py-0.5 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 text-xs rounded-full">
-                                default
-                              </span>
-                            )}
-                          </div>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">
-                            {remote.url}
-                          </p>
-                        </div>
-                      </div>
-                      
-                      <div className="flex items-center gap-2">
-                        {!remote.isDefault && (
-                          <button
-                            onClick={() => setDefaultRemote(remote.name)}
-                            className="text-xs text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
-                          >
-                            Set as default
-                          </button>
-                        )}
-                        <button
-                          onClick={() => removeRemote(remote.name)}
-                          className="p-1 text-gray-500 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400 transition-colors"
-                          title="Remove remote"
-                        >
-                          <Trash2 size={14} />
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              
-              {/* Branch Protection */}
-              <div className="mb-8">
-                <h4 className="text-md font-semibold text-gray-900 dark:text-white mb-4">Branch Protection</h4>
-                <div className="p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg">
-                  <div className="flex items-center gap-3 mb-4">
-                    <Shield size={18} className="text-blue-600" />
-                    <div>
-                      <h5 className="font-medium text-gray-900 dark:text-white">Protect Main Branch</h5>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
-                        Prevent force pushes and ensure code quality
-                      </p>
-                    </div>
-                    <div className="ml-auto">
-                      <div className="relative inline-block w-10 mr-2 align-middle select-none">
-                        <input type="checkbox" id="toggle" className="sr-only" checked />
-                        <div className="w-10 h-5 bg-gray-300 rounded-full shadow-inner"></div>
-                        <div className="absolute w-5 h-5 bg-blue-600 rounded-full shadow -left-1 -top-0 transform translate-x-full"></div>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-2 ml-7">
-                    <div className="flex items-center gap-2">
-                      <input type="checkbox" id="require-reviews" className="rounded text-blue-600" checked />
-                      <label htmlFor="require-reviews" className="text-sm text-gray-700 dark:text-gray-300">
-                        Require pull request reviews before merging
-                      </label>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <input type="checkbox" id="require-status" className="rounded text-blue-600" checked />
-                      <label htmlFor="require-status" className="text-sm text-gray-700 dark:text-gray-300">
-                        Require status checks to pass before merging
-                      </label>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <input type="checkbox" id="require-linear" className="rounded text-blue-600" />
-                      <label htmlFor="require-linear" className="text-sm text-gray-700 dark:text-gray-300">
-                        Require linear history
-                      </label>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Danger Zone */}
-              <div>
-                <h4 className="text-md font-semibold text-red-600 dark:text-red-400 mb-4">Danger Zone</h4>
-                <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h5 className="font-medium text-red-800 dark:text-red-300">Delete Repository</h5>
-                      <p className="text-sm text-red-600 dark:text-red-400">
-                        Once deleted, it cannot be recovered
-                      </p>
-                    </div>
-                    <button className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors">
-                      Delete
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <div className="flex justify-end p-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
-              <button
-                onClick={() => setShowSettings(false)}
-                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
-              >
-                Save Changes
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Terminal Modal */}
-      {showTerminal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
-          <div className="bg-gray-900 rounded-xl shadow-2xl w-full max-w-3xl max-h-[80vh] overflow-hidden">
-            <div className="flex items-center justify-between p-3 bg-gray-800 border-b border-gray-700">
-              <h3 className="text-md font-mono text-gray-200 flex items-center gap-2">
-                <Terminal size={16} />
-                Git Terminal
-              </h3>
-              <div className="flex items-center gap-2">
-                <button 
-                  onClick={() => setTerminalOutput([])}
-                  className="p-1.5 text-gray-400 hover:text-gray-200 rounded-md hover:bg-gray-700 transition-colors"
-                  title="Clear terminal"
-                >
-                  <RotateCcw size={14} />
-                </button>
-                <button 
-                  onClick={() => setShowTerminal(false)}
-                  className="p-1.5 text-gray-400 hover:text-gray-200 rounded-md hover:bg-gray-700 transition-colors"
-                >
-                  <X size={14} />
-                </button>
-              </div>
-            </div>
-            
-            <div className="p-4 font-mono text-sm text-gray-200 h-96 overflow-y-auto bg-gray-950">
-              {/* Terminal Output */}
-              {terminalOutput.length > 0 ? (
-                <div className="space-y-1 mb-4">
-                  {terminalOutput.map((line, index) => (
-                    <div key={index} className={clsx(
-                      "whitespace-pre-wrap break-all",
-                      line.startsWith('$') ? "text-green-400" : "",
-                      line.startsWith('error:') || line.startsWith('fatal:') ? "text-red-400" : ""
-                    )}>
-                      {line}
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-gray-500 mb-4">
-                  Welcome to Git Terminal. Type 'help' for available commands.
-                </div>
-              )}
-              
-              {/* Terminal Input */}
-              <div className="flex items-center">
-                <span className="text-green-400 mr-2">$</span>
-                <input
-                  type="text"
-                  value={terminalInput}
-                  onChange={(e) => setTerminalInput(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      executeTerminalCommand();
-                    }
-                  }}
-                  placeholder="Type git command..."
-                  className="flex-1 bg-transparent border-none outline-none text-gray-200 placeholder-gray-600"
-                  autoFocus
-                />
-              </div>
-            </div>
-            
-            <div className="p-3 bg-gray-800 border-t border-gray-700 text-xs text-gray-400">
-              <div className="flex items-center gap-4">
-                <div className="flex items-center gap-1">
-                  <span className="px-1.5 py-0.5 bg-gray-700 rounded text-gray-300 font-mono">Enter</span>
-                  <span>Execute</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <span className="px-1.5 py-0.5 bg-gray-700 rounded text-gray-300 font-mono">clear</span>
-                  <span>Clear terminal</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <span className="px-1.5 py-0.5 bg-gray-700 rounded text-gray-300 font-mono">help</span>
-                  <span>Show commands</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Click outside to close dropdowns */}
-      {(showCommitOptions || showBranchMenu) && (
+      {showCommitOptions && (
         <div 
           className="fixed inset-0 z-0" 
-          onClick={() => {
-            setShowCommitOptions(false);
-            setShowBranchMenu(false);
-          }}
+          onClick={() => setShowCommitOptions(false)}
         />
       )}
     </div>

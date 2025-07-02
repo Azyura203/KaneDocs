@@ -126,7 +126,7 @@ npm install your-package
 \`\`\`javascript
 import { YourComponent } from 'your-package';
 
-const example = new YourComponent({
+const instance = new YourComponent({
   option1: 'value1',
   option2: 'value2'
 });

@@ -103,9 +103,9 @@ export const getCurrentUser = () => {
   if (!isBrowser) {
     // Return default user for server-side rendering
     return {
-      id: 'demo-user',
-      email: 'demo@kodex.dev',
-      name: 'Demo User'
+      id: 'user',
+      email: 'user@kodex.dev',
+      name: 'User'
     };
   }
   
@@ -115,9 +115,9 @@ export const getCurrentUser = () => {
   }
   
   const user = {
-    id: 'demo-user',
-    email: 'demo@kodex.dev',
-    name: 'Demo User'
+    id: 'user',
+    email: 'user@kodex.dev',
+    name: 'User'
   };
   
   localStorage.setItem(STORAGE_KEYS.currentUser, JSON.stringify(user));
@@ -443,9 +443,9 @@ export const initializeSampleData = () => {
   // Create default user if not exists
   if (!localStorage.getItem(STORAGE_KEYS.currentUser)) {
     const user = {
-      id: 'demo-user',
-      email: 'demo@kodex.dev',
-      name: 'Demo User'
+      id: 'user',
+      email: 'user@kodex.dev',
+      name: 'User'
     };
     localStorage.setItem(STORAGE_KEYS.currentUser, JSON.stringify(user));
   }
