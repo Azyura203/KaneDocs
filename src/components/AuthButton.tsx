@@ -9,6 +9,7 @@ export default function AuthButton() {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [hasShownWelcome, setHasShownWelcome] = useState(false);
 
   // Check authentication status on mount
   useEffect(() => {
@@ -18,10 +19,15 @@ export default function AuthButton() {
         const session = await sessionManager.initializeSession();
         if (session?.user) {
           setUser(session.user);
+          // Don't show welcome notification on initial load if user is already logged in
+          setHasShownWelcome(true);
         } else {
           // Fallback to current user check
           const currentUser = await authService.getCurrentUser();
           setUser(currentUser);
+          if (currentUser) {
+            setHasShownWelcome(true);
+          }
         }
       } catch (error) {
         console.error('Auth initialization failed:', error);
@@ -38,40 +44,49 @@ export default function AuthButton() {
       console.log('Auth state change:', event, !!session);
       
       if (event === 'SIGNED_IN' && session?.user) {
+        const wasSignedOut = !user;
         setUser(session.user);
         sessionManager.saveSession(session);
         
-        // Only show welcome notification for actual sign-in events
-        if (event === 'SIGNED_IN') {
+        // Only show welcome notification for actual new sign-ins, not on page loads
+        if (wasSignedOut && !hasShownWelcome) {
+          const displayName = session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'User';
           notificationManager.success(
-            'Welcome!',
+            `Welcome, ${displayName}!`,
             'Successfully signed in to KaneDocs.',
             3000
           );
+          setHasShownWelcome(true);
         }
       } else if (event === 'SIGNED_OUT') {
         setUser(null);
         sessionManager.clearSession();
+        setHasShownWelcome(false);
         
-        notificationManager.info(
-          'Signed Out',
-          'You have been signed out successfully.',
-          3000
-        );
+        // Only show sign out notification if user was actually signed in
+        if (user) {
+          notificationManager.info(
+            'Signed Out',
+            'You have been signed out successfully.',
+            3000
+          );
+        }
       } else if (event === 'TOKEN_REFRESHED' && session?.user) {
         setUser(session.user);
         sessionManager.saveSession(session);
+        // Don't show notification for token refresh
       }
     });
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [user, hasShownWelcome]);
 
   const handleSignOut = async () => {
     try {
       await authService.signOut();
       setUser(null);
       setShowUserMenu(false);
+      setHasShownWelcome(false);
       
       // Clear any cached data
       sessionManager.clearSession();
@@ -90,6 +105,7 @@ export default function AuthButton() {
 
   const handleAuthSuccess = () => {
     setShowAuthModal(false);
+    setHasShownWelcome(true);
     // Session will be handled by the auth state change listener
   };
 

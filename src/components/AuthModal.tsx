@@ -79,12 +79,8 @@ export default function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps
         if (data.session) {
           sessionManager.saveSession(data.session);
           const displayName = data.user?.user_metadata?.full_name || fullName || email.split('@')[0];
-          notificationManager.success(
-            `Welcome back, ${displayName}! 👋`,
-            'Successfully signed in to KaneDocs.',
-            4000
-          );
           
+          // Don't show notification here - let AuthButton handle it to avoid duplicates
           onSuccess();
           onClose();
         }

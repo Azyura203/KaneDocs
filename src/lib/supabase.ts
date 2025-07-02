@@ -19,13 +19,18 @@ export const sessionManager = {
   // Save session to localStorage
   saveSession(session: any) {
     if (typeof window !== 'undefined' && session) {
-      localStorage.setItem('kanedocs-session', JSON.stringify({
-        user: session.user,
-        access_token: session.access_token,
-        refresh_token: session.refresh_token,
-        expires_at: session.expires_at,
-        saved_at: Date.now()
-      }));
+      try {
+        localStorage.setItem('kanedocs-session', JSON.stringify({
+          user: session.user,
+          access_token: session.access_token,
+          refresh_token: session.refresh_token,
+          expires_at: session.expires_at,
+          saved_at: Date.now()
+        }));
+        localStorage.setItem('kanedocs-auth-timestamp', Date.now().toString());
+      } catch (error) {
+        console.error('Error saving session:', error);
+      }
     }
   },
 
@@ -58,6 +63,7 @@ export const sessionManager = {
     if (typeof window !== 'undefined') {
       localStorage.removeItem('kanedocs-session');
       localStorage.removeItem('kanedocs-auth');
+      localStorage.removeItem('kanedocs-auth-timestamp');
     }
   },
 
@@ -322,15 +328,22 @@ export const authService = {
 };
 
 // Listen for auth state changes and update localStorage
-supabase.auth.onAuthStateChange((event, session) => {
-  if (event === 'SIGNED_IN' && session) {
-    sessionManager.saveSession(session);
-  } else if (event === 'SIGNED_OUT') {
-    sessionManager.clearSession();
-  } else if (event === 'TOKEN_REFRESHED' && session) {
-    sessionManager.saveSession(session);
-  }
-});
+// Only set up listener once to avoid duplicates
+let authListenerSetup = false;
+if (typeof window !== 'undefined' && !authListenerSetup) {
+  supabase.auth.onAuthStateChange((event, session) => {
+    console.log('Supabase auth state change:', event);
+    
+    if (event === 'SIGNED_IN' && session) {
+      sessionManager.saveSession(session);
+    } else if (event === 'SIGNED_OUT') {
+      sessionManager.clearSession();
+    } else if (event === 'TOKEN_REFRESHED' && session) {
+      sessionManager.saveSession(session);
+    }
+  });
+  authListenerSetup = true;
+}
 
 // Export types for compatibility (but we won't use the database operations)
 export interface Repository {

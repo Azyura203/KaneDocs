@@ -93,12 +93,13 @@ function SimpleNotification({ notification, onRemove }: SimpleNotificationProps)
   );
 }
 
-// Global notification manager with enhanced deduplication
+// Enhanced notification manager with better deduplication
 class NotificationManager {
   private notifications: Notification[] = [];
   private listeners: ((notifications: Notification[]) => void)[] = [];
-  private recentNotifications = new Map<string, number>(); // Track with timestamp
-  private readonly DUPLICATE_THRESHOLD = 30000; // 30 seconds
+  private recentNotifications = new Map<string, { timestamp: number; count: number }>(); 
+  private readonly DUPLICATE_THRESHOLD = 60000; // 60 seconds
+  private readonly MAX_DUPLICATE_COUNT = 1; // Only allow 1 duplicate per time window
 
   subscribe(listener: (notifications: Notification[]) => void) {
     this.listeners.push(listener);
@@ -117,8 +118,8 @@ class NotificationManager {
 
   private cleanupOldNotifications() {
     const now = Date.now();
-    for (const [hash, timestamp] of this.recentNotifications.entries()) {
-      if (now - timestamp > this.DUPLICATE_THRESHOLD) {
+    for (const [hash, data] of this.recentNotifications.entries()) {
+      if (now - data.timestamp > this.DUPLICATE_THRESHOLD) {
         this.recentNotifications.delete(hash);
       }
     }
@@ -133,17 +134,37 @@ class NotificationManager {
     const now = Date.now();
     
     // Check if this notification was recently shown
-    const lastShown = this.recentNotifications.get(contentHash);
-    if (lastShown && (now - lastShown) < this.DUPLICATE_THRESHOLD) {
-      console.log('Duplicate notification blocked:', notification.title);
-      return; // Skip showing duplicate notifications
+    const recentData = this.recentNotifications.get(contentHash);
+    if (recentData) {
+      const timeSinceLastShown = now - recentData.timestamp;
+      
+      // If within threshold and already shown max times, skip
+      if (timeSinceLastShown < this.DUPLICATE_THRESHOLD && recentData.count >= this.MAX_DUPLICATE_COUNT) {
+        console.log('Duplicate notification blocked:', notification.title, 'Count:', recentData.count);
+        return;
+      }
+      
+      // Update count and timestamp
+      this.recentNotifications.set(contentHash, {
+        timestamp: now,
+        count: recentData.count + 1
+      });
+    } else {
+      // First time showing this notification
+      this.recentNotifications.set(contentHash, {
+        timestamp: now,
+        count: 1
+      });
     }
-    
-    // Add to recent notifications map with timestamp
-    this.recentNotifications.set(contentHash, now);
     
     const id = Math.random().toString(36).substring(2, 15);
     const newNotification = { ...notification, id };
+    
+    // Limit total notifications to prevent spam
+    if (this.notifications.length >= 5) {
+      this.notifications.shift(); // Remove oldest
+    }
+    
     this.notifications.push(newNotification);
     this.notify();
   }

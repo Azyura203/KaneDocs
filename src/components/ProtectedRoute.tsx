@@ -57,8 +57,12 @@ export default function ProtectedRoute({ children, fallback }: ProtectedRoutePro
 
   const handleAuthSuccess = () => {
     setShowAuthModal(false);
-    // Refresh the page to ensure proper state
-    window.location.reload();
+    // Don't reload the page, just check auth again
+    sessionManager.initializeSession().then(session => {
+      if (session?.user) {
+        setUser(session.user);
+      }
+    });
   };
 
   if (loading) {
@@ -143,8 +147,8 @@ export default function ProtectedRoute({ children, fallback }: ProtectedRoutePro
               </div>
             </div>
 
-            <div class="text-center mt-6">
-              <p class="text-sm text-slate-500 dark:text-slate-400">
+            <div className="text-center mt-6">
+              <p className="text-sm text-slate-500 dark:text-slate-400">
                 By signing up, you agree to our Terms of Service and Privacy Policy
               </p>
             </div>
