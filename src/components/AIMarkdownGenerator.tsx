@@ -980,7 +980,7 @@ For questions and support, please visit our [documentation](https://docs.example
   return (
     <div className="h-full flex flex-col bg-white dark:bg-slate-900 ai-generator-container">
       {/* Header */}
-      <div className="border-b border-slate-200 dark:border-slate-700 bg-gradient-to-r from-blue-50 via-purple-50 to-pink-50 dark:from-blue-900/20 dark:via-purple-900/20 dark:to-pink-900/20">
+      <div className="border-b border-slate-200 dark:border-slate-700 bg-gradient-to-r from-blue-50 via-purple-50 to-pink-50 dark:from-blue-900/20 dark:via-purple-900/20 dark:to-pink-900/20 sticky top-0 z-10">
         <div className="p-6">
           <div className="flex items-center gap-3 mb-6">
             <div className="p-3 bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 rounded-xl shadow-lg">
@@ -1115,7 +1115,7 @@ Examples:
 • 'Create step-by-step tutorial documentation for building a REST API with Node.js'
 
 Be as specific as possible - the more details you provide, the better the generated documentation will be!"
-                  className="w-full h-32 p-4 border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-base leading-relaxed"
+                  className="w-full h-32 p-4 border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-base leading-relaxed scrollbar-thin scrollbar-thumb-slate-300 dark:scrollbar-thumb-slate-600"
                 />
                 
                 {/* Recent prompts dropdown */}
