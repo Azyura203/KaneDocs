@@ -150,13 +150,13 @@ export default function Header({ onMenuToggle, isMenuOpen, onSidebarToggle, isSi
               </div>
             </button>
             
-            {/* Single GitHub link - no duplication */}
+            {/* Fixed GitHub link - removed underline and fixed styling */}
             <a
               href="https://github.com/yourusername/kanedocs"
               target="_blank"
               rel="noopener noreferrer"
-              className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-200 hover:scale-105 group"
-              aria-label="GitHub"
+              className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-200 hover:scale-105 group text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+              aria-label="View on GitHub"
               title="View on GitHub"
             >
               <Github size={18} className="transition-transform duration-200 group-hover:scale-110" />
