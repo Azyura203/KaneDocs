@@ -405,40 +405,42 @@ MIT License - see LICENSE file for details.
               </div>
             </>
           ) : (
-            {/* Empty State */}
-            <div className="flex-1 flex items-center justify-center p-8">
-              <div className="text-center max-w-2xl">
-                <div className="w-24 h-24 bg-gradient-to-br from-blue-100 via-purple-100 to-pink-100 dark:from-blue-900/30 dark:via-purple-900/30 dark:to-pink-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <Sparkles className="w-12 h-12 text-blue-600 dark:text-blue-400" />
-                </div>
-                <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">
-                  Ready to Generate Documentation
-                </h3>
-                <p className="text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">
-                  Choose a template or describe what you want to create. Our AI will generate 
-                  professional markdown documentation with proper formatting, code examples, 
-                  and best practices.
-                </p>
-                <div className="grid grid-cols-2 gap-4 text-sm text-gray-500 dark:text-gray-400">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
-                    <span>API Documentation</span>
+            <>
+              {/* Empty State */}
+              <div className="flex-1 flex items-center justify-center p-8">
+                <div className="text-center max-w-2xl">
+                  <div className="w-24 h-24 bg-gradient-to-br from-blue-100 via-purple-100 to-pink-100 dark:from-blue-900/30 dark:via-purple-900/30 dark:to-pink-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <Sparkles className="w-12 h-12 text-blue-600 dark:text-blue-400" />
                   </div>
-                  <div className="flex items-center space-x-2">
-                    <div className="w-2 h-2 bg-purple-400 rounded-full"></div>
-                    <span>User Guides</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <div className="w-2 h-2 bg-pink-400 rounded-full"></div>
-                    <span>README Files</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                    <span>Tutorials</span>
+                  <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">
+                    Ready to Generate Documentation
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">
+                    Choose a template or describe what you want to create. Our AI will generate 
+                    professional markdown documentation with proper formatting, code examples, 
+                    and best practices.
+                  </p>
+                  <div className="grid grid-cols-2 gap-4 text-sm text-gray-500 dark:text-gray-400">
+                    <div className="flex items-center space-x-2">
+                      <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+                      <span>API Documentation</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <div className="w-2 h-2 bg-purple-400 rounded-full"></div>
+                      <span>User Guides</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <div className="w-2 h-2 bg-pink-400 rounded-full"></div>
+                      <span>README Files</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                      <span>Tutorials</span>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            </>
           )}
         </div>
       </div>
