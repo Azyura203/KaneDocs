@@ -265,7 +265,7 @@ This is a sample file created at ${new Date().toISOString()}.
 - Real-time updates
 
 \`\`\`javascript
-console.log('Hello from KaneDocs!');
+console.log('Hello from KODEX!');
 \`\`\`
 `;
       
@@ -527,6 +527,26 @@ console.log('Hello from KaneDocs!');
               </div>
             </div>
 
+            {filteredRepositories.length === 0 && (
+              <div className="text-center py-12">
+                <Database className="mx-auto mb-4 text-slate-400" size={48} />
+                <h3 className="text-lg font-medium text-slate-900 dark:text-white mb-2">
+                  {searchQuery ? 'No repositories found' : 'No repositories yet'}
+                </h3>
+                <p className="text-slate-600 dark:text-slate-400 mb-4">
+                  {searchQuery ? 'Try adjusting your search terms' : 'Create your first repository to get started with local version control.'}
+                </p>
+                {!searchQuery && (
+                  <button
+                    onClick={() => setShowNewRepo(true)}
+                    className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors"
+                  >
+                    Create Repository
+                  </button>
+                )}
+              </div>
+            )}
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredRepositories.map((repo) => (
                 <div
@@ -582,26 +602,6 @@ console.log('Hello from KaneDocs!');
                 </div>
               ))}
             </div>
-            
-            {filteredRepositories.length === 0 && (
-              <div className="text-center py-12">
-                <Database className="mx-auto mb-4 text-slate-400" size={48} />
-                <h3 className="text-lg font-medium text-slate-900 dark:text-white mb-2">
-                  {searchQuery ? 'No repositories found' : 'No repositories yet'}
-                </h3>
-                <p className="text-slate-600 dark:text-slate-400 mb-4">
-                  {searchQuery ? 'Try adjusting your search terms' : 'Create your first repository to get started with local version control.'}
-                </p>
-                {!searchQuery && (
-                  <button
-                    onClick={() => setShowNewRepo(true)}
-                    className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors"
-                  >
-                    Create Repository
-                  </button>
-                )}
-              </div>
-            )}
           </div>
         )}
 
@@ -609,7 +609,7 @@ console.log('Hello from KaneDocs!');
           <div className="h-full flex flex-col lg:flex-row">
             {/* File Changes */}
             <div className="flex-1 flex flex-col border-r border-slate-200 dark:border-slate-700">
-              <div className="p-4 border-b border-slate-200 dark:border-slate-700">
+              <div className="p-4 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="font-semibold text-slate-900 dark:text-white">
                     Changes ({workingFiles.length})
@@ -638,6 +638,26 @@ console.log('Hello from KaneDocs!');
               </div>
 
               <div className="flex-1 overflow-y-auto">
+                {workingFiles.length === 0 && (
+                  <div className="flex-1 flex items-center justify-center p-8">
+                    <div className="text-center">
+                      <CheckCircle className="mx-auto mb-4 text-green-500" size={48} />
+                      <h3 className="text-lg font-medium text-slate-900 dark:text-white mb-2">
+                        No changes
+                      </h3>
+                      <p className="text-slate-600 dark:text-slate-400 mb-4">
+                        Your working directory is clean
+                      </p>
+                      <button
+                        onClick={addSampleFile}
+                        className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+                      >
+                        Add Sample File
+                      </button>
+                    </div>
+                  </div>
+                )}
+
                 {/* Staged Files */}
                 {stagedFiles.length > 0 && (
                   <div className="p-4 border-b border-slate-200 dark:border-slate-700">
@@ -713,33 +733,14 @@ console.log('Hello from KaneDocs!');
                     </div>
                   </div>
                 )}
-
-                {workingFiles.length === 0 && (
-                  <div className="flex-1 flex items-center justify-center p-8">
-                    <div className="text-center">
-                      <CheckCircle className="mx-auto mb-4 text-green-500" size={48} />
-                      <h3 className="text-lg font-medium text-slate-900 dark:text-white mb-2">
-                        No changes
-                      </h3>
-                      <p className="text-slate-600 dark:text-slate-400 mb-4">
-                        Your working directory is clean
-                      </p>
-                      <button
-                        onClick={addSampleFile}
-                        className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
-                      >
-                        Add Sample File
-                      </button>
-                    </div>
-                  </div>
-                )}
               </div>
             </div>
 
             {/* Commit Panel */}
             <div className="w-full lg:w-96 flex flex-col bg-slate-50 dark:bg-slate-800">
               <div className="p-4 border-b border-slate-200 dark:border-slate-700">
-                <h3 className="font-semibold text-slate-900 dark:text-white">
+                <h3 className="font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+                  <GitCommit size={16} />
                   Commit Changes
                 </h3>
               </div>
@@ -756,6 +757,9 @@ console.log('Hello from KaneDocs!');
                     placeholder="feat: add new feature"
                     className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                    Use conventional commits: feat, fix, docs, style, refactor, test, chore
+                  </p>
                 </div>
 
                 <div>
@@ -808,6 +812,18 @@ console.log('Hello from KaneDocs!');
 
         {activeTab === 'history' && currentRepository && (
           <div className="p-4 lg:p-6">
+            {commits.length === 0 && (
+              <div className="text-center py-12">
+                <Clock className="mx-auto mb-4 text-slate-400" size={48} />
+                <h3 className="text-lg font-medium text-slate-900 dark:text-white mb-2">
+                  No commits yet
+                </h3>
+                <p className="text-slate-600 dark:text-slate-400">
+                  Make your first commit to see the history here.
+                </p>
+              </div>
+            )}
+
             <div className="space-y-4">
               {commits.map((commit) => (
                 <div
@@ -861,18 +877,6 @@ console.log('Hello from KaneDocs!');
                   </div>
                 </div>
               ))}
-              
-              {commits.length === 0 && (
-                <div className="text-center py-12">
-                  <Clock className="mx-auto mb-4 text-slate-400" size={48} />
-                  <h3 className="text-lg font-medium text-slate-900 dark:text-white mb-2">
-                    No commits yet
-                  </h3>
-                  <p className="text-slate-600 dark:text-slate-400">
-                    Make your first commit to see the history here.
-                  </p>
-                </div>
-              )}
             </div>
           </div>
         )}
@@ -922,72 +926,90 @@ console.log('Hello from KaneDocs!');
               </div>
             )}
 
-            <div className="space-y-3">
-              {branches.map((branch) => (
-                <div
-                  key={branch.id}
-                  className={clsx(
-                    'flex items-center justify-between p-4 border rounded-lg transition-all',
-                    currentBranch?.id === branch.id
-                      ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800'
-                      : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 hover:shadow-md'
-                  )}
+            {branches.length === 0 ? (
+              <div className="text-center py-12">
+                <GitBranch className="mx-auto mb-4 text-slate-400" size={48} />
+                <h3 className="text-lg font-medium text-slate-900 dark:text-white mb-2">
+                  No branches yet
+                </h3>
+                <p className="text-slate-600 dark:text-slate-400 mb-4">
+                  Create your first branch to start organizing your work.
+                </p>
+                <button
+                  onClick={() => setShowNewBranch(true)}
+                  className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors"
                 >
-                  <div className="flex items-center gap-3">
-                    <GitBranch 
-                      size={16} 
-                      className={currentBranch?.id === branch.id ? 'text-green-600' : 'text-slate-600 dark:text-slate-400'} 
-                    />
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span className="font-medium text-slate-900 dark:text-white">
-                          {branch.name}
-                        </span>
-                        {branch.isDefault && (
-                          <span className="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 text-xs rounded-full">
-                            default
+                  Create First Branch
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {branches.map((branch) => (
+                  <div
+                    key={branch.id}
+                    className={clsx(
+                      'flex items-center justify-between p-4 border rounded-lg transition-all',
+                      currentBranch?.id === branch.id
+                        ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800'
+                        : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 hover:shadow-md'
+                    )}
+                  >
+                    <div className="flex items-center gap-3">
+                      <GitBranch 
+                        size={16} 
+                        className={currentBranch?.id === branch.id ? 'text-green-600' : 'text-slate-600 dark:text-slate-400'} 
+                      />
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="font-medium text-slate-900 dark:text-white">
+                            {branch.name}
                           </span>
-                        )}
-                        {currentBranch?.id === branch.id && (
-                          <span className="px-2 py-1 bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 text-xs rounded-full">
-                            current
-                          </span>
-                        )}
-                      </div>
-                      <div className="flex items-center gap-4 text-sm text-slate-600 dark:text-slate-400">
-                        <span>Updated {new Date(branch.updatedAt).toLocaleDateString()}</span>
-                        {(branch.aheadCount > 0 || branch.behindCount > 0) && (
-                          <div className="flex items-center gap-2">
-                            {branch.aheadCount > 0 && (
-                              <span className="text-green-600">↑{branch.aheadCount}</span>
-                            )}
-                            {branch.behindCount > 0 && (
-                              <span className="text-red-600">↓{branch.behindCount}</span>
-                            )}
-                          </div>
-                        )}
+                          {branch.isDefault && (
+                            <span className="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 text-xs rounded-full">
+                              default
+                            </span>
+                          )}
+                          {currentBranch?.id === branch.id && (
+                            <span className="px-2 py-1 bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 text-xs rounded-full">
+                              current
+                            </span>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-4 text-sm text-slate-600 dark:text-slate-400">
+                          <span>Updated {new Date(branch.updatedAt).toLocaleDateString()}</span>
+                          {(branch.aheadCount > 0 || branch.behindCount > 0) && (
+                            <div className="flex items-center gap-2">
+                              {branch.aheadCount > 0 && (
+                                <span className="text-green-600">↑{branch.aheadCount}</span>
+                              )}
+                              {branch.behindCount > 0 && (
+                                <span className="text-red-600">↓{branch.behindCount}</span>
+                              )}
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  <div className="flex items-center gap-2">
-                    {currentBranch?.id !== branch.id && (
-                      <button
-                        onClick={() => switchBranch(branch)}
-                        className="px-3 py-1 text-sm border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 rounded transition-colors"
-                      >
-                        Switch
-                      </button>
-                    )}
-                    {!branch.isDefault && (
-                      <button className="p-2 text-slate-600 hover:text-red-600 dark:text-slate-400 dark:hover:text-red-400 transition-colors">
-                        <Trash2 size={16} />
-                      </button>
-                    )}
+                    <div className="flex items-center gap-2">
+                      {currentBranch?.id !== branch.id && (
+                        <button
+                          onClick={() => switchBranch(branch)}
+                          className="px-3 py-1 text-sm border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 rounded transition-colors"
+                        >
+                          Switch
+                        </button>
+                      )}
+                      {!branch.isDefault && (
+                        <button className="p-2 text-slate-600 hover:text-red-600 dark:text-slate-400 dark:hover:text-red-400 transition-colors">
+                          <Trash2 size={16} />
+                        </button>
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
       </div>

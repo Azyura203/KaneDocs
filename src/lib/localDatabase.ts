@@ -98,7 +98,7 @@ function saveToStorage<T>(key: string, data: T[]): void {
   }
 }
 
-// Mock user for demo purposes
+// User management
 export const getCurrentUser = () => {
   if (!isBrowser) {
     // Return default user for server-side rendering
@@ -430,102 +430,24 @@ export const workingDirectoryService = {
   }
 };
 
-// Initialize with sample data if empty
+// Initialize with empty data
 export const initializeSampleData = () => {
   if (!isBrowser) return; // Don't initialize on server-side
   
-  const repositories = getFromStorage<Repository>(STORAGE_KEYS.repositories);
+  // Clear any existing data to start fresh
+  localStorage.removeItem(STORAGE_KEYS.repositories);
+  localStorage.removeItem(STORAGE_KEYS.branches);
+  localStorage.removeItem(STORAGE_KEYS.commits);
+  localStorage.removeItem(STORAGE_KEYS.workingFiles);
   
-  if (repositories.length === 0) {
-    console.log('Initializing sample data...');
-    
-    // Create sample repository
-    const sampleRepo = repositoryService.create({
-      name: 'kodex-demo',
-      description: 'A demo repository for KODEX with sample content',
-      language: 'TypeScript',
-      topics: ['documentation', 'demo', 'typescript']
-    });
-    
-    // Add sample working files
-    workingDirectoryService.addFile(
-      sampleRepo.id,
-      'README.md',
-      `# KODEX Demo Repository
-
-Welcome to the KODEX demo! This repository showcases the local database git functionality.
-
-## Features
-
-- ✅ Local storage-based git simulation
-- ✅ Repository management
-- ✅ Branch operations
-- ✅ Commit history
-- ✅ Working directory changes
-- ✅ File staging and unstaging
-
-## Getting Started
-
-1. Create new files or modify existing ones
-2. Stage your changes
-3. Commit with a meaningful message
-4. View your commit history
-
-This is all stored locally in your browser's localStorage!
-`,
-      'added'
-    );
-    
-    workingDirectoryService.addFile(
-      sampleRepo.id,
-      'src/index.ts',
-      `// Sample TypeScript file
-export interface User {
-  id: string;
-  name: string;
-  email: string;
-}
-
-export class UserService {
-  private users: User[] = [];
-
-  addUser(user: User): void {
-    this.users.push(user);
-  }
-
-  getUser(id: string): User | undefined {
-    return this.users.find(u => u.id === id);
-  }
-
-  getAllUsers(): User[] {
-    return [...this.users];
-  }
-}
-`,
-      'added'
-    );
-    
-    workingDirectoryService.addFile(
-      sampleRepo.id,
-      'package.json',
-      `{
-  "name": "kodex-demo",
-  "version": "1.0.0",
-  "description": "Demo repository for KODEX",
-  "main": "src/index.ts",
-  "scripts": {
-    "build": "tsc",
-    "dev": "ts-node src/index.ts"
-  },
-  "dependencies": {
-    "typescript": "^5.0.0"
-  }
-}
-`,
-      'added'
-    );
-    
-    console.log('Sample data initialized successfully!');
+  // Create default user if not exists
+  if (!localStorage.getItem(STORAGE_KEYS.currentUser)) {
+    const user = {
+      id: 'demo-user',
+      email: 'demo@kodex.dev',
+      name: 'Demo User'
+    };
+    localStorage.setItem(STORAGE_KEYS.currentUser, JSON.stringify(user));
   }
 };
 
