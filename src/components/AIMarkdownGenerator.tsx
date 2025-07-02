@@ -1333,7 +1333,7 @@ Be as specific as possible - the more details you provide, the better the genera
             </div>
           </>
         ) : (
-          /* Empty State */
+          /* Empty State */}
           <div className="flex-1 flex items-center justify-center p-8">
             <div className="text-center max-w-2xl">
               <div className="w-24 h-24 bg-gradient-to-br from-blue-100 via-purple-100 to-pink-100 dark:from-blue-900/30 dark:via-purple-900/30 dark:to-pink-900/30 rounded-full flex items-center justify-center mx-auto mb-6">

@@ -81,8 +81,8 @@ export default function MarkdownRenderer({ content, className = '' }: MarkdownRe
         `;
         
         // Style the pre element
-        pre.classList.add('bg-slate-900', 'dark:bg-slate-950', 'rounded-lg', 'overflow-hidden', 'border', 'border-slate-700');
-        pre.style.margin = '0';
+        pre.classList.add('bg-slate-900', 'dark:bg-slate-950', 'rounded-lg', 'overflow-hidden', 'border', 'border-slate-700', 'my-6');
+        pre.style.margin = '1.5rem 0';
         
         // Insert header
         pre.insertBefore(header, block);
@@ -135,7 +135,7 @@ export default function MarkdownRenderer({ content, className = '' }: MarkdownRe
     // Enhanced table styling
     const tables = document.querySelectorAll('table');
     tables.forEach(table => {
-      table.classList.add('w-full', 'border-collapse', 'border', 'border-slate-300', 'dark:border-slate-600', 'rounded-lg', 'overflow-hidden');
+      table.classList.add('w-full', 'border-collapse', 'border', 'border-slate-300', 'dark:border-slate-600', 'rounded-lg', 'overflow-hidden', 'my-6');
       
       const thead = table.querySelector('thead');
       if (thead) {
@@ -156,7 +156,7 @@ export default function MarkdownRenderer({ content, className = '' }: MarkdownRe
     // Enhanced blockquote styling
     const blockquotes = document.querySelectorAll('blockquote');
     blockquotes.forEach(blockquote => {
-      blockquote.classList.add('border-l-4', 'border-blue-500', 'bg-blue-50', 'dark:bg-blue-900/20', 'p-4', 'rounded-r-lg', 'my-4');
+      blockquote.classList.add('border-l-4', 'border-blue-500', 'bg-blue-50', 'dark:bg-blue-900/20', 'p-4', 'rounded-r-lg', 'my-6');
     });
 
     // Enhanced link styling
@@ -177,6 +177,65 @@ export default function MarkdownRenderer({ content, className = '' }: MarkdownRe
         link.target = '_blank';
         link.rel = 'noopener noreferrer';
       }
+    });
+
+    // Enhanced heading styling
+    const headings = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
+    headings.forEach(heading => {
+      heading.classList.add('font-bold', 'text-slate-900', 'dark:text-white', 'scroll-mt-20');
+      
+      // Add anchor links to headings
+      if (!heading.id) return;
+      
+      const anchor = document.createElement('a');
+      anchor.href = `#${heading.id}`;
+      anchor.classList.add('ml-2', 'text-slate-400', 'hover:text-slate-600', 'dark:hover:text-slate-300', 'opacity-0', 'group-hover:opacity-100', 'transition-opacity');
+      anchor.innerHTML = `
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+          <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+        </svg>
+      `;
+      
+      heading.classList.add('group', 'flex', 'items-center');
+      heading.appendChild(anchor);
+    });
+
+    // Enhance lists
+    const lists = document.querySelectorAll('ul, ol');
+    lists.forEach(list => {
+      list.classList.add('my-4', 'pl-6');
+      
+      const items = list.querySelectorAll('li');
+      items.forEach(item => {
+        item.classList.add('mb-2');
+      });
+    });
+
+    // Enhance code inline
+    const inlineCode = document.querySelectorAll('code:not(pre code)');
+    inlineCode.forEach(code => {
+      code.classList.add('px-1.5', 'py-0.5', 'bg-slate-100', 'dark:bg-slate-800', 'rounded', 'text-slate-800', 'dark:text-slate-200', 'text-sm', 'font-mono');
+    });
+
+    // Add smooth scrolling to anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const targetId = this.getAttribute('href')?.substring(1);
+        if (!targetId) return;
+        
+        const targetElement = document.getElementById(targetId);
+        if (targetElement) {
+          targetElement.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+          
+          // Update URL without page jump
+          history.pushState(null, '', `#${targetId}`);
+        }
+      });
     });
   }, [htmlContent]);
 
