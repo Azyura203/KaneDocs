@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { X, User, Mail, Lock, Eye, EyeOff, Loader, CheckCircle, AlertCircle } from 'lucide-react';
-import { authService } from '../lib/supabase';
+import { authService, sessionManager } from '../lib/supabase';
 import { notificationManager } from './SimpleNotification';
 
 interface AuthModalProps {
@@ -52,27 +52,42 @@ export default function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps
 
     try {
       if (isSignUp) {
-        await authService.signUp(email, password, fullName);
+        const { data } = await authService.signUp(email, password, fullName);
         
-        setEmailSent(true);
-        notificationManager.success(
-          'Account Created! 🎉',
-          `Welcome to KaneDocs! We've sent a confirmation email to ${email}.`,
-          6000
-        );
-        
+        if (data.user && !data.session) {
+          // Email confirmation required
+          setEmailSent(true);
+          notificationManager.success(
+            'Account Created! 🎉',
+            `Welcome to KaneDocs! We've sent a confirmation email to ${email}.`,
+            6000
+          );
+        } else if (data.session) {
+          // User is automatically signed in
+          sessionManager.saveSession(data.session);
+          notificationManager.success(
+            `Welcome to KaneDocs, ${fullName}! 🎉`,
+            'Your account has been created and you are now signed in.',
+            4000
+          );
+          onSuccess();
+          onClose();
+        }
       } else {
-        const { user } = await authService.signIn(email, password);
+        const { data } = await authService.signIn(email, password);
         
-        const displayName = user?.user_metadata?.full_name || fullName || email.split('@')[0];
-        notificationManager.success(
-          `Welcome back, ${displayName}! 👋`,
-          'Successfully signed in to KaneDocs.',
-          4000
-        );
-        
-        onSuccess();
-        onClose();
+        if (data.session) {
+          sessionManager.saveSession(data.session);
+          const displayName = data.user?.user_metadata?.full_name || fullName || email.split('@')[0];
+          notificationManager.success(
+            `Welcome back, ${displayName}! 👋`,
+            'Successfully signed in to KaneDocs.',
+            4000
+          );
+          
+          onSuccess();
+          onClose();
+        }
       }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Authentication failed';

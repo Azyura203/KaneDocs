@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { User, LogOut, Settings } from 'lucide-react';
-import { authService, supabase } from '../lib/supabase';
+import { authService, supabase, sessionManager } from '../lib/supabase';
 import { notificationManager } from './SimpleNotification';
 import AuthModal from './AuthModal';
 
@@ -10,38 +10,57 @@ export default function AuthButton() {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  // Check authentication status
+  // Check authentication status on mount
   useEffect(() => {
-    const checkAuth = async () => {
+    const initializeAuth = async () => {
       try {
-        const currentUser = await authService.getCurrentUser();
-        setUser(currentUser);
+        // First try to initialize session from storage or Supabase
+        const session = await sessionManager.initializeSession();
+        if (session?.user) {
+          setUser(session.user);
+        } else {
+          // Fallback to current user check
+          const currentUser = await authService.getCurrentUser();
+          setUser(currentUser);
+        }
       } catch (error) {
-        console.error('Auth check failed:', error);
+        console.error('Auth initialization failed:', error);
+        setUser(null);
       } finally {
         setLoading(false);
       }
     };
 
-    checkAuth();
+    initializeAuth();
 
     // Listen for auth state changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      setUser(session?.user || null);
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log('Auth state change:', event, !!session);
       
-      // Only show notifications for actual auth events, not initial load
       if (event === 'SIGNED_IN' && session?.user) {
-        notificationManager.success(
-          'Welcome!',
-          'Successfully signed in to KaneDocs.',
-          3000
-        );
+        setUser(session.user);
+        sessionManager.saveSession(session);
+        
+        // Only show welcome notification for actual sign-in events
+        if (event === 'SIGNED_IN') {
+          notificationManager.success(
+            'Welcome!',
+            'Successfully signed in to KaneDocs.',
+            3000
+          );
+        }
       } else if (event === 'SIGNED_OUT') {
+        setUser(null);
+        sessionManager.clearSession();
+        
         notificationManager.info(
           'Signed Out',
           'You have been signed out successfully.',
           3000
         );
+      } else if (event === 'TOKEN_REFRESHED' && session?.user) {
+        setUser(session.user);
+        sessionManager.saveSession(session);
       }
     });
 
@@ -53,12 +72,14 @@ export default function AuthButton() {
       await authService.signOut();
       setUser(null);
       setShowUserMenu(false);
-      notificationManager.success(
-        'Signed Out',
-        'You have been signed out successfully.',
-        3000
-      );
+      
+      // Clear any cached data
+      sessionManager.clearSession();
+      
+      // Redirect to home page after logout
+      window.location.href = '/';
     } catch (error) {
+      console.error('Sign out error:', error);
       notificationManager.error(
         'Sign Out Failed',
         'Failed to sign out. Please try again.',
@@ -69,7 +90,7 @@ export default function AuthButton() {
 
   const handleAuthSuccess = () => {
     setShowAuthModal(false);
-    // Don't show notification here as it will be handled by the auth state change listener
+    // Session will be handled by the auth state change listener
   };
 
   if (loading) {

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Header from './Header';
 import Sidebar from './Sidebar';
 import { NotificationContainer } from './SimpleNotification';
+import { sessionManager } from '../lib/supabase';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -16,6 +17,9 @@ export default function Layout({ children, showSidebar = true }: LayoutProps) {
   // Ensure component is mounted before rendering
   useEffect(() => {
     setMounted(true);
+    
+    // Initialize session on app start
+    sessionManager.initializeSession().catch(console.error);
   }, []);
 
   // Load sidebar state from localStorage

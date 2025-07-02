@@ -4,9 +4,107 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = 'https://ihsabhhmussuyoibfmxw.supabase.co';
 const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imloc2FiaGhtdXNzdXlvaWJmbXh3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTEzODU5NTMsImV4cCI6MjA2Njk2MTk1M30.IbGPus17lyScuMqd7q77PT5cBj96Eu4wVjT4Se5ju2M';
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    persistSession: true,
+    storageKey: 'kanedocs-auth',
+    storage: typeof window !== 'undefined' ? window.localStorage : undefined,
+    autoRefreshToken: true,
+    detectSessionInUrl: true
+  }
+});
 
-// Enhanced authentication service with profile management
+// Session management utilities
+export const sessionManager = {
+  // Save session to localStorage
+  saveSession(session: any) {
+    if (typeof window !== 'undefined' && session) {
+      localStorage.setItem('kanedocs-session', JSON.stringify({
+        user: session.user,
+        access_token: session.access_token,
+        refresh_token: session.refresh_token,
+        expires_at: session.expires_at,
+        saved_at: Date.now()
+      }));
+    }
+  },
+
+  // Get session from localStorage
+  getStoredSession() {
+    if (typeof window === 'undefined') return null;
+    
+    try {
+      const stored = localStorage.getItem('kanedocs-session');
+      if (!stored) return null;
+      
+      const session = JSON.parse(stored);
+      
+      // Check if session is expired
+      if (session.expires_at && Date.now() / 1000 > session.expires_at) {
+        this.clearSession();
+        return null;
+      }
+      
+      return session;
+    } catch (error) {
+      console.error('Error reading stored session:', error);
+      this.clearSession();
+      return null;
+    }
+  },
+
+  // Clear session from localStorage
+  clearSession() {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('kanedocs-session');
+      localStorage.removeItem('kanedocs-auth');
+    }
+  },
+
+  // Check if user is authenticated
+  async isAuthenticated() {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      return !!session?.user;
+    } catch (error) {
+      console.error('Error checking authentication:', error);
+      return false;
+    }
+  },
+
+  // Initialize session on app start
+  async initializeSession() {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        this.saveSession(session);
+        return session;
+      }
+      
+      // Try to get from localStorage if Supabase doesn't have it
+      const storedSession = this.getStoredSession();
+      if (storedSession) {
+        // Try to refresh the session
+        const { data: { session: refreshedSession } } = await supabase.auth.refreshSession({
+          refresh_token: storedSession.refresh_token
+        });
+        
+        if (refreshedSession) {
+          this.saveSession(refreshedSession);
+          return refreshedSession;
+        }
+      }
+      
+      return null;
+    } catch (error) {
+      console.error('Error initializing session:', error);
+      this.clearSession();
+      return null;
+    }
+  }
+};
+
+// Enhanced authentication service with session management
 export const authService = {
   async signUp(email: string, password: string, fullName?: string) {
     const { data, error } = await supabase.auth.signUp({
@@ -36,6 +134,12 @@ export const authService = {
     });
     
     if (error) throw error;
+    
+    // Save session if sign up was successful and user is confirmed
+    if (data.session) {
+      sessionManager.saveSession(data.session);
+    }
+    
     return data;
   },
 
@@ -46,17 +150,34 @@ export const authService = {
     });
     
     if (error) throw error;
+    
+    // Save session on successful sign in
+    if (data.session) {
+      sessionManager.saveSession(data.session);
+    }
+    
     return data;
   },
 
   async signOut() {
     const { error } = await supabase.auth.signOut();
+    
+    // Clear session regardless of Supabase response
+    sessionManager.clearSession();
+    
     if (error) throw error;
   },
 
   async getCurrentUser() {
-    const { data: { user } } = await supabase.auth.getUser();
-    return user;
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      return user;
+    } catch (error) {
+      console.error('Error getting current user:', error);
+      // Try to get from stored session
+      const storedSession = sessionManager.getStoredSession();
+      return storedSession?.user || null;
+    }
   },
 
   async updateProfile(updates: { 
@@ -85,6 +206,16 @@ export const authService = {
         password: updates.password
       });
       if (error) throw error;
+      
+      // Update stored session
+      if (data.user) {
+        const storedSession = sessionManager.getStoredSession();
+        if (storedSession) {
+          storedSession.user = data.user;
+          sessionManager.saveSession(storedSession);
+        }
+      }
+      
       return data;
     }
 
@@ -98,6 +229,16 @@ export const authService = {
     });
     
     if (error) throw error;
+    
+    // Update stored session
+    if (data.user) {
+      const storedSession = sessionManager.getStoredSession();
+      if (storedSession) {
+        storedSession.user = data.user;
+        sessionManager.saveSession(storedSession);
+      }
+    }
+    
     return data;
   },
 
@@ -116,6 +257,16 @@ export const authService = {
     });
     
     if (error) throw error;
+    
+    // Update stored session
+    if (data.user) {
+      const storedSession = sessionManager.getStoredSession();
+      if (storedSession) {
+        storedSession.user = data.user;
+        sessionManager.saveSession(storedSession);
+      }
+    }
+    
     return data;
   },
 
@@ -169,6 +320,17 @@ export const authService = {
     return data;
   }
 };
+
+// Listen for auth state changes and update localStorage
+supabase.auth.onAuthStateChange((event, session) => {
+  if (event === 'SIGNED_IN' && session) {
+    sessionManager.saveSession(session);
+  } else if (event === 'SIGNED_OUT') {
+    sessionManager.clearSession();
+  } else if (event === 'TOKEN_REFRESHED' && session) {
+    sessionManager.saveSession(session);
+  }
+});
 
 // Export types for compatibility (but we won't use the database operations)
 export interface Repository {

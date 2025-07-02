@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { authService } from '../lib/supabase';
+import { authService, sessionManager } from '../lib/supabase';
 import { Loader, Lock, User, Sparkles } from 'lucide-react';
 import AuthModal from './AuthModal';
 
@@ -16,21 +16,48 @@ export default function ProtectedRoute({ children, fallback }: ProtectedRoutePro
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const currentUser = await authService.getCurrentUser();
-        setUser(currentUser);
+        // First try to get session from storage or initialize it
+        const session = await sessionManager.initializeSession();
+        if (session?.user) {
+          setUser(session.user);
+        } else {
+          // Fallback to current user check
+          const currentUser = await authService.getCurrentUser();
+          setUser(currentUser);
+        }
       } catch (error) {
         console.error('Auth check failed:', error);
+        setUser(null);
       } finally {
         setLoading(false);
       }
     };
 
     checkAuth();
+
+    // Also listen for storage changes (for cross-tab sync)
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'kanedocs-session') {
+        if (e.newValue) {
+          try {
+            const session = JSON.parse(e.newValue);
+            setUser(session.user);
+          } catch (error) {
+            console.error('Error parsing session from storage:', error);
+          }
+        } else {
+          setUser(null);
+        }
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
   }, []);
 
   const handleAuthSuccess = () => {
     setShowAuthModal(false);
-    // Refresh to get user data
+    // Refresh the page to ensure proper state
     window.location.reload();
   };
 
@@ -116,8 +143,8 @@ export default function ProtectedRoute({ children, fallback }: ProtectedRoutePro
               </div>
             </div>
 
-            <div className="text-center mt-6">
-              <p className="text-sm text-slate-500 dark:text-slate-400">
+            <div class="text-center mt-6">
+              <p class="text-sm text-slate-500 dark:text-slate-400">
                 By signing up, you agree to our Terms of Service and Privacy Policy
               </p>
             </div>
