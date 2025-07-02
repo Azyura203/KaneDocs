@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Sparkles, Send, Loader, Copy, Check, Download, Wand2, FileText, Code, Book, Zap, X, ChevronRight, ChevronDown, Clipboard, ClipboardCheck, Clock } from 'lucide-react';
+import { Sparkles, Send, Loader, Copy, Check, Download, Wand2, FileText, Code, Book, Zap, X, ChevronRight, ChevronDown, Clipboard, ClipboardCheck, Clock, ArrowUp, ExternalLink, Maximize2, Minimize2 } from 'lucide-react';
 import MarkdownRenderer from './MarkdownRenderer';
 import { clsx } from 'clsx';
 
@@ -85,9 +85,11 @@ export default function AIMarkdownGenerator({ onGenerated }: AIMarkdownGenerator
   const [recentPrompts, setRecentPrompts] = useState<string[]>([]);
   const [showRecentPrompts, setShowRecentPrompts] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState<PromptTemplate | null>(null);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const promptInputRef = useRef<HTMLTextAreaElement>(null);
   const progressIntervalRef = useRef<number | null>(null);
   const outputContainerRef = useRef<HTMLDivElement>(null);
+  const markdownContainerRef = useRef<HTMLDivElement>(null);
 
   // Load recent prompts from localStorage
   useEffect(() => {
@@ -977,10 +979,32 @@ For questions and support, please visit our [documentation](https://docs.example
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [prompt, isGenerating, generatedMarkdown]);
 
+  // Toggle fullscreen for output
+  const toggleFullscreen = () => {
+    setIsFullscreen(!isFullscreen);
+    
+    // Scroll to ensure content is visible after toggling
+    setTimeout(() => {
+      if (markdownContainerRef.current) {
+        markdownContainerRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 100);
+  };
+
+  // Scroll to top of output
+  const scrollToTop = () => {
+    if (markdownContainerRef.current) {
+      markdownContainerRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
   return (
     <div className="h-full flex flex-col bg-white dark:bg-slate-900 ai-generator-container">
       {/* Header */}
-      <div className="border-b border-slate-200 dark:border-slate-700 bg-gradient-to-r from-blue-50 via-purple-50 to-pink-50 dark:from-blue-900/20 dark:via-purple-900/20 dark:to-pink-900/20 sticky top-0 z-10">
+      <div className={clsx(
+        "border-b border-slate-200 dark:border-slate-700 bg-gradient-to-r from-blue-50 via-purple-50 to-pink-50 dark:from-blue-900/20 dark:via-purple-900/20 dark:to-pink-900/20 sticky top-0 z-10",
+        isFullscreen && "hidden"
+      )}>
         <div className="p-6">
           <div className="flex items-center gap-3 mb-6">
             <div className="p-3 bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 rounded-xl shadow-lg">
@@ -997,7 +1021,7 @@ For questions and support, please visit our [documentation](https://docs.example
           </div>
 
           {/* Template Categories */}
-          {showTemplates && (
+          {showTemplates && !generatedMarkdown && (
             <div className="mb-6">
               <div className="flex items-center justify-between mb-3">
                 <h2 className="text-lg font-semibold text-slate-900 dark:text-white font-display flex items-center gap-2">
@@ -1080,33 +1104,34 @@ For questions and support, please visit our [documentation](https://docs.example
           )}
 
           {/* Enhanced Input Area */}
-          <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-lg">
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-2">
-                  <Sparkles className="text-blue-600" size={18} />
-                  <h3 className="text-lg font-semibold text-slate-900 dark:text-white font-display">
-                    {selectedTemplate ? `Customize: ${selectedTemplate.title}` : "Describe your documentation needs"}
-                  </h3>
+          {!generatedMarkdown && (
+            <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-lg">
+              <div className="p-6">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <Sparkles className="text-blue-600" size={18} />
+                    <h3 className="text-lg font-semibold text-slate-900 dark:text-white font-display">
+                      {selectedTemplate ? `Customize: ${selectedTemplate.title}` : "Describe your documentation needs"}
+                    </h3>
+                  </div>
+                  
+                  {selectedTemplate && (
+                    <button
+                      onClick={clearPrompt}
+                      className="text-sm text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300 p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700"
+                      title="Clear template"
+                    >
+                      <X size={16} />
+                    </button>
+                  )}
                 </div>
                 
-                {selectedTemplate && (
-                  <button
-                    onClick={clearPrompt}
-                    className="text-sm text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300 p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700"
-                    title="Clear template"
-                  >
-                    <X size={16} />
-                  </button>
-                )}
-              </div>
-              
-              <div className="relative">
-                <textarea
-                  ref={promptInputRef}
-                  value={prompt}
-                  onChange={(e) => setPrompt(e.target.value)}
-                  placeholder="Tell me what kind of documentation you want to generate...
+                <div className="relative">
+                  <textarea
+                    ref={promptInputRef}
+                    value={prompt}
+                    onChange={(e) => setPrompt(e.target.value)}
+                    placeholder="Tell me what kind of documentation you want to generate...
 
 Examples:
 • 'Create comprehensive API documentation for a user management system with authentication'
@@ -1115,95 +1140,99 @@ Examples:
 • 'Create step-by-step tutorial documentation for building a REST API with Node.js'
 
 Be as specific as possible - the more details you provide, the better the generated documentation will be!"
-                  className="w-full h-32 p-4 border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-base leading-relaxed scrollbar-thin scrollbar-thumb-slate-300 dark:scrollbar-thumb-slate-600"
-                />
+                    className="w-full h-32 p-4 border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-base leading-relaxed scrollbar-thin scrollbar-thumb-slate-300 dark:scrollbar-thumb-slate-600"
+                  />
+                  
+                  {/* Recent prompts dropdown */}
+                  {showRecentPrompts && recentPrompts.length > 0 && (
+                    <div className="absolute z-10 mt-1 w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                      {recentPrompts.map((recentPrompt, index) => (
+                        <button
+                          key={index}
+                          onClick={() => {
+                            setPrompt(recentPrompt);
+                            setShowRecentPrompts(false);
+                          }}
+                          className="w-full text-left p-3 hover:bg-slate-100 dark:hover:bg-slate-700 border-b border-slate-200 dark:border-slate-700 last:border-0"
+                        >
+                          <p className="text-sm text-slate-900 dark:text-white line-clamp-2">{recentPrompt}</p>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
                 
-                {/* Recent prompts dropdown */}
-                {showRecentPrompts && recentPrompts.length > 0 && (
-                  <div className="absolute z-10 mt-1 w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-lg max-h-60 overflow-y-auto">
-                    {recentPrompts.map((recentPrompt, index) => (
+                <div className="flex items-center justify-between mt-4">
+                  <div className="flex items-center gap-2">
+                    {recentPrompts.length > 0 && (
                       <button
-                        key={index}
-                        onClick={() => {
-                          setPrompt(recentPrompt);
-                          setShowRecentPrompts(false);
-                        }}
-                        className="w-full text-left p-3 hover:bg-slate-100 dark:hover:bg-slate-700 border-b border-slate-200 dark:border-slate-700 last:border-0"
+                        onClick={() => setShowRecentPrompts(!showRecentPrompts)}
+                        className="text-sm text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300 flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700"
                       >
-                        <p className="text-sm text-slate-900 dark:text-white line-clamp-2">{recentPrompt}</p>
+                        <Clock size={14} />
+                        Recent
+                        {showRecentPrompts ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
                       </button>
-                    ))}
+                    )}
+                    
+                    <div className="text-xs text-slate-500 dark:text-slate-400 hidden sm:block">
+                      <kbd className="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded text-slate-500 dark:text-slate-400 font-mono">Ctrl</kbd>
+                      <span className="mx-1">+</span>
+                      <kbd className="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded text-slate-500 dark:text-slate-400 font-mono">Enter</kbd>
+                      <span className="ml-1">to generate</span>
+                    </div>
+                  </div>
+                  
+                  <button
+                    onClick={generateMarkdown}
+                    disabled={!prompt.trim() || isGenerating}
+                    className={clsx(
+                      "px-6 py-3 rounded-lg font-semibold transition-all duration-200 flex items-center gap-2",
+                      !prompt.trim() || isGenerating
+                        ? "bg-slate-300 dark:bg-slate-600 text-slate-500 dark:text-slate-400 cursor-not-allowed"
+                        : "bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 hover:from-blue-700 hover:via-purple-700 hover:to-pink-700 text-white shadow-lg hover:shadow-xl transform hover:scale-105"
+                    )}
+                  >
+                    {isGenerating ? (
+                      <>
+                        <Loader className="animate-spin" size={18} />
+                        Generating...
+                      </>
+                    ) : (
+                      <>
+                        <Wand2 size={18} />
+                        Generate
+                      </>
+                    )}
+                  </button>
+                </div>
+                
+                {/* Generation Progress Bar */}
+                {isGenerating && (
+                  <div className="mt-4">
+                    <div className="h-1.5 w-full bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                      <div 
+                        className="h-full bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 rounded-full transition-all duration-300"
+                        style={{ width: `${generationProgress * 100}%` }}
+                      />
+                    </div>
+                    <div className="flex justify-between mt-1 text-xs text-slate-500 dark:text-slate-400">
+                      <span>Generating documentation...</span>
+                      <span>{Math.round(generationProgress * 100)}%</span>
+                    </div>
                   </div>
                 )}
               </div>
-              
-              <div className="flex items-center justify-between mt-4">
-                <div className="flex items-center gap-2">
-                  {recentPrompts.length > 0 && (
-                    <button
-                      onClick={() => setShowRecentPrompts(!showRecentPrompts)}
-                      className="text-sm text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300 flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700"
-                    >
-                      <Clock size={14} />
-                      Recent
-                      {showRecentPrompts ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
-                    </button>
-                  )}
-                  
-                  <div className="text-xs text-slate-500 dark:text-slate-400 hidden sm:block">
-                    <kbd className="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded text-slate-500 dark:text-slate-400 font-mono">Ctrl</kbd>
-                    <span className="mx-1">+</span>
-                    <kbd className="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded text-slate-500 dark:text-slate-400 font-mono">Enter</kbd>
-                    <span className="ml-1">to generate</span>
-                  </div>
-                </div>
-                
-                <button
-                  onClick={generateMarkdown}
-                  disabled={!prompt.trim() || isGenerating}
-                  className={clsx(
-                    "px-6 py-3 rounded-lg font-semibold transition-all duration-200 flex items-center gap-2",
-                    !prompt.trim() || isGenerating
-                      ? "bg-slate-300 dark:bg-slate-600 text-slate-500 dark:text-slate-400 cursor-not-allowed"
-                      : "bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 hover:from-blue-700 hover:via-purple-700 hover:to-pink-700 text-white shadow-lg hover:shadow-xl transform hover:scale-105"
-                  )}
-                >
-                  {isGenerating ? (
-                    <>
-                      <Loader className="animate-spin" size={18} />
-                      Generating...
-                    </>
-                  ) : (
-                    <>
-                      <Wand2 size={18} />
-                      Generate
-                    </>
-                  )}
-                </button>
-              </div>
-              
-              {/* Generation Progress Bar */}
-              {isGenerating && (
-                <div className="mt-4">
-                  <div className="h-1.5 w-full bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
-                    <div 
-                      className="h-full bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 rounded-full transition-all duration-300"
-                      style={{ width: `${generationProgress * 100}%` }}
-                    />
-                  </div>
-                  <div className="flex justify-between mt-1 text-xs text-slate-500 dark:text-slate-400">
-                    <span>Generating documentation...</span>
-                    <span>{Math.round(generationProgress * 100)}%</span>
-                  </div>
-                </div>
-              )}
             </div>
-          </div>
+          )}
         </div>
       </div>
 
       {/* Content Area */}
-      <div className="flex-1 flex overflow-hidden">
+      <div className={clsx(
+        "flex-1 flex overflow-hidden",
+        isFullscreen && "h-screen"
+      )}>
         {generatedMarkdown ? (
           <>
             {/* Generated Markdown Display */}
@@ -1229,12 +1258,28 @@ Be as specific as possible - the more details you provide, the better the genera
                     <Download size={18} />
                     Download
                   </button>
+                  <button
+                    onClick={toggleFullscreen}
+                    className="flex items-center justify-center p-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-all"
+                    title={isFullscreen ? "Exit fullscreen" : "Fullscreen"}
+                  >
+                    {isFullscreen ? <Minimize2 size={18} /> : <Maximize2 size={18} />}
+                  </button>
                 </div>
               </div>
 
               {/* Preview with smooth scrolling */}
-              <div className="flex-1 overflow-y-auto p-8 scrollbar-thin scrollbar-thumb-slate-300 dark:scrollbar-thumb-slate-600 animate-fade-in">
-                <div className="max-w-4xl mx-auto">
+              <div 
+                ref={markdownContainerRef}
+                className={clsx(
+                  "flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-300 dark:scrollbar-thumb-slate-600 animate-fade-in",
+                  isFullscreen ? "p-8 lg:p-12" : "p-6 lg:p-8"
+                )}
+              >
+                <div className={clsx(
+                  "mx-auto",
+                  isFullscreen ? "max-w-5xl" : "max-w-4xl"
+                )}>
                   <MarkdownRenderer content={generatedMarkdown} />
                 </div>
               </div>
@@ -1242,25 +1287,47 @@ Be as specific as possible - the more details you provide, the better the genera
               {/* Bottom Actions */}
               <div className="p-4 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 sticky bottom-0 z-10">
                 <div className="flex items-center justify-between">
-                  <button
-                    onClick={() => setGeneratedMarkdown('')}
-                    className="text-sm text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300 flex items-center gap-1 px-3 py-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700"
-                  >
-                    <X size={14} />
-                    Clear & Start Over
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => setGeneratedMarkdown('')}
+                      className="text-sm text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300 flex items-center gap-1 px-3 py-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700"
+                    >
+                      <X size={14} />
+                      Clear & Start Over
+                    </button>
+                    
+                    <button
+                      onClick={scrollToTop}
+                      className="text-sm text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300 flex items-center gap-1 px-3 py-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700"
+                    >
+                      <ArrowUp size={14} />
+                      Scroll to Top
+                    </button>
+                  </div>
                   
-                  <button
-                    onClick={() => {
-                      if (onGenerated) {
-                        onGenerated(generatedMarkdown);
-                      }
-                    }}
-                    className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white rounded-lg transition-colors font-medium shadow-md"
-                  >
-                    <Check size={18} />
-                    Use This Document
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <a
+                      href={`data:text/markdown;charset=utf-8,${encodeURIComponent(generatedMarkdown)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 px-3 py-1.5 text-sm text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700"
+                    >
+                      <ExternalLink size={14} />
+                      Open in New Tab
+                    </a>
+                    
+                    <button
+                      onClick={() => {
+                        if (onGenerated) {
+                          onGenerated(generatedMarkdown);
+                        }
+                      }}
+                      className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white rounded-lg transition-colors font-medium shadow-md"
+                    >
+                      <Check size={18} />
+                      Use This Document
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1301,6 +1368,17 @@ Be as specific as possible - the more details you provide, the better the genera
           </div>
         )}
       </div>
+
+      {/* Fullscreen Exit Button */}
+      {isFullscreen && (
+        <button
+          onClick={toggleFullscreen}
+          className="fixed top-4 right-4 z-50 p-2 bg-white dark:bg-slate-800 rounded-full shadow-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition-all"
+          title="Exit fullscreen"
+        >
+          <Minimize2 size={20} className="text-slate-700 dark:text-slate-300" />
+        </button>
+      )}
     </div>
   );
 }
