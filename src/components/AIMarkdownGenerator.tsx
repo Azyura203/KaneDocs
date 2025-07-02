@@ -87,6 +87,7 @@ export default function AIMarkdownGenerator({ onGenerated }: AIMarkdownGenerator
   const [selectedTemplate, setSelectedTemplate] = useState<PromptTemplate | null>(null);
   const promptInputRef = useRef<HTMLTextAreaElement>(null);
   const progressIntervalRef = useRef<number | null>(null);
+  const outputContainerRef = useRef<HTMLDivElement>(null);
 
   // Load recent prompts from localStorage
   useEffect(() => {
@@ -112,6 +113,14 @@ export default function AIMarkdownGenerator({ onGenerated }: AIMarkdownGenerator
     setRecentPrompts(updatedPrompts);
     localStorage.setItem('kodex-recent-prompts', JSON.stringify(updatedPrompts));
   };
+
+  // Scroll to output when generated
+  useEffect(() => {
+    if (generatedMarkdown && outputContainerRef.current) {
+      // Scroll to the output container with smooth behavior
+      outputContainerRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [generatedMarkdown]);
 
   const generateMarkdown = async () => {
     if (!prompt.trim()) return;
@@ -969,7 +978,7 @@ For questions and support, please visit our [documentation](https://docs.example
   }, [prompt, isGenerating, generatedMarkdown]);
 
   return (
-    <div className="h-full flex flex-col bg-white dark:bg-slate-900">
+    <div className="h-full flex flex-col bg-white dark:bg-slate-900 ai-generator-container">
       {/* Header */}
       <div className="border-b border-slate-200 dark:border-slate-700 bg-gradient-to-r from-blue-50 via-purple-50 to-pink-50 dark:from-blue-900/20 dark:via-purple-900/20 dark:to-pink-900/20">
         <div className="p-6">
@@ -1198,9 +1207,9 @@ Be as specific as possible - the more details you provide, the better the genera
         {generatedMarkdown ? (
           <>
             {/* Generated Markdown Display */}
-            <div className="flex-1 flex flex-col">
+            <div className="flex-1 flex flex-col" ref={outputContainerRef}>
               {/* Toolbar */}
-              <div className="flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800">
+              <div className="flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 sticky top-0 z-10">
                 <h2 className="text-xl font-semibold text-slate-900 dark:text-white flex items-center gap-3 font-display">
                   <FileText size={20} />
                   Generated Documentation
@@ -1231,7 +1240,7 @@ Be as specific as possible - the more details you provide, the better the genera
               </div>
               
               {/* Bottom Actions */}
-              <div className="p-4 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800">
+              <div className="p-4 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 sticky bottom-0 z-10">
                 <div className="flex items-center justify-between">
                   <button
                     onClick={() => setGeneratedMarkdown('')}
