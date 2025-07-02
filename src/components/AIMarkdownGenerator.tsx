@@ -83,10 +83,11 @@ export default function AIMarkdownGenerator({ onGenerated }: AIMarkdownGenerator
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [isFullscreen, setIsFullscreen] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const outputRef = useRef<HTMLDivElement>(null);
 
   const categories = [
-    { id: 'all', label: 'All Templates' },
-    { id: 'api', label: 'API Docs' },
+    { id: 'all', label: 'All' },
+    { id: 'api', label: 'API' },
     { id: 'guide', label: 'Guides' },
     { id: 'readme', label: 'README' },
     { id: 'tutorial', label: 'Tutorials' }
@@ -164,6 +165,11 @@ MIT License - see LICENSE file for details.
 
       setGeneratedMarkdown(mockMarkdown);
       onGenerated?.(mockMarkdown);
+      
+      // Scroll to the output area after generation
+      setTimeout(() => {
+        outputRef.current?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
     } catch (error) {
       console.error('Error generating markdown:', error);
     } finally {
@@ -223,11 +229,11 @@ MIT License - see LICENSE file for details.
 
   return (
     <div className={clsx(
-      "bg-white dark:bg-gray-900 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden transition-all duration-300",
+      "ai-generator-container bg-white dark:bg-gray-900 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden transition-all duration-300",
       isFullscreen ? "fixed inset-4 z-50" : "h-full"
     )}>
       {/* Header */}
-      <div className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 p-6">
+      <div className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 p-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
@@ -250,113 +256,110 @@ MIT License - see LICENSE file for details.
         </div>
       </div>
 
-      <div className="flex h-full">
-        {/* Input Section */}
-        <div className="w-1/2 border-r border-gray-200 dark:border-gray-700 flex flex-col">
-          {/* Template Selector */}
-          <div className="p-4 border-b border-gray-200 dark:border-gray-700">
-            <div className="flex items-center justify-between mb-3">
-              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                Choose a template or write your own prompt
-              </label>
-              <button
-                onClick={() => setShowTemplates(!showTemplates)}
-                className="flex items-center space-x-1 text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
-              >
-                <Wand2 size={14} />
-                <span>Templates</span>
-                {showTemplates ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
-              </button>
+      {/* Template Section - Collapsed by default */}
+      <div className="border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+        <div className="p-3">
+          <button
+            onClick={() => setShowTemplates(!showTemplates)}
+            className="w-full flex items-center justify-between px-3 py-2 bg-white dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
+          >
+            <div className="flex items-center space-x-2">
+              <Wand2 size={16} className="text-purple-500" />
+              <span className="font-medium text-gray-700 dark:text-gray-300">Quick Templates</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <span className="text-xs text-gray-500 dark:text-gray-400">{promptTemplates.length} templates</span>
+              {showTemplates ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+            </div>
+          </button>
+        </div>
+
+        {/* Template Content */}
+        {showTemplates && (
+          <div className="p-3 animate-slide-up">
+            {/* Category Filter */}
+            <div className="flex flex-wrap gap-2 mb-3">
+              {categories.map((category) => (
+                <button
+                  key={category.id}
+                  onClick={() => setSelectedCategory(category.id)}
+                  className={clsx(
+                    "px-3 py-1 text-xs rounded-full transition-colors",
+                    selectedCategory === category.id
+                      ? "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
+                      : "bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700"
+                  )}
+                >
+                  {category.label}
+                </button>
+              ))}
             </div>
 
-            {showTemplates && (
-              <div className="space-y-3">
-                {/* Category Filter */}
-                <div className="flex flex-wrap gap-2">
-                  {categories.map((category) => (
-                    <button
-                      key={category.id}
-                      onClick={() => setSelectedCategory(category.id)}
-                      className={clsx(
-                        "px-3 py-1 text-xs rounded-full transition-colors",
-                        selectedCategory === category.id
-                          ? "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
-                          : "bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700"
-                      )}
-                    >
-                      {category.label}
-                    </button>
-                  ))}
-                </div>
-
-                {/* Template Grid */}
-                <div className="grid grid-cols-1 gap-2 max-h-48 overflow-y-auto">
-                  {filteredTemplates.map((template, index) => (
-                    <button
-                      key={index}
-                      onClick={() => handleTemplateSelect(template)}
-                      className="flex items-start space-x-3 p-3 text-left bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors group"
-                    >
-                      <div className="flex-shrink-0 w-8 h-8 bg-white dark:bg-gray-700 rounded-lg flex items-center justify-center text-blue-600 dark:text-blue-400 group-hover:bg-blue-50 dark:group-hover:bg-blue-900/30 transition-colors">
-                        {template.icon}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h4 className="text-sm font-medium text-gray-900 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                          {template.title}
-                        </h4>
-                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-2">
-                          {template.description}
-                        </p>
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Prompt Input */}
-          <div className="flex-1 p-4">
-            <div className="h-full flex flex-col">
-              <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Describe what you want to generate
-              </label>
-              <textarea
-                ref={textareaRef}
-                value={prompt}
-                onChange={(e) => setPrompt(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder="E.g., Create API documentation for a REST API with authentication, CRUD operations, and error handling examples..."
-                className="flex-1 w-full p-4 border border-gray-300 dark:border-gray-600 rounded-lg resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
-              />
-              <div className="flex items-center justify-between mt-4">
-                <div className="text-xs text-gray-500 dark:text-gray-400">
-                  Press Cmd/Ctrl + Enter to generate
-                </div>
+            {/* Template Grid */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 max-h-48 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-300 dark:scrollbar-thumb-slate-600">
+              {filteredTemplates.map((template, index) => (
                 <button
-                  onClick={handleGenerate}
-                  disabled={!prompt.trim() || isGenerating}
-                  className="flex items-center space-x-2 px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-105 disabled:hover:scale-100"
+                  key={index}
+                  onClick={() => handleTemplateSelect(template)}
+                  className="flex flex-col items-center p-3 text-center bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 rounded-lg transition-colors group border border-gray-200 dark:border-gray-600"
                 >
-                  {isGenerating ? (
-                    <>
-                      <Loader className="w-4 h-4 animate-spin" />
-                      <span>Generating...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Send className="w-4 h-4" />
-                      <span>Generate</span>
-                    </>
-                  )}
+                  <div className="w-8 h-8 bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-center text-blue-600 dark:text-blue-400 group-hover:bg-blue-50 dark:group-hover:bg-blue-900/30 transition-colors mb-2">
+                    {template.icon}
+                  </div>
+                  <h4 className="text-xs font-medium text-gray-900 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                    {template.title}
+                  </h4>
                 </button>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Main Content Area */}
+      <div className="flex flex-col md:flex-row h-[calc(100%-8rem)]">
+        {/* Input Section */}
+        <div className="w-full md:w-1/2 border-r border-gray-200 dark:border-gray-700 flex flex-col">
+          {/* Prompt Input */}
+          <div className="flex-1 p-4 flex flex-col">
+            <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Describe what you want to generate
+            </label>
+            <textarea
+              ref={textareaRef}
+              value={prompt}
+              onChange={(e) => setPrompt(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="E.g., Create API documentation for a REST API with authentication, CRUD operations, and error handling examples..."
+              className="flex-1 w-full p-4 border border-gray-300 dark:border-gray-600 rounded-lg resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 scrollbar-thin scrollbar-thumb-slate-300 dark:scrollbar-thumb-slate-600"
+            />
+            <div className="flex items-center justify-between mt-4">
+              <div className="text-xs text-gray-500 dark:text-gray-400">
+                Press Cmd/Ctrl + Enter to generate
               </div>
+              <button
+                onClick={handleGenerate}
+                disabled={!prompt.trim() || isGenerating}
+                className="flex items-center space-x-2 px-6 py-2 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white rounded-lg hover:from-blue-700 hover:via-purple-700 hover:to-pink-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-105 disabled:hover:scale-100"
+              >
+                {isGenerating ? (
+                  <>
+                    <Loader className="w-4 h-4 animate-spin" />
+                    <span>Generating...</span>
+                  </>
+                ) : (
+                  <>
+                    <Send className="w-4 h-4" />
+                    <span>Generate</span>
+                  </>
+                )}
+              </button>
             </div>
           </div>
         </div>
 
         {/* Output Section */}
-        <div className="w-1/2 flex flex-col">
+        <div className="w-full md:w-1/2 flex flex-col" ref={outputRef}>
           {generatedMarkdown ? (
             <>
               {/* Output Header */}
@@ -364,7 +367,7 @@ MIT License - see LICENSE file for details.
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
                     <FileText className="w-4 h-4 text-gray-600 dark:text-gray-400" />
-                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                    <span className="font-medium text-gray-700 dark:text-gray-300">
                       Generated Markdown
                     </span>
                   </div>
@@ -396,12 +399,11 @@ MIT License - see LICENSE file for details.
                 </div>
               </div>
 
-              {/* Markdown Preview */}
+              {/* Markdown Preview - Scrollable */}
               <div className="flex-1 overflow-hidden">
-                <MarkdownRenderer 
-                  content={generatedMarkdown} 
-                  className="h-full overflow-y-auto p-6"
-                />
+                <div className="h-full overflow-y-auto scrollbar-thin scrollbar-thumb-slate-300 dark:scrollbar-thumb-slate-600 p-6">
+                  <MarkdownRenderer content={generatedMarkdown} />
+                </div>
               </div>
             </>
           ) : (
