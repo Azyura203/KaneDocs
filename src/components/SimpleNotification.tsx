@@ -93,13 +93,22 @@ function SimpleNotification({ notification, onRemove }: SimpleNotificationProps)
   );
 }
 
-// Enhanced notification manager with better deduplication
+// Enhanced notification manager with strict deduplication
 class NotificationManager {
   private notifications: Notification[] = [];
   private listeners: ((notifications: Notification[]) => void)[] = [];
-  private recentNotifications = new Map<string, { timestamp: number; count: number }>(); 
-  private readonly DUPLICATE_THRESHOLD = 60000; // 60 seconds
+  private recentNotifications = new Map<string, { timestamp: number; count: number; sessionId: string }>(); 
+  private readonly DUPLICATE_THRESHOLD = 120000; // 2 minutes
   private readonly MAX_DUPLICATE_COUNT = 1; // Only allow 1 duplicate per time window
+  private sessionId: string;
+
+  constructor() {
+    // Generate a unique session ID to track notifications per session
+    this.sessionId = Math.random().toString(36).substring(2, 15);
+    
+    // Clean up old notifications periodically
+    setInterval(() => this.cleanupOldNotifications(), 30000); // Every 30 seconds
+  }
 
   subscribe(listener: (notifications: Notification[]) => void) {
     this.listeners.push(listener);
@@ -133,27 +142,30 @@ class NotificationManager {
     const contentHash = this.getContentHash(notification);
     const now = Date.now();
     
-    // Check if this notification was recently shown
+    // Check if this notification was recently shown in this session
     const recentData = this.recentNotifications.get(contentHash);
     if (recentData) {
       const timeSinceLastShown = now - recentData.timestamp;
+      const isSameSession = recentData.sessionId === this.sessionId;
       
-      // If within threshold and already shown max times, skip
-      if (timeSinceLastShown < this.DUPLICATE_THRESHOLD && recentData.count >= this.MAX_DUPLICATE_COUNT) {
-        console.log('Duplicate notification blocked:', notification.title, 'Count:', recentData.count);
+      // If within threshold and same session and already shown max times, skip
+      if (timeSinceLastShown < this.DUPLICATE_THRESHOLD && isSameSession && recentData.count >= this.MAX_DUPLICATE_COUNT) {
+        console.log('Duplicate notification blocked:', notification.title, 'Count:', recentData.count, 'Session:', this.sessionId);
         return;
       }
       
-      // Update count and timestamp
+      // Update count and timestamp for same session, or reset for new session
       this.recentNotifications.set(contentHash, {
         timestamp: now,
-        count: recentData.count + 1
+        count: isSameSession ? recentData.count + 1 : 1,
+        sessionId: this.sessionId
       });
     } else {
       // First time showing this notification
       this.recentNotifications.set(contentHash, {
         timestamp: now,
-        count: 1
+        count: 1,
+        sessionId: this.sessionId
       });
     }
     
@@ -161,7 +173,7 @@ class NotificationManager {
     const newNotification = { ...notification, id };
     
     // Limit total notifications to prevent spam
-    if (this.notifications.length >= 5) {
+    if (this.notifications.length >= 3) {
       this.notifications.shift(); // Remove oldest
     }
     
@@ -176,8 +188,14 @@ class NotificationManager {
 
   clear() {
     this.notifications = [];
-    this.recentNotifications.clear();
     this.notify();
+  }
+
+  // Reset session (useful for testing or when user logs out)
+  resetSession() {
+    this.sessionId = Math.random().toString(36).substring(2, 15);
+    this.recentNotifications.clear();
+    this.clear();
   }
 
   success(title: string, message: string, duration?: number) {
@@ -193,6 +211,7 @@ class NotificationManager {
   }
 }
 
+// Create a singleton instance
 export const notificationManager = new NotificationManager();
 
 // Notification container component with higher z-index

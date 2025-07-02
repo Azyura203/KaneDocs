@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Header from './Header';
 import Sidebar from './Sidebar';
-import { NotificationContainer } from './SimpleNotification';
+import { NotificationContainer, notificationManager } from './SimpleNotification';
 import { sessionManager } from '../lib/supabase';
 
 interface LayoutProps {
@@ -20,6 +20,9 @@ export default function Layout({ children, showSidebar = true }: LayoutProps) {
     
     // Initialize session on app start
     sessionManager.initializeSession().catch(console.error);
+    
+    // Reset notification session to prevent stale notifications
+    notificationManager.resetSession();
   }, []);
 
   // Load sidebar state from localStorage

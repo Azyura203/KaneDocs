@@ -78,9 +78,9 @@ export default function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps
         
         if (data.session) {
           sessionManager.saveSession(data.session);
-          const displayName = data.user?.user_metadata?.full_name || fullName || email.split('@')[0];
           
           // Don't show notification here - let AuthButton handle it to avoid duplicates
+          // The AuthButton will detect this as a fresh sign-in and show the welcome message
           onSuccess();
           onClose();
         }

@@ -28,6 +28,7 @@ export const sessionManager = {
           saved_at: Date.now()
         }));
         localStorage.setItem('kanedocs-auth-timestamp', Date.now().toString());
+        localStorage.setItem('kanedocs-session-active', 'true');
       } catch (error) {
         console.error('Error saving session:', error);
       }
@@ -64,6 +65,7 @@ export const sessionManager = {
       localStorage.removeItem('kanedocs-session');
       localStorage.removeItem('kanedocs-auth');
       localStorage.removeItem('kanedocs-auth-timestamp');
+      localStorage.removeItem('kanedocs-session-active');
     }
   },
 
@@ -75,6 +77,21 @@ export const sessionManager = {
     } catch (error) {
       console.error('Error checking authentication:', error);
       return false;
+    }
+  },
+
+  // Check if this is a fresh session (not from page reload)
+  isFreshSession() {
+    if (typeof window === 'undefined') return false;
+    
+    const isActive = localStorage.getItem('kanedocs-session-active');
+    return !isActive;
+  },
+
+  // Mark session as active (after showing welcome notification)
+  markSessionActive() {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('kanedocs-session-active', 'true');
     }
   },
 
