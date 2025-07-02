@@ -102,21 +102,74 @@ function NavItemComponent({ item, level = 0, isCollapsed }: { item: NavItem; lev
   // Check if this item is active based on current URL
   useEffect(() => {
     const checkActive = () => {
+      if (typeof window === 'undefined') return;
+      
       const pathname = window.location.pathname;
-      // Exact match for index page, otherwise check if pathname starts with href
+      
+      // Exact match for index page
       if (item.href === '/') {
-        setIsActive(pathname === '/');
+        setIsActive(pathname === '/' || pathname === '');
       } else {
-        setIsActive(pathname === item.href || pathname.startsWith(`${item.href}/`));
+        // For other pages, check exact match only
+        setIsActive(pathname === item.href);
       }
     };
 
     checkActive();
     
-    // Listen for navigation events
-    window.addEventListener('popstate', checkActive);
-    return () => window.removeEventListener('popstate', checkActive);
+    // Listen for navigation events (including programmatic navigation)
+    const handleLocationChange = () => {
+      setTimeout(checkActive, 100); // Small delay to ensure URL has updated
+    };
+
+    // Listen for both popstate and custom navigation events
+    window.addEventListener('popstate', handleLocationChange);
+    
+    // Also listen for clicks on the document to catch navigation
+    const handleClick = (e: Event) => {
+      const target = e.target as HTMLElement;
+      if (target.tagName === 'A' || target.closest('a')) {
+        setTimeout(checkActive, 100);
+      }
+    };
+    
+    document.addEventListener('click', handleClick);
+    
+    // Check on mount and when pathname might change
+    const observer = new MutationObserver(() => {
+      if (window.location.pathname !== pathname) {
+        checkActive();
+      }
+    });
+    
+    observer.observe(document.body, { 
+      childList: true, 
+      subtree: true 
+    });
+
+    return () => {
+      window.removeEventListener('popstate', handleLocationChange);
+      document.removeEventListener('click', handleClick);
+      observer.disconnect();
+    };
   }, [item.href]);
+
+  // Also check when the component mounts or updates
+  useEffect(() => {
+    const checkActive = () => {
+      if (typeof window === 'undefined') return;
+      
+      const pathname = window.location.pathname;
+      
+      if (item.href === '/') {
+        setIsActive(pathname === '/' || pathname === '');
+      } else {
+        setIsActive(pathname === item.href);
+      }
+    };
+
+    checkActive();
+  });
 
   return (
     <div>
@@ -126,11 +179,11 @@ function NavItemComponent({ item, level = 0, isCollapsed }: { item: NavItem; lev
           'flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 group relative',
           'hover:bg-slate-100 dark:hover:bg-slate-800',
           isActive 
-            ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400' 
+            ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border-r-2 border-blue-500' 
             : 'text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400',
           level > 0 && 'ml-4 text-xs',
           isCollapsed && 'justify-center px-2',
-          item.requiresAuth && 'border-l-2 border-transparent hover:border-blue-500'
+          item.requiresAuth && !isActive && 'border-l-2 border-transparent hover:border-blue-500'
         )}
         onClick={(e) => {
           if (hasChildren) {

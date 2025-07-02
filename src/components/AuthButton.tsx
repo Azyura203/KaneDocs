@@ -29,7 +29,8 @@ export default function AuthButton() {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(session?.user || null);
       
-      if (event === 'SIGNED_IN') {
+      // Only show notifications for actual auth events, not initial load
+      if (event === 'SIGNED_IN' && session?.user) {
         notificationManager.success(
           'Welcome!',
           'Successfully signed in to KaneDocs.',
@@ -68,6 +69,7 @@ export default function AuthButton() {
 
   const handleAuthSuccess = () => {
     setShowAuthModal(false);
+    // Don't show notification here as it will be handled by the auth state change listener
   };
 
   if (loading) {

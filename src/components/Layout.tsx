@@ -96,7 +96,7 @@ export default function Layout({ children, showSidebar = true }: LayoutProps) {
         </main>
       </div>
 
-      {/* Simple Notification System */}
+      {/* Notification Container - Only render once */}
       <NotificationContainer />
     </div>
   );

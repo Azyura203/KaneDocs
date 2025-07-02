@@ -93,11 +93,12 @@ function SimpleNotification({ notification, onRemove }: SimpleNotificationProps)
   );
 }
 
-// Global notification manager
+// Global notification manager with enhanced deduplication
 class NotificationManager {
   private notifications: Notification[] = [];
   private listeners: ((notifications: Notification[]) => void)[] = [];
-  private recentNotifications = new Set<string>(); // Track recent notifications by content hash
+  private recentNotifications = new Map<string, number>(); // Track with timestamp
+  private readonly DUPLICATE_THRESHOLD = 30000; // 30 seconds
 
   subscribe(listener: (notifications: Notification[]) => void) {
     this.listeners.push(listener);
@@ -114,22 +115,32 @@ class NotificationManager {
     return `${notification.type}:${notification.title}:${notification.message}`;
   }
 
+  private cleanupOldNotifications() {
+    const now = Date.now();
+    for (const [hash, timestamp] of this.recentNotifications.entries()) {
+      if (now - timestamp > this.DUPLICATE_THRESHOLD) {
+        this.recentNotifications.delete(hash);
+      }
+    }
+  }
+
   show(notification: Omit<Notification, 'id'>) {
+    // Clean up old notifications first
+    this.cleanupOldNotifications();
+    
     // Create a hash of the notification content to check for duplicates
     const contentHash = this.getContentHash(notification);
+    const now = Date.now();
     
     // Check if this notification was recently shown
-    if (this.recentNotifications.has(contentHash)) {
+    const lastShown = this.recentNotifications.get(contentHash);
+    if (lastShown && (now - lastShown) < this.DUPLICATE_THRESHOLD) {
+      console.log('Duplicate notification blocked:', notification.title);
       return; // Skip showing duplicate notifications
     }
     
-    // Add to recent notifications set
-    this.recentNotifications.add(contentHash);
-    
-    // Remove from recent notifications after 10 seconds
-    setTimeout(() => {
-      this.recentNotifications.delete(contentHash);
-    }, 10000);
+    // Add to recent notifications map with timestamp
+    this.recentNotifications.set(contentHash, now);
     
     const id = Math.random().toString(36).substring(2, 15);
     const newNotification = { ...notification, id };
@@ -139,6 +150,12 @@ class NotificationManager {
 
   remove(id: string) {
     this.notifications = this.notifications.filter(n => n.id !== id);
+    this.notify();
+  }
+
+  clear() {
+    this.notifications = [];
+    this.recentNotifications.clear();
     this.notify();
   }
 
