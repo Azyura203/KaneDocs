@@ -97,6 +97,7 @@ function SimpleNotification({ notification, onRemove }: SimpleNotificationProps)
 class NotificationManager {
   private notifications: Notification[] = [];
   private listeners: ((notifications: Notification[]) => void)[] = [];
+  private recentNotifications = new Set<string>(); // Track recent notifications by content hash
 
   subscribe(listener: (notifications: Notification[]) => void) {
     this.listeners.push(listener);
@@ -109,7 +110,27 @@ class NotificationManager {
     this.listeners.forEach(listener => listener([...this.notifications]));
   }
 
+  private getContentHash(notification: Omit<Notification, 'id'>): string {
+    return `${notification.type}:${notification.title}:${notification.message}`;
+  }
+
   show(notification: Omit<Notification, 'id'>) {
+    // Create a hash of the notification content to check for duplicates
+    const contentHash = this.getContentHash(notification);
+    
+    // Check if this notification was recently shown
+    if (this.recentNotifications.has(contentHash)) {
+      return; // Skip showing duplicate notifications
+    }
+    
+    // Add to recent notifications set
+    this.recentNotifications.add(contentHash);
+    
+    // Remove from recent notifications after 10 seconds
+    setTimeout(() => {
+      this.recentNotifications.delete(contentHash);
+    }, 10000);
+    
     const id = Math.random().toString(36).substring(2, 15);
     const newNotification = { ...notification, id };
     this.notifications.push(newNotification);
