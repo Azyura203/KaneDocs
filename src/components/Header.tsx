@@ -150,7 +150,7 @@ export default function Header({ onMenuToggle, isMenuOpen, onSidebarToggle, isSi
               </div>
             </button>
             
-            {/* Fixed GitHub link - removed underline and fixed styling */}
+            {/* Single GitHub link - removed duplication */}
             <a
               href="https://github.com/yourusername/kanedocs"
               target="_blank"
