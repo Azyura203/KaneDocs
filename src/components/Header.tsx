@@ -112,7 +112,7 @@ export default function Header({ onMenuToggle, isMenuOpen, onSidebarToggle, isSi
             </button>
           </div>
 
-          {/* Right side */}
+          {/* Right side - Fixed to prevent duplication */}
           <div className="flex items-center gap-3">
             {/* Mobile search */}
             <button
@@ -150,7 +150,7 @@ export default function Header({ onMenuToggle, isMenuOpen, onSidebarToggle, isSi
               </div>
             </button>
             
-            {/* GitHub link */}
+            {/* Single GitHub link - no duplication */}
             <a
               href="https://github.com/yourusername/kanedocs"
               target="_blank"

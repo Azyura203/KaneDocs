@@ -467,7 +467,7 @@ docker run -p 3000:3000 kanedocs
 
   return (
     <div className="h-full flex flex-col bg-white dark:bg-gray-900 transition-all duration-300">
-      {/* Enhanced Header */}
+      {/* Clean Header */}
       <div className="border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-slate-50 to-blue-50 dark:from-slate-800 dark:to-blue-900/20">
         <div className="p-4 lg:p-6">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
@@ -486,7 +486,7 @@ docker run -p 3000:3000 kanedocs
             </div>
 
             <div className="flex items-center gap-3">
-              {/* Enhanced Branch Selector */}
+              {/* Branch Selector */}
               <div className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm hover:shadow-md transition-all duration-200">
                 <GitBranch size={16} className="text-slate-500" />
                 <select
@@ -502,7 +502,7 @@ docker run -p 3000:3000 kanedocs
                 </select>
               </div>
 
-              {/* Enhanced Actions */}
+              {/* Actions */}
               <button className="flex items-center gap-2 px-4 py-2 text-sm text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white border border-slate-300 dark:border-slate-600 rounded-xl transition-all duration-200 hover:shadow-md hover:scale-105">
                 <Edit3 size={16} />
                 <span className="hidden sm:inline">Edit</span>
@@ -510,7 +510,7 @@ docker run -p 3000:3000 kanedocs
             </div>
           </div>
 
-          {/* Enhanced Tab Navigation */}
+          {/* Fixed Tab Navigation - Consistent styling across all pages */}
           <div className="flex mt-6 bg-white dark:bg-slate-800 rounded-xl p-1 shadow-sm border border-slate-200 dark:border-slate-700">
             {[
               { id: 'files', label: 'Files', icon: <Folder size={16} />, count: files.length },
@@ -522,7 +522,7 @@ docker run -p 3000:3000 kanedocs
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as any)}
                 className={clsx(
-                  'flex items-center gap-2 px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 relative',
+                  'flex items-center gap-2 px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 relative flex-1 justify-center',
                   activeTab === tab.id
                     ? 'bg-gradient-to-r from-primary-500 to-accent-500 text-white shadow-md transform scale-105'
                     : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-700'
@@ -545,11 +545,6 @@ docker run -p 3000:3000 kanedocs
                     {tab.count}
                   </span>
                 )}
-                
-                {/* Active indicator */}
-                {activeTab === tab.id && (
-                  <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-8 h-0.5 bg-white rounded-full" />
-                )}
               </button>
             ))}
           </div>
@@ -558,7 +553,7 @@ docker run -p 3000:3000 kanedocs
 
       {/* Content with smooth transitions */}
       <div className="flex-1 flex overflow-hidden">
-        {/* Enhanced Sidebar */}
+        {/* Sidebar */}
         <div className="w-full lg:w-80 border-r border-gray-200 dark:border-gray-700 bg-gradient-to-b from-slate-50 to-white dark:from-slate-800 dark:to-slate-900 overflow-y-auto transition-all duration-300">
           <div className="animate-fade-in">
             {activeTab === 'files' && (
@@ -689,11 +684,11 @@ docker run -p 3000:3000 kanedocs
           </div>
         </div>
 
-        {/* Enhanced Main Content */}
+        {/* Main Content */}
         <div className="flex-1 flex flex-col overflow-hidden">
           {currentFile && currentVersion && (
             <>
-              {/* Enhanced File Header */}
+              {/* File Header */}
               <div className="border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-4 shadow-sm">
                 <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                   <div className="flex items-center gap-3">
@@ -745,7 +740,7 @@ docker run -p 3000:3000 kanedocs
                 </div>
               </div>
 
-              {/* Enhanced Content */}
+              {/* Content */}
               <div className="flex-1 overflow-y-auto">
                 <div className="animate-fade-in">
                   {showDiff ? (

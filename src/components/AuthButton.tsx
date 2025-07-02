@@ -65,6 +65,11 @@ export default function AuthButton() {
               'Successfully signed in to KaneDocs.',
               3000
             );
+            
+            // Redirect to projects page after successful login
+            setTimeout(() => {
+              window.location.href = '/projects';
+            }, 1000);
           }, 500);
           
           hasShownWelcomeThisSession = true;

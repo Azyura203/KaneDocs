@@ -72,6 +72,11 @@ export default function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps
           );
           onSuccess();
           onClose();
+          
+          // Redirect to projects page after successful signup
+          setTimeout(() => {
+            window.location.href = '/projects';
+          }, 1000);
         }
       } else {
         const { data } = await authService.signIn(email, password);
@@ -80,9 +85,13 @@ export default function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps
           sessionManager.saveSession(data.session);
           
           // Don't show notification here - let AuthButton handle it to avoid duplicates
-          // The AuthButton will detect this as a fresh sign-in and show the welcome message
           onSuccess();
           onClose();
+          
+          // Redirect to projects page after successful login
+          setTimeout(() => {
+            window.location.href = '/projects';
+          }, 500);
         }
       }
     } catch (err) {
@@ -128,7 +137,7 @@ export default function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps
       />
       
       {/* Modal */}
-      <div className="relative w-full max-w-md bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden">
+      <div className="relative w-full max-w-md bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden animate-scale-in">
         {/* Header */}
         <div className="relative bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-6">
           <button

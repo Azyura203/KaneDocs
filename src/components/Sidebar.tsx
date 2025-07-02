@@ -104,14 +104,14 @@ function NavItemComponent({ item, level = 0, isCollapsed }: { item: NavItem; lev
     const checkActive = () => {
       if (typeof window === 'undefined') return;
       
-      const pathname = window.location.pathname;
+      const currentPath = window.location.pathname;
       
       // Exact match for index page
       if (item.href === '/') {
-        setIsActive(pathname === '/' || pathname === '');
+        setIsActive(currentPath === '/' || currentPath === '');
       } else {
         // For other pages, check exact match only to prevent cross-highlighting
-        setIsActive(pathname === item.href);
+        setIsActive(currentPath === item.href);
       }
     };
 
@@ -119,7 +119,7 @@ function NavItemComponent({ item, level = 0, isCollapsed }: { item: NavItem; lev
     checkActive();
     
     // Create a more robust listener for URL changes
-    let lastPathname = window.location.pathname;
+    let lastPath = window.location.pathname;
     
     // Listen for navigation events with proper cleanup
     const handleLocationChange = () => {
@@ -143,9 +143,9 @@ function NavItemComponent({ item, level = 0, isCollapsed }: { item: NavItem; lev
     
     // Use MutationObserver to detect URL changes from programmatic navigation
     const observer = new MutationObserver(() => {
-      const currentPathname = window.location.pathname;
-      if (currentPathname !== lastPathname) {
-        lastPathname = currentPathname;
+      const currentPath = window.location.pathname;
+      if (currentPath !== lastPath) {
+        lastPath = currentPath;
         checkActive();
       }
     });
@@ -202,10 +202,9 @@ function NavItemComponent({ item, level = 0, isCollapsed }: { item: NavItem; lev
           'hover:bg-slate-100 dark:hover:bg-slate-800 hover:scale-[1.02]',
           isActive 
             ? 'bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900/30 dark:to-blue-800/30 text-blue-600 dark:text-blue-400 shadow-sm border-l-4 border-blue-500' 
-            : 'text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400',
+            : 'text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 border-l-4 border-transparent',
           level > 0 && 'ml-4 text-xs',
           isCollapsed && 'justify-center px-2',
-          item.requiresAuth && !isActive && 'border-l-2 border-transparent hover:border-blue-300'
         )}
         title={isCollapsed ? item.title : undefined}
       >
@@ -229,9 +228,6 @@ function NavItemComponent({ item, level = 0, isCollapsed }: { item: NavItem; lev
                   {item.badge}
                 </span>
               )}
-              {item.requiresAuth && !isActive && (
-                <span className="w-1.5 h-1.5 bg-blue-500 rounded-full opacity-60 transition-opacity duration-200" title="Requires authentication" />
-              )}
             </>
           )}
         </span>
@@ -239,11 +235,6 @@ function NavItemComponent({ item, level = 0, isCollapsed }: { item: NavItem; lev
           <span className="transition-transform duration-200 text-slate-400">
             {isExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
           </span>
-        )}
-        
-        {/* Active indicator */}
-        {isActive && (
-          <div className="absolute right-0 top-1/2 transform -translate-y-1/2 w-1 h-8 bg-blue-500 rounded-l-full transition-all duration-200" />
         )}
       </a>
       

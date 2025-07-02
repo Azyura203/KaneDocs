@@ -324,12 +324,12 @@ export default function DocumentationEditor({
 
   return (
     <div className="h-full flex flex-col">
-      {/* Enhanced Toolbar */}
+      {/* Enhanced Toolbar - Consistent with other pages */}
       <div className="border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
         {/* Main Toolbar */}
         <div className="flex items-center justify-between p-3">
           <div className="flex items-center gap-1">
-            {/* View Toggle */}
+            {/* View Toggle -  Consistent with other components */}
             <div className="flex items-center bg-gray-100 dark:bg-gray-800 rounded-lg p-1 mr-3">
               <button
                 onClick={() => setIsPreview(false)}
@@ -518,15 +518,15 @@ console.log('Hello, KaneDocs!');
 ```
 
 💡 **Tip:** Use the AI Generate button to create documentation automatically!"
-              className="flex-1 p-6 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 font-mono text-sm leading-relaxed resize-none focus:outline-none border-r border-gray-200 dark:border-gray-700"
+              className="flex-1 p-6 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 font-mono text-sm leading-relaxed resize-none focus:outline-none border-r border-gray-200 dark:border-gray-700 scrollbar-thin scrollbar-thumb-slate-300 dark:scrollbar-thumb-slate-600"
               style={{ fontFamily: 'JetBrains Mono, Consolas, Monaco, monospace' }}
             />
-            <div className="flex-1 p-6 bg-gray-50 dark:bg-gray-800 overflow-y-auto">
+            <div className="flex-1 p-6 bg-gray-50 dark:bg-gray-800 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-300 dark:scrollbar-thumb-slate-600">
               <MarkdownRenderer content={content} />
             </div>
           </div>
         ) : (
-          <div className="flex-1 p-6 overflow-y-auto">
+          <div className="flex-1 p-6 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-300 dark:scrollbar-thumb-slate-600">
             <MarkdownRenderer content={content} />
           </div>
         )}
