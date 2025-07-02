@@ -1,7 +1,7 @@
 {
   "name": "kodex",
   "type": "module",
-  "version": "2.1.0",
+  "version": "3.0.0",
   "private": true,
   "description": "A modern AI-powered documentation platform with integrated Git-like version control",
   "author": "KODEX Team",
